@@ -11,8 +11,22 @@ services:
     environment:
       - DATABASE_URL=postgres://user:password@db:5432/mydb
       - NODE_ENV=development
+      - FRONTEND_URL=http://localhost:5173
     depends_on:
       - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/node/Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: npm run dev -- --host
 
   db:
     build:
