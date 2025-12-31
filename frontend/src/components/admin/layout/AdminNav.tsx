@@ -15,10 +15,7 @@ export const AdminNav: React.FC = () => {
                 onClick={() => navigate('/admin')}
                 className={`
                     flex items-center gap-3 px-4 py-3 rounded-lg w-full text-left transition-colors
-                    ${isHomeActive
-                        ? 'bg-slate-800 text-white shadow-md'
-                        : 'text-slate-400 hover:bg-slate-800 hover:text-white'}
-                `}
+                    ${isHomeActive ? 'bg-slate-800 text-white shadow-md' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
             >
                 <i className="fas fa-home w-5"></i>
                 ダッシュボード
