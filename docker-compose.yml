@@ -7,11 +7,10 @@ services:
       - "${APP_PORT}:${APP_PORT}"
     volumes:
       - ./app:/app
-      - /app/node_modules # コンテナ内のnode_modulesを保護
+      - ./app/node_modules:/app/node_modules
     environment:
       - DATABASE_URL=${DB_URL}
       - NODE_ENV=${NODE_ENV}
-    # 起動時にnpm installを実行して同期させる
     command: sh -c "npm install && npm run dev"
     depends_on:
       - db
@@ -24,7 +23,8 @@ services:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     volumes:
       - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/node_modules:/app/node_modules
+    environment:
       - NODE_ENV=${NODE_ENV}
       - VITE_API_URL=http://app:${APP_PORT}
     command: sh -c "npm install && npm run dev -- --host"
@@ -39,6 +39,20 @@ services:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
+
+  db-gui:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=db
+    entrypoint: [
+      "sh", "-c",
+      "echo '<?php return new AdminerLoginPassword(md5(\"${DB_PASSWORD}\")); ?>' > login-password.php && /usr/local/bin/docker-php-entrypoint php -S 0.0.0.0:8080"
+    ]
+    depends_on:
+      - db
 
 volumes:
   db-data:
