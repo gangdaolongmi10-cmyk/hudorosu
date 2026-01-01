@@ -7,10 +7,10 @@ import { fetchStats, StatsResponse } from '@/services/statsService';
 
 export const AdminTopPage: React.FC = () => {
     const navigate = useNavigate();
-    const [stats, setStats] = useState<StatsResponse & { recentUpdates: number }>({
+    const [stats, setStats] = useState<StatsResponse>({
         totalFoods: 0,
         totalCategories: 0,
-        recentUpdates: 0,
+        totalUsers: 0,
     });
     const [loading, setLoading] = useState(true);
 
@@ -18,10 +18,7 @@ export const AdminTopPage: React.FC = () => {
         const loadStats = async () => {
             try {
                 const data = await fetchStats();
-                setStats({
-                    ...data,
-                    recentUpdates: 0, // 今後実装する場合はここで取得
-                });
+                setStats(data);
             } catch (error) {
                 console.error('統計情報の取得に失敗しました:', error);
             } finally {
@@ -94,18 +91,23 @@ export const AdminTopPage: React.FC = () => {
 
                         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
                             <div className="flex items-center justify-between mb-4">
-                                <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 shadow-lg shadow-amber-100">
-                                    <i className="fas fa-sync-alt text-xl"></i>
+                                <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 shadow-lg shadow-purple-100">
+                                    <i className="fas fa-users text-xl"></i>
                                 </div>
-                                <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">更新</span>
+                                <span className="text-xs font-bold text-purple-600 uppercase tracking-widest">ユーザー</span>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-3xl font-extrabold text-slate-900">{stats.recentUpdates}</p>
-                                <p className="text-sm text-slate-500">最近の更新数</p>
+                                <p className="text-3xl font-extrabold text-slate-900">
+                                    {loading ? '...' : stats.totalUsers}
+                                </p>
+                                <p className="text-sm text-slate-500">一般ユーザー数</p>
                             </div>
-                            <div className="mt-4 text-xs text-slate-400">
-                                過去7日間
-                            </div>
+                            <button
+                                onClick={() => navigate('/admin/user')}
+                                className="mt-4 w-full text-left text-xs font-bold text-purple-600 hover:text-purple-700 transition-colors flex items-center gap-1"
+                            >
+                                ユーザー管理を確認 <i className="fas fa-arrow-right"></i>
+                            </button>
                         </div>
                     </div>
 

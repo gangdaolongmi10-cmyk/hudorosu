@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AdminAside } from '@/components/admin/layout/AdminAside';
 import { AdminHeader } from '@/components/admin/layout/AdminHeader';
 import { User } from '@/types/user';
-import { fetchUsers } from '@/services/userService';
+import { fetchUsers, deleteUser } from '@/services/userService';
 import { ROLE, ROLE_BADGE_COLORS, ROLE_LABELS } from '@/constants/role';
+import { ConfirmModal } from '@/components/common/ConfirmModal';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const UserIndexPage: React.FC = () => {
+    const navigate = useNavigate();
+    const { user: currentUser } = useAuth();
     const [users, setUsers] = useState<User[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         const loadUsers = async () => {
@@ -59,6 +66,37 @@ export const UserIndexPage: React.FC = () => {
         return '未設定';
     };
 
+    const handleEdit = (userId: number) => {
+        navigate(`/admin/user/${userId}/edit`);
+    };
+
+    const handleDeleteClick = (user: User) => {
+        setDeleteTarget(user);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!deleteTarget) return;
+
+        setIsDeleting(true);
+        try {
+            await deleteUser(deleteTarget.id);
+            // ユーザー一覧を再読み込み
+            const data = await fetchUsers();
+            setUsers(data);
+            setDeleteTarget(null);
+        } catch (err: any) {
+            console.error('ユーザー削除エラー:', err);
+            setError(err.response?.data?.error || 'ユーザーの削除に失敗しました');
+            setDeleteTarget(null);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteTarget(null);
+    };
+
     return (
         <div className="flex h-screen bg-slate-50">
             <AdminAside />
@@ -76,7 +114,10 @@ export const UserIndexPage: React.FC = () => {
                             <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">ユーザー一覧</h2>
                         </div>
                         <div className="flex gap-3">
-                            <button className="flex items-center gap-2 px-6 py-2.5 text-sm bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-all shadow-lg shadow-sky-100 font-bold">
+                            <button 
+                                onClick={() => navigate('/admin/user/create')}
+                                className="flex items-center gap-2 px-6 py-2.5 text-sm bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition-all shadow-lg shadow-sky-100 font-bold"
+                            >
                                 <i className="fas fa-plus text-xs"></i> 新規ユーザーを追加
                             </button>
                         </div>
@@ -174,10 +215,19 @@ export const UserIndexPage: React.FC = () => {
                                                     {formatDate(user.updated_at)}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                    <button className="text-sky-600 hover:text-sky-800 mr-4">
+                                                    <button 
+                                                        onClick={() => handleEdit(user.id)}
+                                                        className="text-sky-600 hover:text-sky-800 mr-4"
+                                                        title="編集"
+                                                    >
                                                         <i className="fas fa-edit"></i>
                                                     </button>
-                                                    <button className="text-red-600 hover:text-red-800">
+                                                    <button 
+                                                        onClick={() => handleDeleteClick(user)}
+                                                        className="text-red-600 hover:text-red-800"
+                                                        title="削除"
+                                                        disabled={currentUser?.id === user.id}
+                                                    >
                                                         <i className="fas fa-trash"></i>
                                                     </button>
                                                 </td>
@@ -190,6 +240,18 @@ export const UserIndexPage: React.FC = () => {
                     )}
                 </div>
             </main>
+
+            {/* 削除確認モーダル */}
+            <ConfirmModal
+                isOpen={!!deleteTarget}
+                title="ユーザーを削除"
+                message={`ユーザー「${deleteTarget?.name || deleteTarget?.email || 'ID: ' + deleteTarget?.id}」を削除してもよろしいですか？この操作は取り消せません。`}
+                confirmText="削除"
+                cancelText="キャンセル"
+                variant="danger"
+                onConfirm={handleDeleteConfirm}
+                onCancel={handleDeleteCancel}
+            />
         </div>
     );
 };

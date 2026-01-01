@@ -4,7 +4,10 @@ import { AdminTopPage } from './pages/admin/AdminTop';
 import { CategoryIndexPage } from './pages/admin/category/CategoryIndex';
 import { FoodIndexPage } from './pages/admin/food/FoodIndex';
 import { UserIndexPage } from './pages/admin/user/UserIndex';
+import { UserCreatePage } from './pages/admin/user/UserCreate';
+import { UserEditPage } from './pages/admin/user/UserEdit';
 import { RoleIndexPage } from './pages/admin/role/RoleIndex';
+import { SettingsIndexPage } from './pages/admin/settings/SettingsIndex';
 import { NotFoundPage } from './pages/admin/error/NotFound';
 import { AuthLoginPage } from './pages/admin/auth/AuthLogin';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -50,10 +53,34 @@ function App() {
                     } 
                 />
                 <Route 
+                    path="/admin/user/create" 
+                    element={
+                        <ProtectedRoute>
+                            <UserCreatePage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/user/:id/edit" 
+                    element={
+                        <ProtectedRoute>
+                            <UserEditPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
                     path="/admin/role" 
                     element={
                         <ProtectedRoute>
                             <RoleIndexPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/settings" 
+                    element={
+                        <ProtectedRoute>
+                            <SettingsIndexPage />
                         </ProtectedRoute>
                     } 
                 />
