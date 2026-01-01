@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as bcrypt from "bcryptjs";
 import { jwtHelper } from "../../utils/jwtHelper";
+import { DEFAULT_ROLE } from "../../constants/role";
 import db from "../../../models";
 
 export const loginController = async (req: Request, res: Response) => {
@@ -48,7 +49,7 @@ export const loginController = async (req: Request, res: Response) => {
         const token = jwtHelper.createToken({
             id: user.id,
             email: user.email,
-            role: user.role || "user",
+            role: user.role || DEFAULT_ROLE,
         });
 
         // 5. レスポンスを返す

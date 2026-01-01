@@ -1,18 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AdminAside } from '@/components/admin/layout/AdminAside';
 import { AdminHeader } from '@/components/admin/layout/AdminHeader';
 import { ADMIN_NAV_ITEMS } from '@/constants/navigation';
+import { fetchStats, StatsResponse } from '@/services/statsService';
 
 export const AdminTopPage: React.FC = () => {
     const navigate = useNavigate();
+    const [stats, setStats] = useState<StatsResponse & { recentUpdates: number }>({
+        totalFoods: 0,
+        totalCategories: 0,
+        recentUpdates: 0,
+    });
+    const [loading, setLoading] = useState(true);
 
-    // ダミーデータ（実際のデータはAPIから取得）
-    const stats = {
-        totalFoods: 156,
-        totalCategories: 8,
-        recentUpdates: 12,
-    };
+    useEffect(() => {
+        const loadStats = async () => {
+            try {
+                const data = await fetchStats();
+                setStats({
+                    ...data,
+                    recentUpdates: 0, // 今後実装する場合はここで取得
+                });
+            } catch (error) {
+                console.error('統計情報の取得に失敗しました:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadStats();
+    }, []);
 
     return (
         <div className="flex h-screen bg-slate-50">
@@ -40,7 +58,9 @@ export const AdminTopPage: React.FC = () => {
                                 <span className="text-xs font-bold text-sky-600 uppercase tracking-widest">食材</span>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-3xl font-extrabold text-slate-900">{stats.totalFoods}</p>
+                                <p className="text-3xl font-extrabold text-slate-900">
+                                    {loading ? '...' : stats.totalFoods}
+                                </p>
                                 <p className="text-sm text-slate-500">登録済み食材数</p>
                             </div>
                             <button
@@ -59,7 +79,9 @@ export const AdminTopPage: React.FC = () => {
                                 <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">カテゴリ</span>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-3xl font-extrabold text-slate-900">{stats.totalCategories}</p>
+                                <p className="text-3xl font-extrabold text-slate-900">
+                                    {loading ? '...' : stats.totalCategories}
+                                </p>
                                 <p className="text-sm text-slate-500">登録済みカテゴリ数</p>
                             </div>
                             <button
@@ -113,43 +135,8 @@ export const AdminTopPage: React.FC = () => {
                             ))}
                         </div>
                     </div>
-
-                    {/* 最近のアクティビティ（オプション） */}
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                        <h3 className="text-lg font-bold text-slate-900 mb-4">最近のアクティビティ</h3>
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-slate-50 transition-colors">
-                                <div className="w-8 h-8 bg-sky-100 rounded-full flex items-center justify-center text-sky-600">
-                                    <i className="fas fa-plus text-xs"></i>
-                                </div>
-                                <div className="flex-1">
-                                    <p className="text-sm font-medium text-slate-900">新しい食材が追加されました</p>
-                                    <p className="text-xs text-slate-500">2時間前</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-slate-50 transition-colors">
-                                <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
-                                    <i className="fas fa-edit text-xs"></i>
-                                </div>
-                                <div className="flex-1">
-                                    <p className="text-sm font-medium text-slate-900">カテゴリが更新されました</p>
-                                    <p className="text-xs text-slate-500">5時間前</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-slate-50 transition-colors">
-                                <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-amber-600">
-                                    <i className="fas fa-sync-alt text-xs"></i>
-                                </div>
-                                <div className="flex-1">
-                                    <p className="text-sm font-medium text-slate-900">データが同期されました</p>
-                                    <p className="text-xs text-slate-500">1日前</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </main>
         </div>
     );
 };
-

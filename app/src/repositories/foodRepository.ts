@@ -30,6 +30,20 @@ export const foodRepository = {
             attributes: ['id', 'name', 'category_id', 'user_id', 'best_before_date', 'expiry_date', 'memo', 'created_at', 'updated_at'],
             order: [['id', 'ASC']]
         });
+    },
+
+    /**
+     * マスタ食材（user_idがnull）の総数を取得する
+     * 
+     * @description 登録されているマスタ食材の総数を返す
+     * @returns マスタ食材の総数
+     */
+    async countMasterFoods() {
+        return await db.foods.count({
+            where: {
+                user_id: null
+            }
+        });
     }
 };
 

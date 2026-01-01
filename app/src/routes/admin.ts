@@ -3,6 +3,7 @@ import { loginController } from "../controllers/admin/loginController";
 import { categoriesController } from "../controllers/admin/categoriesController";
 import { usersController } from "../controllers/admin/usersController";
 import { foodsController } from "../controllers/admin/foodsController";
+import { statsController } from "../controllers/admin/statsController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = Router();
@@ -17,5 +18,6 @@ router.get("/health", (req: Request, res: Response) => {
 router.get("/categories/list", authMiddleware, categoriesController);
 router.get("/users/list", authMiddleware, usersController);
 router.get("/foods/list", authMiddleware, foodsController);
+router.get("/stats", authMiddleware, statsController);
 
 export default router;

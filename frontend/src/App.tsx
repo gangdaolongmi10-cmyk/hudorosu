@@ -4,6 +4,7 @@ import { AdminTopPage } from './pages/admin/AdminTop';
 import { CategoryIndexPage } from './pages/admin/category/CategoryIndex';
 import { FoodIndexPage } from './pages/admin/food/FoodIndex';
 import { UserIndexPage } from './pages/admin/user/UserIndex';
+import { RoleIndexPage } from './pages/admin/role/RoleIndex';
 import { NotFoundPage } from './pages/admin/error/NotFound';
 import { AuthLoginPage } from './pages/admin/auth/AuthLogin';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -45,6 +46,14 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <UserIndexPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/role" 
+                    element={
+                        <ProtectedRoute>
+                            <RoleIndexPage />
                         </ProtectedRoute>
                     } 
                 />

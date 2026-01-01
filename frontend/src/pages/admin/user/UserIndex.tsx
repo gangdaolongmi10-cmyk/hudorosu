@@ -3,6 +3,7 @@ import { AdminAside } from '@/components/admin/layout/AdminAside';
 import { AdminHeader } from '@/components/admin/layout/AdminHeader';
 import { User } from '@/types/user';
 import { fetchUsers } from '@/services/userService';
+import { ROLE, ROLE_BADGE_COLORS, ROLE_LABELS } from '@/constants/role';
 
 export const UserIndexPage: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
@@ -39,14 +40,23 @@ export const UserIndexPage: React.FC = () => {
     };
 
     const getRoleBadgeColor = (role: string | null) => {
-        switch (role) {
-            case 'admin':
-                return 'bg-red-100 text-red-800 border-red-200';
-            case 'user':
-                return 'bg-blue-100 text-blue-800 border-blue-200';
-            default:
-                return 'bg-slate-100 text-slate-800 border-slate-200';
+        if (role === ROLE.ADMIN) {
+            return ROLE_BADGE_COLORS[ROLE.ADMIN];
         }
+        if (role === ROLE.USER) {
+            return ROLE_BADGE_COLORS[ROLE.USER];
+        }
+        return 'bg-slate-100 text-slate-800 border-slate-200';
+    };
+
+    const getRoleLabel = (role: string | null) => {
+        if (role === ROLE.ADMIN) {
+            return ROLE_LABELS[ROLE.ADMIN];
+        }
+        if (role === ROLE.USER) {
+            return ROLE_LABELS[ROLE.USER];
+        }
+        return '未設定';
     };
 
     return (
@@ -154,7 +164,7 @@ export const UserIndexPage: React.FC = () => {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${getRoleBadgeColor(user.role)}`}>
-                                                        {user.role || '未設定'}
+                                                        {getRoleLabel(user.role)}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">

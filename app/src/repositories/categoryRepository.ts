@@ -12,5 +12,15 @@ export const categoryRepository = {
             attributes: ['id', 'name', 'description'],
             order: [['id', 'ASC']]
         });
+    },
+
+    /**
+     * カテゴリーの総数を取得する
+     * 
+     * @description 登録されているカテゴリーの総数を返す
+     * @returns カテゴリーの総数
+     */
+    async count() {
+        return await db.categories.count();
     }
 };
