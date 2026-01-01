@@ -1,7 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
-import { Platform } from 'react-native';
 
 // 開発環境では、コンピュータのIPアドレスを使用してください
 // 例: 'http://192.168.1.100:3000/api'
@@ -12,65 +11,64 @@ import { Platform } from 'react-native';
 const DEV_IP_ADDRESS = 'localhost'; // ここを実機のIPアドレスに変更してください（例: '192.168.1.100'）
 
 const getApiBaseUrl = () => {
-  // 本番環境の場合
-  if (Constants.executionEnvironment === 'standalone' || Constants.executionEnvironment === 'storeClient') {
-    return 'https://your-production-api.com/api';
-  }
-  
-  // 開発環境の場合
-  // 実機でテストする場合は、DEV_IP_ADDRESS を IP アドレスに変更
-  if (DEV_IP_ADDRESS === 'localhost') {
-    // エミュレータ/シミュレータの場合
-    return 'http://localhost:3000/api';
-  }
-  // 実機の場合（IPアドレスが設定されている）
-  return `http://${DEV_IP_ADDRESS}:3000/api`;
+    // 本番環境の場合
+    if (Constants.executionEnvironment === 'standalone' || Constants.executionEnvironment === 'storeClient') {
+        return 'https://your-production-api.com/api';
+    }
+    
+    // 開発環境の場合
+    // 実機でテストする場合は、DEV_IP_ADDRESS を IP アドレスに変更
+    if (DEV_IP_ADDRESS === 'localhost') {
+        // エミュレータ/シミュレータの場合
+        return 'http://localhost:3000/api';
+    }
+    // 実機の場合（IPアドレスが設定されている）
+    return `http://${DEV_IP_ADDRESS}:3000/api`;
 };
 
 const API_BASE_URL = getApiBaseUrl();
 
 const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 10000,
+    baseURL: API_BASE_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    timeout: 10000,
 });
 
 // リクエストインターセプター: トークンを自動的に追加
 apiClient.interceptors.request.use(
-  async (config) => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    } catch (error) {
-      console.error('Error getting token from storage:', error);
+    async (config) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+        } catch (error) {
+            console.error('Error getting token from storage:', error);
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
     }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
 );
 
 // レスポンスインターセプター: 401エラーを処理
 apiClient.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    if (error.response?.status === 401) {
-      // 認証エラーの場合、トークンを削除
-      try {
-        await AsyncStorage.removeItem('token');
-        await AsyncStorage.removeItem('user');
-      } catch (storageError) {
-        console.error('Error removing token from storage:', storageError);
-      }
+    (response) => response,
+    async (error) => {
+        if (error.response?.status === 401) {
+            // 認証エラーの場合、トークンを削除
+            try {
+                await AsyncStorage.removeItem('token');
+                await AsyncStorage.removeItem('user');
+            } catch (storageError) {
+                console.error('Error removing token from storage:', storageError);
+            }
+        }
+        return Promise.reject(error);
     }
-    return Promise.reject(error);
-  }
 );
 
 export default apiClient;
-
