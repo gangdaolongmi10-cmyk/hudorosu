@@ -1,6 +1,8 @@
 import React from 'react';
 import { AdminAside } from '@/components/admin/layout/AdminAside';
 import { AdminHeader } from '@/components/admin/layout/AdminHeader';
+import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
+import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { ROLE_PERMISSIONS, ROLE_BADGE_COLORS } from '@/constants/role';
 
 export const RoleIndexPage: React.FC = () => {
@@ -13,28 +15,18 @@ export const RoleIndexPage: React.FC = () => {
                     {/* ヘッダーセクション */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <nav className="flex items-center text-sm text-slate-500 gap-2 mb-2 font-medium tracking-wide">
-                                <span className="hover:text-sky-600 cursor-pointer">HOME</span>
-                                <i className="fas fa-chevron-right text-[10px] text-slate-300"></i>
-                                <span className="text-slate-900 font-bold">権限管理</span>
-                            </nav>
+                            <AdminBreadcrumb items={BREADCRUMB_ITEMS['/admin/role']} />
                             <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">権限一覧</h2>
                         </div>
                     </div>
-
                     {/* 権限一覧 */}
                     <div className="space-y-6">
                         {ROLE_PERMISSIONS.map((rolePermission) => (
-                            <div
-                                key={rolePermission.role}
-                                className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
-                            >
+                            <div key={rolePermission.role} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                                 {/* ロールヘッダー */}
                                 <div className="bg-slate-50 border-b border-slate-200 px-6 py-4">
                                     <div className="flex items-center gap-3">
-                                        <span
-                                            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border ${ROLE_BADGE_COLORS[rolePermission.role]}`}
-                                        >
+                                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border ${ROLE_BADGE_COLORS[rolePermission.role]}`}>
                                             {rolePermission.label}
                                         </span>
                                         <span className="text-sm text-slate-500">
@@ -47,10 +39,7 @@ export const RoleIndexPage: React.FC = () => {
                                 <div className="p-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                         {rolePermission.permissions.map((permission) => (
-                                            <div
-                                                key={permission.id}
-                                                className="border border-slate-200 rounded-lg p-4 hover:border-sky-300 hover:shadow-md transition-all"
-                                            >
+                                            <div key={permission.id} className="border border-slate-200 rounded-lg p-4 hover:border-sky-300 hover:shadow-md transition-all">
                                                 <div className="flex items-start gap-3">
                                                     <div className="flex-shrink-0 mt-1">
                                                         <i className="fas fa-check-circle text-green-500"></i>
@@ -71,23 +60,8 @@ export const RoleIndexPage: React.FC = () => {
                             </div>
                         ))}
                     </div>
-
-                    {/* 説明セクション */}
-                    <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6">
-                        <div className="flex items-start gap-3">
-                            <i className="fas fa-info-circle text-blue-500 mt-1"></i>
-                            <div>
-                                <h3 className="text-sm font-bold text-blue-900 mb-2">権限について</h3>
-                                <p className="text-sm text-blue-800 leading-relaxed">
-                                    各ロールには異なる権限が設定されています。管理者ロールはすべての管理機能にアクセスでき、
-                                    一般ユーザーロールは基本的な機能のみにアクセスできます。
-                                </p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </main>
         </div>
     );
 };
-

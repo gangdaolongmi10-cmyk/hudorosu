@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AdminAside } from '@/components/admin/layout/AdminAside';
 import { AdminHeader } from '@/components/admin/layout/AdminHeader';
+import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
+import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
 import { User } from '@/types/user';
 import { fetchUsers, deleteUser } from '@/services/userService';
@@ -107,11 +109,7 @@ export const UserIndexPage: React.FC = () => {
                     {/* ヘッダーセクション */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <nav className="flex items-center text-sm text-slate-500 gap-2 mb-2 font-medium tracking-wide">
-                                <span className="hover:text-sky-600 cursor-pointer">HOME</span>
-                                <i className="fas fa-chevron-right text-[10px] text-slate-300"></i>
-                                <span className="text-slate-900 font-bold">ユーザー管理</span>
-                            </nav>
+                            <AdminBreadcrumb items={BREADCRUMB_ITEMS['/admin/user']} />
                             <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">ユーザー一覧</h2>
                         </div>
                         <div className="flex gap-3">

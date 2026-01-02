@@ -36,7 +36,7 @@ export const updateUserController = async (req: AuthRequest, res: Response) => {
             return res.status(401).json({ error: "認証が必要です" });
         }
 
-        const { name, email } = req.body;
+        const { name, email, avatar_url } = req.body;
 
         // バリデーション
         if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -60,6 +60,7 @@ export const updateUserController = async (req: AuthRequest, res: Response) => {
         const updateData: any = {};
         if (name !== undefined) updateData.name = name;
         if (email !== undefined) updateData.email = email;
+        if (avatar_url !== undefined) updateData.avatar_url = avatar_url;
 
         await user.update(updateData);
 

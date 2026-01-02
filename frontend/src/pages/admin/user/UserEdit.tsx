@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AdminAside } from '@/components/admin/layout/AdminAside';
 import { AdminHeader } from '@/components/admin/layout/AdminHeader';
+import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
+import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
 import { updateUser, fetchUsers } from '@/services/userService';
 import { ROLE, ROLE_LABELS } from '@/constants/role';
@@ -89,7 +91,7 @@ export const UserEditPage: React.FC = () => {
         // パスワードが入力されている場合のみバリデーション
         if (formData.password) {
             if (formData.password !== formData.confirmPassword) {
-                setError('パスワードと確認パスワードが一致しません');
+                setError('パスワードが一致しません');
                 setIsSubmitting(false);
                 return;
             }
@@ -162,16 +164,7 @@ export const UserEditPage: React.FC = () => {
                     {/* ヘッダーセクション */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <nav className="flex items-center text-sm text-slate-500 gap-2 mb-2 font-medium tracking-wide">
-                                <span 
-                                    className="hover:text-sky-600 cursor-pointer"
-                                    onClick={() => navigate('/admin/user')}
-                                >
-                                    ユーザー管理
-                                </span>
-                                <i className="fas fa-chevron-right text-[10px] text-slate-300"></i>
-                                <span className="text-slate-900 font-bold">ユーザー編集</span>
-                            </nav>
+                            <AdminBreadcrumb items={BREADCRUMB_ITEMS['/admin/user/:id/edit']} />
                             <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">ユーザー編集</h2>
                         </div>
                     </div>
@@ -206,14 +199,14 @@ export const UserEditPage: React.FC = () => {
 
                                 <div>
                                     <label className="block text-sm font-bold text-slate-700 mb-2">
-                                        名前
+                                        名前（任意）
                                     </label>
                                     <input
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                                        placeholder="ユーザー名を入力"
+                                        placeholder="山田 太郎"
                                     />
                                 </div>
 
@@ -235,14 +228,14 @@ export const UserEditPage: React.FC = () => {
                                 {formData.password && (
                                     <div>
                                         <label className="block text-sm font-bold text-slate-700 mb-2">
-                                            パスワード（確認）
+                                            確認パスワード
                                         </label>
                                         <input
                                             type="password"
                                             value={formData.confirmPassword}
                                             onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                                             className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                                            placeholder="パスワードを再度入力"
+                                            placeholder="パスワード（再入力）"
                                             minLength={6}
                                         />
                                     </div>
@@ -282,7 +275,7 @@ export const UserEditPage: React.FC = () => {
                                                 更新中...
                                             </span>
                                         ) : (
-                                            'ユーザーを更新'
+                                            '更新する'
                                         )}
                                     </button>
                                 </div>

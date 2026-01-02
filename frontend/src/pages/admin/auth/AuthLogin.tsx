@@ -114,7 +114,7 @@ export const AuthLoginPage: React.FC = () => {
                             {isLoading ? (
                                 <>
                                     <i className="fas fa-circle-notch animate-spin"></i>
-                                    <span>ログイン中...</span>
+                                    <span>ログイン</span>
                                 </>
                             ) : (
                                 "ログイン"

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { AdminAside } from '@/components/admin/layout/AdminAside';
 import { AdminHeader } from '@/components/admin/layout/AdminHeader';
+import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
+import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
 import { User } from '@/types/user';
 import { getCurrentUser, updateUser, changePassword, getSystemSettings, updateSystemSettings, SystemSettings } from '@/services/settingsService';
@@ -137,7 +139,7 @@ export const SettingsIndexPage: React.FC = () => {
 
         // バリデーション
         if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-            setError('新しいパスワードと確認パスワードが一致しません');
+            setError('パスワードが一致しません');
             setIsPasswordSubmitting(false);
             return;
         }
@@ -193,11 +195,7 @@ export const SettingsIndexPage: React.FC = () => {
                     {/* ヘッダーセクション */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <nav className="flex items-center text-sm text-slate-500 gap-2 mb-2 font-medium tracking-wide">
-                                <span className="hover:text-sky-600 cursor-pointer" onClick={() => navigate('/admin')}>HOME</span>
-                                <i className="fas fa-chevron-right text-[10px] text-slate-300"></i>
-                                <span className="text-slate-900 font-bold">設定</span>
-                            </nav>
+                            <AdminBreadcrumb items={BREADCRUMB_ITEMS['/admin/settings']} />
                             <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">設定</h2>
                         </div>
                     </div>
@@ -233,7 +231,7 @@ export const SettingsIndexPage: React.FC = () => {
                                     <form onSubmit={handleProfileSubmit} className="space-y-6">
                                         <div>
                                             <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                名前
+                                                名前（任意）
                                             </label>
                                             <input
                                                 type="text"
@@ -278,7 +276,7 @@ export const SettingsIndexPage: React.FC = () => {
                                                         更新中...
                                                     </span>
                                                 ) : (
-                                                    'プロフィールを更新'
+                                                    '更新する'
                                                 )}
                                             </button>
                                         </div>
@@ -322,14 +320,14 @@ export const SettingsIndexPage: React.FC = () => {
                                         </div>
                                         <div>
                                             <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                新しいパスワード（確認）
+                                                確認パスワード
                                             </label>
                                             <input
                                                 type="password"
                                                 value={passwordForm.confirmPassword}
                                                 onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
                                                 className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                                                placeholder="新しいパスワードを再度入力"
+                                                placeholder="パスワード（再入力）"
                                                 required
                                                 minLength={6}
                                             />
@@ -346,7 +344,7 @@ export const SettingsIndexPage: React.FC = () => {
                                                         変更中...
                                                     </span>
                                                 ) : (
-                                                    'パスワードを変更'
+                                                    '変更する'
                                                 )}
                                             </button>
                                         </div>
@@ -371,107 +369,6 @@ export const SettingsIndexPage: React.FC = () => {
                                             </div>
                                         ) : (
                                             <form onSubmit={handleSystemSettingsSubmit} className="space-y-6">
-                                                {/* アプリケーション設定 */}
-                                                <div className="border-b border-slate-200 pb-6">
-                                                    <h4 className="text-md font-bold text-slate-900 mb-4">
-                                                        <i className="fas fa-cog text-sky-600 mr-2"></i>
-                                                        アプリケーション設定
-                                                    </h4>
-                                                    <div className="space-y-4">
-                                                        <div>
-                                                            <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                                アプリケーション名
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                value={systemSettingsForm.app_name || ''}
-                                                                onChange={(e) => setSystemSettingsForm({ ...systemSettingsForm, app_name: e.target.value })}
-                                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                                                                placeholder="アプリケーション名"
-                                                            />
-                                                            {systemSettings?.app_name?.description && (
-                                                                <p className="text-xs text-slate-500 mt-1">{systemSettings.app_name.description}</p>
-                                                            )}
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                                アプリケーション説明
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                value={systemSettingsForm.app_description || ''}
-                                                                onChange={(e) => setSystemSettingsForm({ ...systemSettingsForm, app_description: e.target.value })}
-                                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                                                                placeholder="アプリケーションの説明"
-                                                            />
-                                                            {systemSettings?.app_description?.description && (
-                                                                <p className="text-xs text-slate-500 mt-1">{systemSettings.app_description.description}</p>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* セキュリティ設定 */}
-                                                <div className="border-b border-slate-200 pb-6">
-                                                    <h4 className="text-md font-bold text-slate-900 mb-4">
-                                                        <i className="fas fa-shield-alt text-emerald-600 mr-2"></i>
-                                                        セキュリティ設定
-                                                    </h4>
-                                                    <div className="space-y-4">
-                                                        <div>
-                                                            <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                                パスワードの最小文字数
-                                                            </label>
-                                                            <input
-                                                                type="number"
-                                                                min="4"
-                                                                max="32"
-                                                                value={systemSettingsForm.password_min_length || ''}
-                                                                onChange={(e) => setSystemSettingsForm({ ...systemSettingsForm, password_min_length: e.target.value })}
-                                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                                                                placeholder="6"
-                                                            />
-                                                            {systemSettings?.password_min_length?.description && (
-                                                                <p className="text-xs text-slate-500 mt-1">{systemSettings.password_min_length.description}</p>
-                                                            )}
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                                セッションタイムアウト（時間）
-                                                            </label>
-                                                            <input
-                                                                type="number"
-                                                                min="1"
-                                                                max="168"
-                                                                value={systemSettingsForm.session_timeout || ''}
-                                                                onChange={(e) => setSystemSettingsForm({ ...systemSettingsForm, session_timeout: e.target.value })}
-                                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                                                                placeholder="24"
-                                                            />
-                                                            {systemSettings?.session_timeout?.description && (
-                                                                <p className="text-xs text-slate-500 mt-1">{systemSettings.session_timeout.description}</p>
-                                                            )}
-                                                        </div>
-                                                        <div>
-                                                            <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                                最大ログイン試行回数
-                                                            </label>
-                                                            <input
-                                                                type="number"
-                                                                min="1"
-                                                                max="20"
-                                                                value={systemSettingsForm.max_login_attempts || ''}
-                                                                onChange={(e) => setSystemSettingsForm({ ...systemSettingsForm, max_login_attempts: e.target.value })}
-                                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
-                                                                placeholder="5"
-                                                            />
-                                                            {systemSettings?.max_login_attempts?.description && (
-                                                                <p className="text-xs text-slate-500 mt-1">{systemSettings.max_login_attempts.description}</p>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-
                                                 {/* システム設定 */}
                                                 <div>
                                                     <h4 className="text-md font-bold text-slate-900 mb-4">
@@ -511,7 +408,7 @@ export const SettingsIndexPage: React.FC = () => {
                                                                 更新中...
                                                             </span>
                                                         ) : (
-                                                            'システム設定を更新'
+                                                            '更新する'
                                                         )}
                                                     </button>
                                                 </div>

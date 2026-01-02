@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { AdminAside } from '@/components/admin/layout/AdminAside';
 import { AdminHeader } from '@/components/admin/layout/AdminHeader';
+import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
+import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
 import { ConfirmModal } from '@/components/common/ConfirmModal';
 import { Category } from '@/types/category';
@@ -70,11 +72,7 @@ export const CategoryIndexPage: React.FC = () => {
                     {/* ヘッダーセクション */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <nav className="flex items-center text-sm text-slate-500 gap-2 mb-2 font-medium tracking-wide">
-                                <span className="hover:text-sky-600 cursor-pointer" onClick={() => navigate('/admin')}>HOME</span>
-                                <i className="fas fa-chevron-right text-[10px] text-slate-300"></i>
-                                <span className="text-slate-900 font-bold">カテゴリ管理</span>
-                            </nav>
+                            <AdminBreadcrumb items={BREADCRUMB_ITEMS['/admin/category']} />
                             <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">カテゴリ一覧</h2>
                         </div>
                         <div className="flex gap-3">

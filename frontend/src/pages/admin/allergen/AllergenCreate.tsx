@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AdminAside } from '@/components/admin/layout/AdminAside';
 import { AdminHeader } from '@/components/admin/layout/AdminHeader';
+import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
+import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
 import { createAllergen } from '@/services/allergenService';
 
@@ -54,16 +56,7 @@ export const AllergenCreatePage: React.FC = () => {
                     {/* ヘッダーセクション */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <nav className="flex items-center text-sm text-slate-500 gap-2 mb-2 font-medium tracking-wide">
-                                <span 
-                                    className="hover:text-sky-600 cursor-pointer"
-                                    onClick={() => navigate('/admin/allergen')}
-                                >
-                                    アレルゲン管理
-                                </span>
-                                <i className="fas fa-chevron-right text-[10px] text-slate-300"></i>
-                                <span className="text-slate-900 font-bold">新規アレルゲン作成</span>
-                            </nav>
+                            <AdminBreadcrumb items={BREADCRUMB_ITEMS['/admin/allergen/create']} />
                             <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">新規アレルゲン作成</h2>
                         </div>
                     </div>
@@ -115,7 +108,7 @@ export const AllergenCreatePage: React.FC = () => {
                                                 作成中...
                                             </span>
                                         ) : (
-                                            'アレルゲンを作成'
+                                            '追加する'
                                         )}
                                     </button>
                                 </div>

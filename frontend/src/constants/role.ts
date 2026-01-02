@@ -36,10 +36,6 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
         role: ROLE.ADMIN,
         label: ROLE_LABELS[ROLE.ADMIN],
         permissions: [
-            { id: 'user_manage', name: 'ユーザー管理', description: 'ユーザーの一覧表示、作成、編集、削除が可能' },
-            { id: 'food_manage', name: '食材マスタ管理', description: '食材の一覧表示、作成、編集、削除が可能' },
-            { id: 'category_manage', name: 'カテゴリ管理', description: 'カテゴリの一覧表示、作成、編集、削除が可能' },
-            { id: 'stats_view', name: '統計情報閲覧', description: 'ダッシュボードの統計情報を閲覧可能' },
             { id: 'admin_access', name: '管理画面アクセス', description: '管理画面へのアクセスが可能' },
         ],
     },
@@ -47,8 +43,7 @@ export const ROLE_PERMISSIONS: RolePermissions[] = [
         role: ROLE.USER,
         label: ROLE_LABELS[ROLE.USER],
         permissions: [
-            { id: 'basic_access', name: '基本アクセス', description: '基本的な機能へのアクセスが可能' },
+            { id: 'basic_access', name: '基本アクセス', description: 'モバイルのへのアクセスが可能' },
         ],
     },
 ];
-

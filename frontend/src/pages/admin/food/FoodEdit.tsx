@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AdminAside } from '@/components/admin/layout/AdminAside';
 import { AdminHeader } from '@/components/admin/layout/AdminHeader';
+import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
+import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
 import { fetchFoodById, updateFood } from '@/services/foodService';
 import { fetchCategories } from '@/services/categoryService';
@@ -164,16 +166,7 @@ export const FoodEditPage: React.FC = () => {
                     {/* ヘッダーセクション */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <nav className="flex items-center text-sm text-slate-500 gap-2 mb-2 font-medium tracking-wide">
-                                <span 
-                                    className="hover:text-sky-600 cursor-pointer"
-                                    onClick={() => navigate('/admin/food')}
-                                >
-                                    食材マスタ管理
-                                </span>
-                                <i className="fas fa-chevron-right text-[10px] text-slate-300"></i>
-                                <span className="text-slate-900 font-bold">食材編集</span>
-                            </nav>
+                            <AdminBreadcrumb items={BREADCRUMB_ITEMS['/admin/food/:id/edit']} />
                             <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">食材編集</h2>
                         </div>
                     </div>
@@ -311,7 +304,7 @@ export const FoodEditPage: React.FC = () => {
                                                 更新中...
                                             </span>
                                         ) : (
-                                            '食材を更新'
+                                            '更新する'
                                         )}
                                     </button>
                                 </div>
