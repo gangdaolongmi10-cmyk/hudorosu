@@ -1,10 +1,22 @@
 import { Router, Request, Response } from "express";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import { getMasterFoodsController, getMasterFoodsByCategoryController, createUserFoodController } from "../controllers/user/foodsController";
+import { categoriesController } from "../controllers/admin/categoriesController";
+import { getStocksController, getStockByIdController, createStockController, updateStockController, deleteStockController } from "../controllers/user/stocksController";
 
 const router = Router();
 
-// ユーザールートをここに追加
-// router.get("/", (req: Request, res: Response) => {
-//     res.status(200).json({ message: "User routes" });
-// });
+// 認証が必要なルート
+router.get("/foods/master", authMiddleware, getMasterFoodsController);
+router.get("/foods/master/category/:categoryId", authMiddleware, getMasterFoodsByCategoryController);
+router.post("/foods/create", authMiddleware, createUserFoodController);
+router.get("/categories/list", authMiddleware, categoriesController);
+
+// 在庫管理ルート
+router.get("/stocks", authMiddleware, getStocksController);
+router.get("/stocks/:id", authMiddleware, getStockByIdController);
+router.post("/stocks", authMiddleware, createStockController);
+router.put("/stocks/:id", authMiddleware, updateStockController);
+router.delete("/stocks/:id", authMiddleware, deleteStockController);
 
 export default router;

@@ -8,6 +8,7 @@ var _google_auth = require("./google_auth");
 var _local_auth = require("./local_auth");
 var _login_logs = require("./login_logs");
 var _settings = require("./settings");
+var _stocks = require("./stocks");
 var _users = require("./users");
 
 function initModels(sequelize) {
@@ -20,6 +21,7 @@ function initModels(sequelize) {
   var local_auth = _local_auth(sequelize, DataTypes);
   var login_logs = _login_logs(sequelize, DataTypes);
   var settings = _settings(sequelize, DataTypes);
+  var stocks = _stocks(sequelize, DataTypes);
   var users = _users(sequelize, DataTypes);
 
   allergens.belongsToMany(foods, { as: 'food_id_foods', through: food_allergens, foreignKey: "allergen_id", otherKey: "food_id" });
@@ -38,6 +40,10 @@ function initModels(sequelize) {
   users.hasOne(local_auth, { as: "local_auth", foreignKey: "user_id"});
   login_logs.belongsTo(users, { as: "user", foreignKey: "user_id"});
   users.hasMany(login_logs, { as: "login_logs", foreignKey: "user_id"});
+  stocks.belongsTo(users, { as: "user", foreignKey: "user_id"});
+  users.hasMany(stocks, { as: "stocks", foreignKey: "user_id"});
+  stocks.belongsTo(foods, { as: "food", foreignKey: "food_id"});
+  foods.hasMany(stocks, { as: "stocks", foreignKey: "food_id"});
 
   return {
     SequelizeMeta,
@@ -49,6 +55,7 @@ function initModels(sequelize) {
     local_auth,
     login_logs,
     settings,
+    stocks,
     users,
   };
 }
