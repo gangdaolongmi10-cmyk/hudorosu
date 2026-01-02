@@ -18,6 +18,7 @@ const { width } = Dimensions.get('window');
 
 interface StockScreenProps {
     items?: FoodItem[];
+    onNavigateToStock?: () => void;
 }
 
 // アイコンマッピング（簡易版）
@@ -71,7 +72,7 @@ const convertStockToFoodItem = (stock: Stock): FoodItem => {
     };
 };
 
-export default function StockScreen({ items: propItems }: StockScreenProps) {
+export default function StockScreen({ items: propItems, onNavigateToStock }: StockScreenProps) {
     const [storageType, setStorageType] = useState<'refrigerator' | 'freezer' | 'pantry'>('refrigerator');
     const [showAddFood, setShowAddFood] = useState(false);
     const [stocks, setStocks] = useState<Stock[]>([]);
@@ -207,6 +208,7 @@ export default function StockScreen({ items: propItems }: StockScreenProps) {
                 visible={showAddFood}
                 onClose={() => setShowAddFood(false)}
                 onFoodAdded={handleFoodAdded}
+                onNavigateToStock={onNavigateToStock}
             />
         </>
     );

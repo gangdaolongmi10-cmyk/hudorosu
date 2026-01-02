@@ -12,9 +12,19 @@ import StockScreen from './StockScreen';
 import RecipeScreen from './RecipeScreen';
 import PlanScreen from './PlanScreen';
 import MenuScreen from './MenuScreen';
+import ProfileEditScreen from './ProfileEditScreen';
+import SecurityScreen from './SecurityScreen';
+import HelpCenterScreen from './HelpCenterScreen';
+import TermsOfServiceScreen from './TermsOfServiceScreen';
+import PrivacyPolicyScreen from './PrivacyPolicyScreen';
 
 export default function HomeScreen() {
     const [activeTab, setActiveTab] = useState('stock');
+    const [showProfileEdit, setShowProfileEdit] = useState(false);
+    const [showSecurity, setShowSecurity] = useState(false);
+    const [showHelpCenter, setShowHelpCenter] = useState(false);
+    const [showTerms, setShowTerms] = useState(false);
+    const [showPrivacy, setShowPrivacy] = useState(false);
 
     return (
         <View style={styles.container}>
@@ -30,10 +40,34 @@ export default function HomeScreen() {
 
             {/* メインコンテンツ */}
             <View style={styles.mainContent}>
-                {activeTab === 'stock' && <StockScreen />}
-                {activeTab === 'recipe' && <RecipeScreen />}
-                {activeTab === 'calendar' && <PlanScreen />}
-                {activeTab === 'settings' && <MenuScreen />}
+                {showProfileEdit ? (
+                    <ProfileEditScreen onBack={() => setShowProfileEdit(false)} />
+                ) : showSecurity ? (
+                    <SecurityScreen onBack={() => setShowSecurity(false)} />
+                ) : showHelpCenter ? (
+                    <HelpCenterScreen
+                        onBack={() => setShowHelpCenter(false)}
+                        onNavigateToTerms={() => setShowTerms(true)}
+                        onNavigateToPrivacy={() => setShowPrivacy(true)}
+                    />
+                ) : showTerms ? (
+                    <TermsOfServiceScreen onBack={() => setShowTerms(false)} />
+                ) : showPrivacy ? (
+                    <PrivacyPolicyScreen onBack={() => setShowPrivacy(false)} />
+                ) : (
+                    <>
+                        {activeTab === 'stock' && <StockScreen onNavigateToStock={() => setActiveTab('stock')} />}
+                        {activeTab === 'recipe' && <RecipeScreen />}
+                        {activeTab === 'calendar' && <PlanScreen />}
+                        {activeTab === 'settings' && (
+                            <MenuScreen
+                                onNavigateToProfileEdit={() => setShowProfileEdit(true)}
+                                onNavigateToSecurity={() => setShowSecurity(true)}
+                                onNavigateToHelpCenter={() => setShowHelpCenter(true)}
+                            />
+                        )}
+                    </>
+                )}
             </View>
 
             {/* タブバー */}

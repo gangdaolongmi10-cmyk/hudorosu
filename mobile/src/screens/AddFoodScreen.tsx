@@ -22,11 +22,12 @@ interface AddFoodScreenProps {
     visible: boolean;
     onClose: () => void;
     onFoodAdded?: () => void;
+    onNavigateToStock?: () => void;
 }
 
 type Mode = 'select' | 'create';
 
-export default function AddFoodScreen({ visible, onClose, onFoodAdded }: AddFoodScreenProps) {
+export default function AddFoodScreen({ visible, onClose, onFoodAdded, onNavigateToStock }: AddFoodScreenProps) {
     const [mode, setMode] = useState<Mode>('select');
     const [categories, setCategories] = useState<Category[]>([]);
     const [masterFoods, setMasterFoods] = useState<MasterFood[]>([]);
@@ -235,6 +236,9 @@ export default function AddFoodScreen({ visible, onClose, onFoodAdded }: AddFood
                         if (onFoodAdded) {
                             onFoodAdded();
                         }
+                        if (onNavigateToStock) {
+                            onNavigateToStock();
+                        }
                         onClose();
                     },
                 },
@@ -302,6 +306,9 @@ export default function AddFoodScreen({ visible, onClose, onFoodAdded }: AddFood
                     onPress: () => {
                         if (onFoodAdded) {
                             onFoodAdded();
+                        }
+                        if (onNavigateToStock) {
+                            onNavigateToStock();
                         }
                         onClose();
                     },
@@ -378,6 +385,13 @@ export default function AddFoodScreen({ visible, onClose, onFoodAdded }: AddFood
                             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                                 <View style={styles.stockFormContainer}>
                                     <View style={styles.stockFormHeader}>
+                                        <TouchableOpacity
+                                            onPress={handleCancelStockForm}
+                                            style={styles.backButton}
+                                        >
+                                            <Ionicons name="arrow-back" size={24} color="#6B8E6B" />
+                                            <Text style={styles.backButtonText}>食材を選択</Text>
+                                        </TouchableOpacity>
                                         <Text style={styles.stockFormTitle}>在庫情報を入力</Text>
                                         <Text style={styles.stockFormSubtitle}>{selectedFood.name}</Text>
                                     </View>
@@ -494,14 +508,7 @@ export default function AddFoodScreen({ visible, onClose, onFoodAdded }: AddFood
 
                                         <View style={styles.stockFormButtons}>
                                             <TouchableOpacity
-                                                style={styles.cancelButton}
-                                                onPress={handleCancelStockForm}
-                                                disabled={submitting}
-                                            >
-                                                <Text style={styles.cancelButtonText}>キャンセル</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
+                                                style={[styles.submitButton, styles.submitButtonInRow, submitting && styles.submitButtonDisabled]}
                                                 onPress={handleConfirmStockForm}
                                                 disabled={submitting}
                                             >
@@ -1260,6 +1267,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 8,
     },
+    submitButtonInRow: {
+        flex: 1,
+    },
     submitButtonDisabled: {
         opacity: 0.6,
     },
@@ -1304,6 +1314,18 @@ const styles = StyleSheet.create({
     },
     stockFormHeader: {
         marginBottom: 24,
+    },
+    backButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 16,
+        paddingVertical: 8,
+    },
+    backButtonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#6B8E6B',
+        marginLeft: 8,
     },
     stockFormTitle: {
         fontSize: 20,

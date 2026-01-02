@@ -10,8 +10,16 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function MenuScreen() {
-    const { logout } = useAuth();
+export default function MenuScreen({
+    onNavigateToProfileEdit,
+    onNavigateToSecurity,
+    onNavigateToHelpCenter,
+}: {
+    onNavigateToProfileEdit?: () => void;
+    onNavigateToSecurity?: () => void;
+    onNavigateToHelpCenter?: () => void;
+}) {
+    const { logout, user } = useAuth();
 
     return (
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -19,41 +27,64 @@ export default function MenuScreen() {
             <View style={styles.profileImageContainer}>
             <Image
                 source={{
-                uri: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80',
+                uri: user?.avatar_url || 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80',
                 }}
                 style={styles.profileImage}
             />
             </View>
-            <Text style={styles.profileName}>キッチン・ハナコ</Text>
+            <Text style={styles.profileName}>{user?.name || 'ユーザー'}</Text>
             <Text style={styles.profileSubtitle}>
-            Tidying up my life, one ingredient at a time.
+            {user?.email || ''}
             </Text>
         </View>
 
         <View style={styles.menuList}>
-            {[
-            { label: 'プロフィール編集', icon: 'people-outline' },
-            { label: '通知設定', icon: 'notifications-outline', badge: '3' },
-            { label: 'セキュリティ', icon: 'shield-outline' },
-            { label: 'ヘルプセンター', icon: 'help-circle-outline' },
-            ].map((item, i) => (
             <TouchableOpacity
-                key={i}
+                style={styles.menuItem}
+                activeOpacity={0.7}
+                onPress={onNavigateToProfileEdit}
+            >
+                <Ionicons name="people-outline" size={18} color="#6B8E6B" />
+                <Text style={styles.menuItemText}>プロフィール編集</Text>
+                <View style={styles.menuItemRight}>
+                    <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.menuItem}
+                activeOpacity={0.7}
+                onPress={onNavigateToSecurity}
+            >
+                <Ionicons name="shield-outline" size={18} color="#6B8E6B" />
+                <Text style={styles.menuItemText}>セキュリティ</Text>
+                <View style={styles.menuItemRight}>
+                    <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.menuItem}
+                activeOpacity={0.7}
+                onPress={onNavigateToHelpCenter}
+            >
+                <Ionicons name="help-circle-outline" size={18} color="#6B8E6B" />
+                <Text style={styles.menuItemText}>ヘルプセンター</Text>
+                <View style={styles.menuItemRight}>
+                    <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity
                 style={styles.menuItem}
                 activeOpacity={0.7}
             >
-                <Ionicons name={item.icon as any} size={18} color="#6B8E6B" />
-                <Text style={styles.menuItemText}>{item.label}</Text>
+                <Ionicons name="notifications-outline" size={18} color="#6B8E6B" />
+                <Text style={styles.menuItemText}>通知設定</Text>
                 <View style={styles.menuItemRight}>
-                {item.badge && (
                     <View style={styles.menuItemBadge}>
-                    <Text style={styles.menuItemBadgeText}>{item.badge}</Text>
+                        <Text style={styles.menuItemBadgeText}>3</Text>
                     </View>
-                )}
-                <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
+                    <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
                 </View>
             </TouchableOpacity>
-            ))}
         </View>
 
         <TouchableOpacity

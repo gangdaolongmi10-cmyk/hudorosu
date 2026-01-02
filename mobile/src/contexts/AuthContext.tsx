@@ -1,12 +1,14 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from '../config/api';
+import { getCurrentUser, updateUser as updateUserApi } from '../services/userService';
 
 export interface User {
   id: number;
   email: string;
   role: string;
   name?: string;
+  avatar_url?: string;
 }
 
 interface AuthContextType {
@@ -16,6 +18,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name?: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (userData: Partial<User>) => Promise<void>;
+  refreshUser: () => Promise<void>;
   isAuthenticated: boolean;
 }
 
@@ -112,6 +116,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  // ユーザー情報を更新
+  const updateUser = async (userData: Partial<User>) => {
+    try {
+      const updatedUser = await updateUserApi(userData);
+      setUser(updatedUser);
+      await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+    } catch (error: any) {
+      if (error.response) {
+        throw new Error(error.response.data.error || 'ユーザー情報の更新に失敗しました');
+      } else {
+        throw new Error('ネットワークエラーが発生しました');
+      }
+    }
+  };
+
+  // ユーザー情報を再取得
+  const refreshUser = async () => {
+    try {
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+      await AsyncStorage.setItem('user', JSON.stringify(currentUser));
+    } catch (error: any) {
+      console.error('Error refreshing user:', error);
+      throw error;
+    }
+  };
+
   const isAuthenticated = Boolean(token && user);
 
   return (
@@ -123,6 +154,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         login,
         register,
         logout,
+        updateUser,
+        refreshUser,
         isAuthenticated: Boolean(isAuthenticated),
       }}
     >
