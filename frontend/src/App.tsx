@@ -16,6 +16,9 @@ import { UserCreatePage } from './pages/admin/user/UserCreate';
 import { UserEditPage } from './pages/admin/user/UserEdit';
 import { RoleIndexPage } from './pages/admin/role/RoleIndex';
 import { SettingsIndexPage } from './pages/admin/settings/SettingsIndex';
+import { RecipeIndexPage } from './pages/admin/recipe/RecipeIndex';
+import { RecipeCreatePage } from './pages/admin/recipe/RecipeCreate';
+import { RecipeEditPage } from './pages/admin/recipe/RecipeEdit';
 import { NotFoundPage } from './pages/admin/error/NotFound';
 import { AuthLoginPage } from './pages/admin/auth/AuthLogin';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -153,6 +156,30 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <LoginLogIndexPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/recipe" 
+                    element={
+                        <ProtectedRoute>
+                            <RecipeIndexPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/recipe/create" 
+                    element={
+                        <ProtectedRoute>
+                            <RecipeCreatePage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/recipe/:id/edit" 
+                    element={
+                        <ProtectedRoute>
+                            <RecipeEditPage />
                         </ProtectedRoute>
                     } 
                 />

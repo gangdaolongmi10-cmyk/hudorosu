@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,55 +6,98 @@ import {
     StyleSheet,
     ScrollView,
     Platform,
+    ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { fetchStocks, Stock } from '../services/stockService';
 
 export default function PlanScreen() {
-    const [selectedDay, setSelectedDay] = useState('13');
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    const [stocks, setStocks] = useState<Stock[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const days = [
-        { d: '12', w: 'Mon' },
-        { d: '13', w: 'Tue' },
-        { d: '14', w: 'Wed' },
-        { d: '15', w: 'Thu' },
-        { d: '16', w: 'Fri' },
-        { d: '17', w: 'Sat' },
-        { d: '18', w: 'Sun' },
-    ];
+    // 今日から今月末までの日付を生成
+    const generateDays = () => {
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+        const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const todayDate = today.getDate();
 
-    const meals = [
-        {
-            time: 'Morning',
-            menu: 'グラノーラとフルーツ',
-            status: 'done',
-            emoji: '🥣'
-        },
-        {
-            time: 'Lunch',
-            menu: '鶏肉と野菜のパスタ',
-            status: 'next',
-            emoji: '🍝'
-        },
-        {
-            time: 'Dinner',
-            menu: '鮭のムニエルと温野菜',
-            status: 'pending',
-            emoji: '🐟'
-        },
-    ];
+        const days = [];
+        const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+
+        for (let day = todayDate; day <= lastDay; day++) {
+            const date = new Date(currentYear, currentMonth, day);
+            const weekday = weekdays[date.getDay()];
+            days.push({
+                date: date,
+                day: day.toString(),
+                weekday: weekday,
+            });
+        }
+
+        return days;
+    };
+
+    const days = generateDays();
+
+    // 在庫データを取得
+    useEffect(() => {
+        loadStocks();
+    }, []);
+
+    const loadStocks = async () => {
+        try {
+            setLoading(true);
+            const allStocks = await fetchStocks();
+            setStocks(allStocks);
+        } catch (error) {
+            console.error('在庫データの取得に失敗しました:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // 選択された日付に一致する在庫を取得
+    const getStocksForDate = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`; // YYYY-MM-DD形式
+        
+        return stocks.filter(stock => {
+            const expiryDate = stock.expiry_date.split('T')[0];
+            return expiryDate === dateStr;
+        });
+    };
+
+    const selectedStocks = getStocksForDate(selectedDate);
+
+    // 日付をフォーマット（YYYY-MM-DD）
+    const formatDate = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    // 日付が今日かどうかを判定
+    const isToday = (date: Date): boolean => {
+        const today = new Date();
+        const todayYear = today.getFullYear();
+        const todayMonth = today.getMonth();
+        const todayDate = today.getDate();
+        
+        return (
+            date.getFullYear() === todayYear &&
+            date.getMonth() === todayMonth &&
+            date.getDate() === todayDate
+        );
+    };
 
     return (
         <View style={styles.container}>
-            {/* Top Header */}
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>
-                    献立カレンダー
-                </Text>
-                <TouchableOpacity style={styles.searchButton} activeOpacity={0.7}>
-                    <Ionicons name="search" size={20} color="#6b7280" />
-                </TouchableOpacity>
-            </View>
-
             {/* Scrollable Area */}
             <ScrollView 
                 style={styles.scrollView}
@@ -63,6 +106,9 @@ export default function PlanScreen() {
             >
                 {/* Date Selector - Horizontal Scroll */}
                 <View style={styles.dateSelectorContainer}>
+                    <Text style={styles.monthTitle}>
+                        {new Date().getMonth() + 1}月
+                    </Text>
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
@@ -71,82 +117,141 @@ export default function PlanScreen() {
                         decelerationRate="fast"
                         snapToAlignment="start"
                     >
-                        {days.map((day, i) => {
-                            const isActive = selectedDay === day.d;
+                        {days.map((dayItem, i) => {
+                            const isActive = formatDate(selectedDate) === formatDate(dayItem.date);
+                            const isTodayDate = isToday(dayItem.date);
                             return (
                                 <TouchableOpacity
                                     key={i}
-                                    onPress={() => setSelectedDay(day.d)}
+                                    onPress={() => setSelectedDate(dayItem.date)}
                                     style={[
                                         styles.dateButton,
-                                        isActive && styles.dateButtonActive
+                                        isActive && styles.dateButtonActive,
+                                        isTodayDate && !isActive && styles.dateButtonToday,
                                     ]}
                                     activeOpacity={0.7}
                                 >
                                     <Text style={[
                                         styles.dateWeekday,
-                                        isActive && styles.dateWeekdayActive
+                                        isActive && styles.dateWeekdayActive,
+                                        isTodayDate && !isActive && styles.dateWeekdayToday,
                                     ]}>
-                                        {day.w}
+                                        {dayItem.weekday}
                                     </Text>
                                     <Text style={[
                                         styles.dateDay,
-                                        isActive && styles.dateDayActive
+                                        isActive && styles.dateDayActive,
+                                        isTodayDate && !isActive && styles.dateDayToday,
                                     ]}>
-                                        {day.d}
+                                        {dayItem.day}
                                     </Text>
+                                    {isTodayDate && (
+                                        <View style={[
+                                            styles.todayIndicator,
+                                            isActive && styles.todayIndicatorActive,
+                                        ]} />
+                                    )}
                                 </TouchableOpacity>
                             );
                         })}
                     </ScrollView>
                 </View>
 
-                {/* Meal Cards */}
-                <View style={styles.mealsContainer}>
-                    <View style={styles.mealsHeader}>
-                        <Text style={styles.mealsHeaderTitle}>Today's Meals</Text>
-                        <Text style={styles.mealsHeaderCount}>3 items</Text>
+                {/* Stock Cards */}
+                <View style={styles.stocksContainer}>
+                    <View style={styles.stocksHeader}>
+                        <Text style={styles.stocksHeaderTitle}>
+                            {isToday(selectedDate) ? '今日期限の食材' : '期限の食材'}
+                        </Text>
+                        <Text style={styles.stocksHeaderCount}>
+                            {selectedStocks.length}件
+                        </Text>
                     </View>
 
-                    {meals.map((meal, i) => (
-                        <TouchableOpacity
-                            key={i}
-                            style={styles.mealCard}
-                            activeOpacity={0.97}
-                        >
-                            <View style={[
-                                styles.mealStatusBar,
-                                meal.status === 'done' && styles.mealStatusBarDone,
-                                meal.status === 'next' && styles.mealStatusBarNext,
-                                meal.status === 'pending' && styles.mealStatusBarPending,
-                            ]} />
+                    {loading ? (
+                        <View style={styles.loadingContainer}>
+                            <ActivityIndicator size="large" color="#6B8E6B" />
+                        </View>
+                    ) : selectedStocks.length === 0 ? (
+                        <View style={styles.emptyContainer}>
+                            <Ionicons name="calendar-outline" size={48} color="#d1d5db" />
+                            <Text style={styles.emptyText}>
+                                この日に期限を迎える食材はありません
+                            </Text>
+                        </View>
+                    ) : (
+                        selectedStocks.map((stock) => (
+                            <View
+                                key={stock.id}
+                                style={styles.stockCard}
+                            >
+                                <View style={styles.stockStatusBar} />
 
-                            <View style={styles.mealEmojiContainer}>
-                                <Text style={styles.mealEmoji}>{meal.emoji}</Text>
-                            </View>
+                                <View style={styles.stockEmojiContainer}>
+                                    <Ionicons 
+                                        name={
+                                            stock.storage_type === 'refrigerator' 
+                                                ? 'snow-outline' 
+                                                : stock.storage_type === 'freezer'
+                                                ? 'ice-cream-outline'
+                                                : 'cube-outline'
+                                        } 
+                                        size={24} 
+                                        color="#6B8E6B" 
+                                    />
+                                </View>
 
-                            <View style={styles.mealContent}>
-                                <View style={styles.mealTimeRow}>
-                                    <Text style={styles.mealTime}>{meal.time}</Text>
-                                    {meal.status === 'next' && (
-                                        <View style={styles.mealNextBadge}>
-                                            <Text style={styles.mealNextBadgeText}>NEXT</Text>
+                                <View style={styles.stockContent}>
+                                    <Text style={styles.stockName}>
+                                        {stock.food?.name || '食材名不明'}
+                                    </Text>
+                                    <View style={styles.stockMeta}>
+                                        <View style={styles.stockMetaItem}>
+                                            <Ionicons name="time-outline" size={12} color="#9ca3af" />
+                                            <Text style={styles.stockMetaText}>
+                                                {stock.expiry_date.split('T')[0]}
+                                            </Text>
                                         </View>
+                                        <View style={[styles.stockMetaItem, { marginLeft: 12 }]}>
+                                            <Ionicons 
+                                                name={
+                                                    stock.storage_type === 'refrigerator' 
+                                                        ? 'snow' 
+                                                        : stock.storage_type === 'freezer'
+                                                        ? 'ice-cream'
+                                                        : 'cube'
+                                                } 
+                                                size={12} 
+                                                color="#9ca3af" 
+                                            />
+                                            <Text style={styles.stockMetaText}>
+                                                {stock.storage_type === 'refrigerator' 
+                                                    ? '冷蔵' 
+                                                    : stock.storage_type === 'freezer'
+                                                    ? '冷凍'
+                                                    : '常温'}
+                                            </Text>
+                                        </View>
+                                        {stock.quantity && (
+                                            <View style={[styles.stockMetaItem, { marginLeft: 12 }]}>
+                                                <Ionicons name="scale-outline" size={12} color="#9ca3af" />
+                                                <Text style={styles.stockMetaText}>
+                                                    {stock.quantity}
+                                                </Text>
+                                            </View>
+                                        )}
+                                    </View>
+                                    {stock.memo && (
+                                        <Text style={styles.stockMemo} numberOfLines={2}>
+                                            {stock.memo}
+                                        </Text>
                                     )}
                                 </View>
-                                <Text style={styles.mealMenu}>{meal.menu}</Text>
                             </View>
-
-                            <Ionicons name="chevron-forward" size={20} color="#d1d5db" />
-                        </TouchableOpacity>
-                    ))}
+                        ))
+                    )}
                 </View>
             </ScrollView>
-
-            {/* Floating Action Button */}
-            <TouchableOpacity style={styles.fab} activeOpacity={0.9}>
-                <Ionicons name="add" size={32} color="#ffffff" />
-            </TouchableOpacity>
         </View>
     );
 }
@@ -156,193 +261,188 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F8FAF8',
     },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 24,
-        paddingTop: Platform.OS === 'ios' ? 16 : 8,
-        paddingBottom: 16,
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    },
-    headerTitle: {
-        fontSize: 20,
-        fontFamily: 'serif',
-        fontWeight: 'bold',
-        color: '#3A4D3A',
-    },
-    searchButton: {
-        width: 40,
-        height: 40,
-        backgroundColor: '#f3f4f6',
-        borderRadius: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     scrollView: {
         flex: 1,
     },
     scrollContent: {
-        paddingBottom: 120,
+        paddingBottom: 24,
     },
     dateSelectorContainer: {
-        paddingVertical: 24,
+        paddingTop: 20,
+        paddingBottom: 24,
+        backgroundColor: '#ffffff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#f3f4f6',
+    },
+    monthTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#3A4D3A',
+        paddingHorizontal: 24,
+        marginBottom: 16,
     },
     dateSelector: {
         paddingHorizontal: 24,
-        gap: 12,
     },
     dateButton: {
-        width: 60,
-        paddingVertical: 16,
-        borderRadius: 16,
+        width: 64,
+        paddingVertical: 14,
+        borderRadius: 18,
         backgroundColor: '#ffffff',
-        borderWidth: 1,
-        borderColor: '#f3f4f6',
+        borderWidth: 1.5,
+        borderColor: '#e5e7eb',
         alignItems: 'center',
         marginRight: 12,
+        position: 'relative',
     },
     dateButtonActive: {
         backgroundColor: '#6B8E6B',
         borderColor: '#6B8E6B',
         shadowColor: '#6B8E6B',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.2,
         shadowRadius: 8,
         elevation: 4,
-        transform: [{ scale: 1.05 }],
+        transform: [{ scale: 1.08 }],
+    },
+    dateButtonToday: {
+        borderColor: '#6B8E6B',
+        borderWidth: 2,
     },
     dateWeekday: {
-        fontSize: 10,
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
+        fontSize: 11,
+        fontWeight: '600',
         color: '#9ca3af',
-        marginBottom: 4,
+        marginBottom: 6,
     },
     dateWeekdayActive: {
         color: '#f0fdf4',
+        fontWeight: '700',
+    },
+    dateWeekdayToday: {
+        color: '#6B8E6B',
+        fontWeight: '700',
     },
     dateDay: {
-        fontSize: 18,
-        fontFamily: 'serif',
+        fontSize: 20,
         fontWeight: 'bold',
         color: '#4b5563',
     },
     dateDayActive: {
         color: '#ffffff',
     },
-    mealsContainer: {
-        paddingHorizontal: 24,
-        gap: 16,
+    dateDayToday: {
+        color: '#6B8E6B',
     },
-    mealsHeader: {
+    todayIndicator: {
+        position: 'absolute',
+        bottom: 6,
+        width: 4,
+        height: 4,
+        borderRadius: 2,
+        backgroundColor: '#6B8E6B',
+    },
+    todayIndicatorActive: {
+        backgroundColor: '#f0fdf4',
+    },
+    stocksContainer: {
+        paddingHorizontal: 24,
+        paddingTop: 24,
+    },
+    stocksHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-end',
-        marginBottom: 8,
+        marginBottom: 4,
     },
-    mealsHeaderTitle: {
-        fontSize: 12,
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-        letterSpacing: 1.2,
-        color: '#9ca3af',
+    stocksHeaderTitle: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: '#3A4D3A',
+        letterSpacing: 0.5,
     },
-    mealsHeaderCount: {
-        fontSize: 12,
+    stocksHeaderCount: {
+        fontSize: 13,
         color: '#6B8E6B',
-        fontWeight: '500',
+        fontWeight: '600',
     },
-    mealCard: {
+    loadingContainer: {
+        paddingVertical: 48,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    emptyContainer: {
+        paddingVertical: 64,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    emptyText: {
+        fontSize: 14,
+        color: '#9ca3af',
+        marginTop: 16,
+        textAlign: 'center',
+    },
+    stockCard: {
         backgroundColor: '#ffffff',
-        borderRadius: 24,
-        padding: 16,
+        borderRadius: 20,
+        padding: 18,
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 16,
         borderWidth: 1,
         borderColor: '#f3f4f6',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
-        elevation: 1,
-        marginBottom: 16,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 4,
+        elevation: 2,
+        marginBottom: 12,
         overflow: 'hidden',
     },
-    mealStatusBar: {
+    stockStatusBar: {
         position: 'absolute',
         left: 0,
         top: 0,
         bottom: 0,
-        width: 6,
-    },
-    mealStatusBarDone: {
-        backgroundColor: '#e5e7eb',
-    },
-    mealStatusBarNext: {
+        width: 5,
         backgroundColor: '#6B8E6B',
     },
-    mealStatusBarPending: {
-        backgroundColor: '#fed7aa',
-    },
-    mealEmojiContainer: {
-        width: 56,
-        height: 56,
-        backgroundColor: '#f9fafb',
-        borderRadius: 16,
+    stockEmojiContainer: {
+        width: 52,
+        height: 52,
+        backgroundColor: '#f0fdf4',
+        borderRadius: 14,
         alignItems: 'center',
         justifyContent: 'center',
+        marginRight: 16,
     },
-    mealEmoji: {
-        fontSize: 28,
-    },
-    mealContent: {
+    stockContent: {
         flex: 1,
     },
-    mealTimeRow: {
+    stockName: {
+        fontSize: 17,
+        fontWeight: '700',
+        color: '#1f2937',
+        marginBottom: 8,
+    },
+    stockMeta: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginBottom: 6,
+    },
+    stockMetaItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 8,
-        marginBottom: 4,
     },
-    mealTime: {
-        fontSize: 10,
-        fontWeight: '900',
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-        color: '#6B8E6B',
+    stockMetaText: {
+        fontSize: 12,
+        color: '#6b7280',
+        fontWeight: '500',
+        marginLeft: 4,
     },
-    mealNextBadge: {
-        backgroundColor: '#6B8E6B',
-        paddingHorizontal: 6,
-        paddingVertical: 2,
-        borderRadius: 8,
-    },
-    mealNextBadgeText: {
-        fontSize: 8,
-        fontWeight: 'bold',
-        color: '#ffffff',
-    },
-    mealMenu: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#1f2937',
-    },
-    fab: {
-        position: 'absolute',
-        bottom: 46,
-        right: 24,
-        width: 56,
-        height: 56,
-        backgroundColor: '#3A4D3A',
-        borderRadius: 28,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#3A4D3A',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 8,
+    stockMemo: {
+        fontSize: 12,
+        color: '#9ca3af',
+        marginTop: 4,
+        lineHeight: 16,
     },
 });

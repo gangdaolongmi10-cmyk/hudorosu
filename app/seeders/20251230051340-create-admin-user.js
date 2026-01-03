@@ -1,0 +1,59 @@
+'use strict';
+
+const bcrypt = require('bcryptjs');
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up (queryInterface, Sequelize) {
+    // 管理者ユーザーの作成
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const passwordHash = await bcrypt.hash(adminPassword, 10);
+    
+    await queryInterface.bulkInsert('users', [
+      {
+        email: adminEmail,
+        name: '管理者',
+        role: 'admin',
+        created_at: new Date(),
+        updated_at: new Date()
+      }
+    ], {});
+
+    // 作成されたユーザーのIDを取得
+    const userId = await queryInterface.sequelize.query(
+      "SELECT id FROM users WHERE email = :email",
+      {
+        replacements: { email: adminEmail },
+        type: Sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if (userId && userId.length > 0) {
+      // ローカル認証情報の作成
+      await queryInterface.bulkInsert('local_auth', [
+        {
+          user_id: userId[0].id,
+          password_hash: passwordHash
+        }
+      ], {});
+    }
+  },
+
+  async down (queryInterface, Sequelize) {
+    // 管理者ユーザーの削除
+    const userId = await queryInterface.sequelize.query(
+      "SELECT id FROM users WHERE email = :email",
+      {
+        replacements: { email: process.env.ADMIN_EMAIL || 'admin@example.com' },
+        type: Sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if (userId && userId.length > 0) {
+      await queryInterface.bulkDelete('local_auth', { user_id: userId[0].id }, {});
+      await queryInterface.bulkDelete('users', { email: process.env.ADMIN_EMAIL || 'admin@example.com' }, {});
+    }
+  }
+};
+

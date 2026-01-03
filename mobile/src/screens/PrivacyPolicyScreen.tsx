@@ -7,22 +7,13 @@ import {
     ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import ScreenHeader from '../components/ScreenHeader';
 
 export default function PrivacyPolicyScreen({ onBack }: { onBack: () => void }) {
     return (
         <View style={styles.container}>
             {/* ヘッダー */}
-            <View style={styles.header}>
-                <TouchableOpacity
-                    onPress={onBack}
-                    style={styles.backButton}
-                    activeOpacity={0.7}
-                >
-                    <Ionicons name="arrow-back" size={24} color="#3A4D3A" />
-                </TouchableOpacity>
-                <Text style={styles.headerTitle}>プライバシーポリシー</Text>
-                <View style={styles.headerPlaceholder} />
-            </View>
+            <ScreenHeader title="プライバシーポリシー" onBack={onBack} />
 
             <ScrollView
                 style={styles.content}
@@ -125,28 +116,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#EAECE9',
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 24,
-        paddingTop: 16,
-        paddingBottom: 8,
-    },
-    backButton: {
-        width: 40,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    headerTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#3A4D3A',
-    },
-    headerPlaceholder: {
-        width: 40,
     },
     content: {
         flex: 1,

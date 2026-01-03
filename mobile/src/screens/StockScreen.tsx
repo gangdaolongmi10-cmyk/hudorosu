@@ -56,7 +56,6 @@ const convertStockToFoodItem = (stock: Stock): FoodItem => {
         status = 'safe';
     }
     
-    // 総日数は30日として計算（実際には食材ごとに異なる可能性がある）
     const totalDays = 30;
     
     return {
@@ -138,32 +137,6 @@ export default function StockScreen({ items: propItems, onNavigateToStock }: Sto
             </View>
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-                <View style={styles.aiSuggestionCard}>
-                    <View style={styles.aiSuggestionContent}>
-                        <View style={styles.aiSuggestionHeader}>
-                            <Ionicons name="star" size={16} color="#fbbf24" />
-                            <Text style={styles.aiSuggestionLabel}>AI Suggestion</Text>
-                        </View>
-                        <Text style={styles.aiSuggestionText}>
-                            期限の近い「ほうれん草」で{'\n'}お浸しはいかがですか？
-                        </Text>
-                        <TouchableOpacity style={styles.aiSuggestionButton}>
-                            <Text style={styles.aiSuggestionButtonText}>レシピを見る</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.aiSuggestionIcon}>
-                        <Ionicons name="restaurant-outline" size={100} color="#ffffff" />
-                    </View>
-                </View>
-                <View style={styles.sectionHeader}>
-                    <Text style={styles.sectionTitle}>
-                        {storageType === 'refrigerator' ? '冷蔵庫のなか' : storageType === 'freezer' ? '冷凍庫のなか' : 'ストック'}
-                    </Text>
-                    <View style={styles.itemCountBadge}>
-                        <Text style={styles.itemCountText}>{filteredItems.length} ITEMS</Text>
-                    </View>
-                </View>
-
                 <View style={styles.itemsGrid}>
                     {filteredItems.map((item) => (
                         <TouchableOpacity key={item.id} style={styles.itemCard} activeOpacity={0.7}>
@@ -252,6 +225,7 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
+        marginTop: 24,
         paddingBottom: 96,
     },
     aiSuggestionCard: {

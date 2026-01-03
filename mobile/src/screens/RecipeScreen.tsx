@@ -1,70 +1,161 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
     StyleSheet,
     ScrollView,
     Image,
+    ActivityIndicator,
+    TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { fetchRecommendedRecipes, Recipe } from '../services/recipeService';
 
 export default function RecipeScreen() {
+    const [recipes, setRecipes] = useState<Recipe[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        loadRecipes();
+    }, []);
+
+    const loadRecipes = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await fetchRecommendedRecipes();
+            setRecipes(data);
+        } catch (err: any) {
+            console.error('Failed to load recipes:', err);
+            setError('レシピの読み込みに失敗しました');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const formatCookingTime = (minutes: number | null): string => {
+        if (!minutes) return '時間未設定';
+        if (minutes < 60) return `${minutes}分`;
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return mins > 0 ? `${hours}時間${mins}分` : `${hours}時間`;
+    };
+
+    const getDefaultImage = () => {
+        return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80';
+    };
+
+    const featuredRecipe = recipes.length > 0 ? recipes[0] : null;
+
     return (
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.recipeTitle}>今日のごちそう</Text>
+            <Text style={styles.recipeTitle}>今日のごちそう</Text>
 
-        <View style={styles.featuredRecipeCard}>
-            <Image
-                source={{
-                    uri: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80',
-                }}
-                style={styles.featuredRecipeImage}
-            />
-            <View style={styles.featuredRecipeOverlay}>
-            <View style={styles.featuredRecipeBadge}>
-                <Text style={styles.featuredRecipeBadgeText}>PICK UP</Text>
-            </View>
-            <Text style={styles.featuredRecipeTitle}>
-                余った野菜で！{'\n'}彩り豊かなラタトゥイユ
-            </Text>
-            <View style={styles.featuredRecipeMeta}>
-                <View style={styles.featuredRecipeMetaItem}>
-                <Ionicons name="time-outline" size={12} color="#ffffff" />
-                <Text style={styles.featuredRecipeMetaText}>20min</Text>
+            {loading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#6B8E6B" />
+                    <Text style={styles.loadingText}>レシピを読み込み中...</Text>
                 </View>
-                <View style={styles.featuredRecipeMetaItem}>
-                <Ionicons name="heart-outline" size={12} color="#ffffff" />
-                <Text style={styles.featuredRecipeMetaText}>1.2k</Text>
+            ) : error ? (
+                <View style={styles.errorContainer}>
+                    <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
+                    <Text style={styles.errorText}>{error}</Text>
+                    <TouchableOpacity style={styles.retryButton} onPress={loadRecipes}>
+                        <Text style={styles.retryButtonText}>再試行</Text>
+                    </TouchableOpacity>
                 </View>
-            </View>
-            </View>
-        </View>
+            ) : recipes.length === 0 ? (
+                <View style={styles.emptyContainer}>
+                    <Ionicons name="restaurant-outline" size={48} color="#9ca3af" />
+                    <Text style={styles.emptyText}>在庫にある食材で作れるレシピがありません</Text>
+                    <Text style={styles.emptySubText}>在庫を追加すると、おすすめレシピが表示されます</Text>
+                </View>
+            ) : (
+                <>
+                    {featuredRecipe && (
+                        <View style={styles.featuredRecipeCard}>
+                            <Image
+                                source={{
+                                    uri: featuredRecipe.image_url || getDefaultImage(),
+                                }}
+                                style={styles.featuredRecipeImage}
+                            />
+                            <View style={styles.featuredRecipeOverlay}>
+                                <View style={styles.featuredRecipeBadge}>
+                                    <Text style={styles.featuredRecipeBadgeText}>おすすめ</Text>
+                                </View>
+                                <Text style={styles.featuredRecipeTitle} numberOfLines={2}>
+                                    {featuredRecipe.name}
+                                </Text>
+                                {featuredRecipe.description && (
+                                    <Text style={styles.featuredRecipeDescription} numberOfLines={1}>
+                                        {featuredRecipe.description}
+                                    </Text>
+                                )}
+                                <View style={styles.featuredRecipeMeta}>
+                                    {featuredRecipe.cooking_time && (
+                                        <View style={styles.featuredRecipeMetaItem}>
+                                            <Ionicons name="time-outline" size={12} color="#ffffff" />
+                                            <Text style={styles.featuredRecipeMetaText}>
+                                                {formatCookingTime(featuredRecipe.cooking_time)}
+                                            </Text>
+                                        </View>
+                                    )}
+                                    {featuredRecipe.matchRatio !== undefined && (
+                                        <View style={styles.featuredRecipeMetaItem}>
+                                            <Ionicons name="checkmark-circle-outline" size={12} color="#ffffff" />
+                                            <Text style={styles.featuredRecipeMetaText}>
+                                                {Math.round(featuredRecipe.matchRatio * 100)} 在庫食材
+                                            </Text>
+                                        </View>
+                                    )}
+                                </View>
+                            </View>
+                        </View>
+                    )}
 
-        <View style={styles.aiRecipeSection}>
-            <View style={styles.aiRecipeSectionHeader}>
-            <Ionicons name="star" size={18} color="#6B8E6B" />
-            <Text style={styles.aiRecipeSectionTitle}>冷蔵庫にあるもので提案</Text>
-            </View>
-            <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.recipeList}
-            >
-            {[
-                { title: '卵とほうれん草の炒め物', time: '10分', icon: '🍳' },
-                { title: '鶏肉のガリバタ焼き', time: '15分', icon: '🍗' },
-                { title: '簡単アボカドサラダ', time: '5分', icon: '🥗' },
-            ].map((r, i) => (
-                <View key={i} style={styles.recipeCard}>
-                <Text style={styles.recipeCardIcon}>{r.icon}</Text>
-                <Text style={styles.recipeCardTitle} numberOfLines={2}>
-                    {r.title}
-                </Text>
-                <Text style={styles.recipeCardTime}>{r.time}</Text>
-                </View>
-            ))}
-            </ScrollView>
-        </View>
+                    <View style={styles.aiRecipeSection}>
+                        <View style={styles.aiRecipeSectionHeader}>
+                            <Ionicons name="star" size={18} color="#6B8E6B" />
+                            <Text style={styles.aiRecipeSectionTitle}>在庫にあるもので作れるレシピ</Text>
+                        </View>
+                        <View style={styles.recipeList}>
+                            {recipes.map((recipe) => (
+                                <TouchableOpacity key={recipe.id} style={styles.recipeCard}>
+                                    {recipe.image_url ? (
+                                        <Image
+                                            source={{ uri: recipe.image_url }}
+                                            style={styles.recipeCardImage}
+                                        />
+                                    ) : (
+                                        <View style={styles.recipeCardImagePlaceholder}>
+                                            <Ionicons name="restaurant" size={32} color="#9ca3af" />
+                                        </View>
+                                    )}
+                                    <Text style={styles.recipeCardTitle} numberOfLines={2}>
+                                        {recipe.name}
+                                    </Text>
+                                    <View style={styles.recipeCardMeta}>
+                                        {recipe.cooking_time && (
+                                            <Text style={styles.recipeCardTime}>
+                                                {formatCookingTime(recipe.cooking_time)}
+                                            </Text>
+                                        )}
+                                        {recipe.matchRatio !== undefined && (
+                                            <View style={styles.matchBadge}>
+                                                <Text style={styles.matchBadgeText}>
+                                                    {Math.round(recipe.matchRatio * 100)}
+                                                </Text>
+                                            </View>
+                                        )}
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+                </>
+            )}
         </ScrollView>
     );
 }
@@ -81,6 +172,58 @@ const styles = StyleSheet.create({
         marginBottom: 24,
         textAlign: 'center',
         paddingTop: 24,
+    },
+    loadingContainer: {
+        padding: 48,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    loadingText: {
+        marginTop: 16,
+        fontSize: 14,
+        color: '#6B8E6B',
+    },
+    errorContainer: {
+        padding: 48,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    errorText: {
+        marginTop: 16,
+        fontSize: 14,
+        color: '#ef4444',
+        textAlign: 'center',
+    },
+    retryButton: {
+        marginTop: 16,
+        paddingHorizontal: 24,
+        paddingVertical: 12,
+        backgroundColor: '#6B8E6B',
+        borderRadius: 20,
+    },
+    retryButtonText: {
+        color: '#ffffff',
+        fontSize: 14,
+        fontWeight: 'bold',
+    },
+    emptyContainer: {
+        padding: 48,
+        marginTop: 24,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    emptyText: {
+        marginTop: 16,
+        fontSize: 16,
+        color: '#3A4D3A',
+        textAlign: 'center',
+        fontWeight: 'bold',
+    },
+    emptySubText: {
+        marginTop: 8,
+        fontSize: 14,
+        color: '#9ca3af',
+        textAlign: 'center',
     },
     featuredRecipeCard: {
         marginHorizontal: 24,
@@ -126,6 +269,12 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         marginBottom: 4,
     },
+    featuredRecipeDescription: {
+        fontSize: 12,
+        color: '#ffffff',
+        opacity: 0.9,
+        marginBottom: 8,
+    },
     featuredRecipeMeta: {
         flexDirection: 'row',
         gap: 12,
@@ -148,6 +297,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
+        marginTop: 24,
         marginBottom: 16,
     },
     aiRecipeSectionTitle: {
@@ -156,38 +306,66 @@ const styles = StyleSheet.create({
         color: '#3A4D3A',
     },
     recipeList: {
-        marginHorizontal: -24,
-        paddingHorizontal: 24,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
     },
     recipeCard: {
-        minWidth: 140,
+        width: '48%',
         backgroundColor: '#ffffff',
-        padding: 16,
         borderRadius: 32,
-        alignItems: 'center',
+        overflow: 'hidden',
         borderWidth: 1,
         borderColor: '#f9fafb',
-        marginRight: 16,
+        marginBottom: 16,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
         shadowRadius: 2,
         elevation: 1,
     },
-    recipeCardIcon: {
-        fontSize: 32,
-        marginBottom: 8,
+    recipeCardImage: {
+        width: '100%',
+        height: 120,
+        backgroundColor: '#f3f4f6',
+    },
+    recipeCardImagePlaceholder: {
+        width: '100%',
+        height: 120,
+        backgroundColor: '#f3f4f6',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     recipeCardTitle: {
         fontSize: 12,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom: 4,
+        marginTop: 12,
+        marginBottom: 8,
+        marginHorizontal: 12,
         color: '#1f2937',
+    },
+    recipeCardMeta: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 12,
+        paddingBottom: 12,
     },
     recipeCardTime: {
         fontSize: 10,
         color: '#9ca3af',
+    },
+    matchBadge: {
+        backgroundColor: '#6B8E6B',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 12,
+    },
+    matchBadgeText: {
+        fontSize: 10,
+        fontWeight: 'bold',
+        color: '#ffffff',
     },
 });
 

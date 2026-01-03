@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { updateUser, changePassword } from '../services/userService';
 import * as ImagePicker from 'expo-image-picker';
+import ScreenHeader from '../components/ScreenHeader';
 
 type ActiveTab = 'profile' | 'password';
 
@@ -211,17 +212,7 @@ export default function ProfileEditScreen({ onBack }: { onBack: () => void }) {
                 keyboardShouldPersistTaps="handled"
             >
                 {/* ヘッダー */}
-                <View style={styles.header}>
-                    <TouchableOpacity
-                        onPress={onBack}
-                        style={styles.backButton}
-                        activeOpacity={0.7}
-                    >
-                        <Ionicons name="arrow-back" size={24} color="#3A4D3A" />
-                    </TouchableOpacity>
-                    <Text style={styles.headerTitle}>プロフィール編集</Text>
-                    <View style={styles.headerPlaceholder} />
-                </View>
+                <ScreenHeader title="プロフィール編集" onBack={onBack} />
 
                 {/* タブ切り替え */}
                 <View style={styles.tabContainer}>
@@ -438,28 +429,6 @@ const styles = StyleSheet.create({
     scrollContent: {
         flexGrow: 1,
         paddingBottom: 96,
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 24,
-        paddingTop: 16,
-        paddingBottom: 8,
-    },
-    backButton: {
-        width: 40,
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    headerTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: '#3A4D3A',
-    },
-    headerPlaceholder: {
-        width: 40,
     },
     tabContainer: {
         flexDirection: 'row',

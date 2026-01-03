@@ -3,6 +3,7 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 import { getMasterFoodsController, getMasterFoodsByCategoryController, createUserFoodController } from "../controllers/user/foodsController";
 import { categoriesController } from "../controllers/admin/categoriesController";
 import { getStocksController, getStockByIdController, createStockController, updateStockController, deleteStockController } from "../controllers/user/stocksController";
+import { getRecommendedRecipesController, getRecipesController, getRecipeByIdController } from "../controllers/user/recipesController";
 
 const router = Router();
 
@@ -18,5 +19,10 @@ router.get("/stocks/:id", authMiddleware, getStockByIdController);
 router.post("/stocks", authMiddleware, createStockController);
 router.put("/stocks/:id", authMiddleware, updateStockController);
 router.delete("/stocks/:id", authMiddleware, deleteStockController);
+
+// レシピルート
+router.get("/recipes/recommended", authMiddleware, getRecommendedRecipesController);
+router.get("/recipes", authMiddleware, getRecipesController);
+router.get("/recipes/:id", authMiddleware, getRecipeByIdController);
 
 export default router;

@@ -18,6 +18,19 @@ export const BREADCRUMB_ITEMS: Record<string, BreadcrumbItem[]> = {
         { label: '食材編集' }
     ],
 
+    // 料理管理関連
+    '/admin/recipe': [
+        { label: '料理管理' }
+    ],
+    '/admin/recipe/create': [
+        { label: '料理管理', path: '/admin/recipe' },
+        { label: '新規料理作成' }
+    ],
+    '/admin/recipe/:id/edit': [
+        { label: '料理管理', path: '/admin/recipe' },
+        { label: '料理編集' }
+    ],
+
     // カテゴリ関連
     '/admin/category': [
         { label: 'カテゴリ管理' }

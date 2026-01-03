@@ -17,6 +17,7 @@ import SecurityScreen from './SecurityScreen';
 import HelpCenterScreen from './HelpCenterScreen';
 import TermsOfServiceScreen from './TermsOfServiceScreen';
 import PrivacyPolicyScreen from './PrivacyPolicyScreen';
+import ScreenHeader from '../components/ScreenHeader';
 
 export default function HomeScreen() {
     const [activeTab, setActiveTab] = useState('stock');
@@ -34,9 +35,10 @@ export default function HomeScreen() {
             <View style={styles.headerBackground} />
 
             {/* ナビゲーションバー */}
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>キッチン日和</Text>
-            </View>
+            <ScreenHeader 
+                title="キッチン日和" 
+                titleStyle={styles.homeHeaderTitle}
+            />
 
             {/* メインコンテンツ */}
             <View style={styles.mainContent}>
@@ -95,7 +97,7 @@ export default function HomeScreen() {
                             activeTab === 'stock' && styles.tabLabelActive,
                         ]}
                     >
-                        Stock
+                        在庫
                     </Text>
                 </TouchableOpacity>
 
@@ -122,7 +124,7 @@ export default function HomeScreen() {
                         activeTab === 'recipe' && styles.tabLabelActive,
                     ]}
                 >
-                    Recipe
+                    レシピ
                 </Text>
                 </TouchableOpacity>
 
@@ -149,7 +151,7 @@ export default function HomeScreen() {
                             activeTab === 'calendar' && styles.tabLabelActive,
                         ]}
                     >
-                        Plan
+                        カレンダー
                     </Text>
                 </TouchableOpacity>
 
@@ -176,7 +178,7 @@ export default function HomeScreen() {
                             activeTab === 'settings' && styles.tabLabelActive,
                         ]}
                     >
-                        Menu
+                        設定
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -239,37 +241,6 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 40,
         zIndex: 0,
     },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 24,
-        paddingTop: 16,
-        paddingBottom: 8,
-        zIndex: 10,
-    },
-    headerButton: {
-        width: 40,
-        height: 40,
-        backgroundColor: '#ffffff',
-        borderRadius: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-        elevation: 2,
-    },
-    headerTitle: {
-        width: '100%',
-        fontSize: 24,
-        fontFamily: 'serif',
-        color: '#3A4D3A',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginTop: 16,
-    },
     mainContent: {
         flex: 1,
         zIndex: 10,
@@ -316,5 +287,10 @@ const styles = StyleSheet.create({
         height: 6,
         backgroundColor: '#e5e7eb',
         borderRadius: 3,
+    },
+    homeHeaderTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginTop: 16,
     },
 });

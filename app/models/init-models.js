@@ -7,6 +7,8 @@ var _foods = require("./foods");
 var _google_auth = require("./google_auth");
 var _local_auth = require("./local_auth");
 var _login_logs = require("./login_logs");
+var _recipe_foods = require("./recipe_foods");
+var _recipes = require("./recipes");
 var _settings = require("./settings");
 var _stocks = require("./stocks");
 var _users = require("./users");
@@ -20,6 +22,8 @@ function initModels(sequelize) {
   var google_auth = _google_auth(sequelize, DataTypes);
   var local_auth = _local_auth(sequelize, DataTypes);
   var login_logs = _login_logs(sequelize, DataTypes);
+  var recipe_foods = _recipe_foods(sequelize, DataTypes);
+  var recipes = _recipes(sequelize, DataTypes);
   var settings = _settings(sequelize, DataTypes);
   var stocks = _stocks(sequelize, DataTypes);
   var users = _users(sequelize, DataTypes);
@@ -44,6 +48,10 @@ function initModels(sequelize) {
   users.hasMany(stocks, { as: "stocks", foreignKey: "user_id"});
   stocks.belongsTo(foods, { as: "food", foreignKey: "food_id"});
   foods.hasMany(stocks, { as: "stocks", foreignKey: "food_id"});
+  recipe_foods.belongsTo(recipes, { as: "recipe", foreignKey: "recipe_id"});
+  recipe_foods.belongsTo(foods, { as: "food", foreignKey: "food_id"});
+  recipes.belongsToMany(foods, { as: 'food_id_foods', through: recipe_foods, foreignKey: "recipe_id", otherKey: "food_id" });
+  foods.belongsToMany(recipes, { as: 'recipe_id_recipes', through: recipe_foods, foreignKey: "food_id", otherKey: "recipe_id" });
 
   return {
     SequelizeMeta,
@@ -54,6 +62,8 @@ function initModels(sequelize) {
     google_auth,
     local_auth,
     login_logs,
+    recipe_foods,
+    recipes,
     settings,
     stocks,
     users,
