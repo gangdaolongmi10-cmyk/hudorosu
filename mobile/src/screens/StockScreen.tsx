@@ -138,44 +138,47 @@ export default function StockScreen({ items: propItems, onNavigateToStock }: Sto
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.itemsGrid}>
-                    {filteredItems.map((item) => (
-                        <TouchableOpacity key={item.id} style={styles.itemCard} activeOpacity={0.7}>
-                            <Text style={styles.itemIcon}>{item.icon}</Text>
-                            <View style={styles.itemContent}>
-                                <Text style={styles.itemName} numberOfLines={1}>
-                                    {item.name}
-                                </Text>
-                                <Text style={styles.itemQuantity}>{item.quantity}</Text>
-                                <View style={styles.progressBarContainer}>
-                                    <View
-                                        style={[
-                                            styles.progressBar,
-                                            { width: `${getProgress(item)}%`, backgroundColor: getStatusColor(item.status) },
-                                        ]}
-                                    />
-                                </View>
-                                <Text style={[styles.itemStatus, { color: getStatusColor(item.status) }]}>
-                                    {getStatusText(item)}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))}
-                <TouchableOpacity
-                    style={styles.addItemCard}
-                    activeOpacity={0.7}
-                    onPress={() => setShowAddFood(true)}
-                >
-                    <Ionicons name="add" size={32} color="#d1d5db" />
-                    <Text style={styles.addItemText}>追加する</Text>
-                </TouchableOpacity>
+                    {loading ? (
+                        <View style={styles.loadingContainer}>
+                            <ActivityIndicator size="large" color="#6B8E6B" />
+                            <Text style={styles.loadingText}>在庫を読み込み中...</Text>
+                        </View>
+                    ) : (
+                        <>
+                            {filteredItems.map((item) => (
+                                <TouchableOpacity key={item.id} style={styles.itemCard} activeOpacity={0.7}>
+                                    <Text style={styles.itemIcon}>{item.icon}</Text>
+                                    <View style={styles.itemContent}>
+                                        <Text style={styles.itemName} numberOfLines={1}>
+                                            {item.name}
+                                        </Text>
+                                        <Text style={styles.itemQuantity}>{item.quantity}</Text>
+                                        <View style={styles.progressBarContainer}>
+                                            <View
+                                                style={[
+                                                    styles.progressBar,
+                                                    { width: `${getProgress(item)}%`, backgroundColor: getStatusColor(item.status) },
+                                                ]}
+                                            />
+                                        </View>
+                                        <Text style={[styles.itemStatus, { color: getStatusColor(item.status) }]}>
+                                            {getStatusText(item)}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                            <TouchableOpacity
+                                style={styles.addItemCard}
+                                activeOpacity={0.7}
+                                onPress={() => setShowAddFood(true)}
+                            >
+                                <Ionicons name="add" size={32} color="#d1d5db" />
+                                <Text style={styles.addItemText}>追加する</Text>
+                            </TouchableOpacity>
+                        </>
+                    )}
                 </View>
             </ScrollView>
-
-            {loading && (
-                <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#6B8E6B" />
-                </View>
-            )}
 
             <AddFoodScreen
                 visible={showAddFood}
@@ -382,14 +385,14 @@ const styles = StyleSheet.create({
         color: '#d1d5db',
     },
     loadingContainer: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        justifyContent: 'center',
+        width: '100%',
+        padding: 48,
         alignItems: 'center',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        zIndex: 1000,
+        justifyContent: 'center',
+    },
+    loadingText: {
+        marginTop: 16,
+        fontSize: 14,
+        color: '#6B8E6B',
     },
 });
