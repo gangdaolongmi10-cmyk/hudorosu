@@ -43,4 +43,3 @@ export const upload = multer({
 
 // アップロードディレクトリのパスをエクスポート
 export const UPLOAD_DIR = uploadDir;
-

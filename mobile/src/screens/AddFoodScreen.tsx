@@ -227,8 +227,6 @@ export default function AddFoodScreen({ visible, onClose, onFoodAdded, onNavigat
                 quantity: quantity || null,
                 memo: null,
             });
-
-            console.log('Stock added successfully');
             
             // コールバックを呼び出して一覧を再描画
             if (onFoodAdded) {
@@ -301,8 +299,6 @@ export default function AddFoodScreen({ visible, onClose, onFoodAdded, onNavigat
                 quantity: formData.quantity?.trim() || null,
                 memo: formData.memo.trim() || null,
             });
-
-            console.log('Stock added successfully');
             
             // コールバックを呼び出して一覧を再描画
             if (onFoodAdded) {

@@ -93,6 +93,12 @@ export const BREADCRUMB_ITEMS: Record<string, BreadcrumbItem[]> = {
     '/admin/settings': [
         { label: '設定' }
     ],
+    '/admin/stock': [
+        { label: '在庫管理' }
+    ],
+    '/admin/report': [
+        { label: '帳票' }
+    ],
 };
 
 // パスからパンくずリストを取得する関数

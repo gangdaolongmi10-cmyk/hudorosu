@@ -282,7 +282,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#EAECE9',
     },
     scrollContent: {
         flexGrow: 1,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     tabContainer: {
         flexDirection: 'row',
         marginBottom: 30,
-        backgroundColor: '#fff',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
         borderRadius: 8,
         padding: 4,
     },
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
         borderRadius: 6,
     },
     tabActive: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#6B8E6B',
     },
     tabText: {
         fontSize: 16,
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 30,
         textAlign: 'center',
-        color: '#333',
+        color: '#3A4D3A',
     },
     inputContainer: {
         marginBottom: 20,
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '600',
         marginBottom: 8,
-        color: '#666',
+        color: '#3A4D3A',
     },
     input: {
         backgroundColor: '#fff',
@@ -339,6 +339,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 12,
         fontSize: 16,
+        color: '#3A4D3A',
     },
     inputError: {
         borderColor: '#ff3b30',
@@ -350,7 +351,7 @@ const styles = StyleSheet.create({
         marginLeft: 4,
     },
     button: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#6B8E6B',
         borderRadius: 8,
         padding: 16,
         alignItems: 'center',

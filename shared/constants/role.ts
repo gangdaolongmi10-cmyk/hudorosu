@@ -12,4 +12,3 @@ export type Role = typeof ROLE[keyof typeof ROLE];
  * デフォルトロール
  */
 export const DEFAULT_ROLE = ROLE.USER;
-

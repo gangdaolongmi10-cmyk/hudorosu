@@ -8,6 +8,7 @@ import { recipesController, getRecipeController, createRecipeController, updateR
 import { faqsController, createFaqController, updateFaqController, deleteFaqController } from "../controllers/admin/faqsController";
 import { loginLogsController } from "../controllers/admin/loginLogsController";
 import { statsController } from "../controllers/admin/statsController";
+import { stocksController, stocksStatsController } from "../controllers/admin/stocksController";
 import { getCurrentUserController, updateUserController as updateCurrentUserController, changePasswordController } from "../controllers/admin/settingsController";
 import { getAppNameController, getSystemSettingsController, updateSystemSettingsController } from "../controllers/admin/systemSettingsController";
 import { uploadAvatarController } from "../controllers/admin/uploadController";
@@ -54,6 +55,8 @@ router.put("/faqs/:id", authMiddleware, adminMiddleware, updateFaqController);
 router.delete("/faqs/:id", authMiddleware, adminMiddleware, deleteFaqController);
 router.get("/login-logs/list", authMiddleware, loginLogsController);
 router.get("/stats", authMiddleware, statsController);
+router.get("/stocks/list", authMiddleware, adminMiddleware, stocksController);
+router.get("/stocks/stats", authMiddleware, adminMiddleware, stocksStatsController);
 
 // 設定関連のルート
 router.get("/settings/me", authMiddleware, getCurrentUserController);

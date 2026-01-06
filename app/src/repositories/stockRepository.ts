@@ -161,6 +161,72 @@ export const stockRepository = {
         }
 
         await stock.destroy();
+    },
+
+    /**
+     * すべての在庫を取得する（管理者用）
+     * 
+     * @param userId ユーザーID（オプション、フィルタリング用）
+     * @param storageType 保存タイプ（オプション）
+     * @returns 在庫の配列
+     */
+    async findAll(userId?: number, storageType?: 'refrigerator' | 'freezer' | 'pantry') {
+        const where: any = {};
+        
+        if (userId) {
+            where.user_id = userId;
+        }
+        
+        if (storageType) {
+            where.storage_type = storageType;
+        }
+
+        return await db.stocks.findAll({
+            where,
+            include: [
+                {
+                    model: db.users,
+                    as: 'user',
+                    attributes: ['id', 'email', 'name', 'role'],
+                    required: true
+                },
+                {
+                    model: db.foods,
+                    as: 'food',
+                    attributes: ['id', 'name', 'category_id'],
+                    include: [
+                        {
+                            model: db.categories,
+                            as: 'category',
+                            attributes: ['id', 'name', 'description']
+                        }
+                    ]
+                }
+            ],
+            attributes: ['id', 'user_id', 'food_id', 'expiry_date', 'storage_type', 'quantity', 'memo', 'created_at', 'updated_at'],
+            order: [['expiry_date', 'ASC']]
+        });
+    },
+
+    /**
+     * 在庫の総数を取得する（管理者用）
+     * 
+     * @param userId ユーザーID（オプション、フィルタリング用）
+     * @param storageType 保存タイプ（オプション）
+     * @returns 在庫の総数
+     */
+    async count(userId?: number, storageType?: 'refrigerator' | 'freezer' | 'pantry') {
+        const where: any = {};
+        
+        if (userId) {
+            where.user_id = userId;
+        }
+        
+        if (storageType) {
+            where.storage_type = storageType;
+        }
+
+        return await db.stocks.count({ where });
     }
 };
 

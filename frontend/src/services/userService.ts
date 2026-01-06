@@ -27,7 +27,11 @@ export const uploadAvatar = async (file: File): Promise<string> => {
  */
 export const fetchUsers = async (): Promise<User[]> => {
     const response = await apiClient.get<UserResponse[]>('/admin/users/list');
-    return response.data;
+    const baseUrl = apiClient.defaults.baseURL || '';
+    return response.data.map(user => ({
+        ...user,
+        avatar_url: user.avatar_url ? buildImageUrl(user.avatar_url, baseUrl) : null
+    }));
 };
 
 /**
@@ -42,7 +46,11 @@ export const createUser = async (data: {
     role?: string;
 }): Promise<User> => {
     const response = await apiClient.post<UserResponse>('/admin/users/create', data);
-    return response.data;
+    const baseUrl = apiClient.defaults.baseURL || '';
+    return {
+        ...response.data,
+        avatar_url: response.data.avatar_url ? buildImageUrl(response.data.avatar_url, baseUrl) : null
+    };
 };
 
 /**
@@ -59,7 +67,11 @@ export const updateUser = async (id: number, data: {
     avatar_url?: string | null;
 }): Promise<User> => {
     const response = await apiClient.put<UserResponse>(`/admin/users/${id}`, data);
-    return response.data;
+    const baseUrl = apiClient.defaults.baseURL || '';
+    return {
+        ...response.data,
+        avatar_url: response.data.avatar_url ? buildImageUrl(response.data.avatar_url, baseUrl) : null
+    };
 };
 
 /**

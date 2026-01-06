@@ -22,6 +22,8 @@ import { RecipeEditPage } from './pages/admin/recipe/RecipeEdit';
 import { FaqIndexPage } from './pages/admin/faq/FaqIndex';
 import { FaqCreatePage } from './pages/admin/faq/FaqCreate';
 import { FaqEditPage } from './pages/admin/faq/FaqEdit';
+import { StockIndexPage } from './pages/admin/stock/StockIndex';
+import { ReportPage } from './pages/admin/report/Report';
 import { NotFoundPage } from './pages/admin/error/NotFound';
 import { AuthLoginPage } from './pages/admin/auth/AuthLogin';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
@@ -207,6 +209,22 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <FaqEditPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/stock" 
+                    element={
+                        <ProtectedRoute>
+                            <StockIndexPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/report" 
+                    element={
+                        <ProtectedRoute>
+                            <ReportPage />
                         </ProtectedRoute>
                     } 
                 />

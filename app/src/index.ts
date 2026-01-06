@@ -18,7 +18,7 @@ const allowedOrigins = process.env.FRONTEND_URL
         "http://localhost:5173",  // フロントエンド（Vite）
         "http://localhost:8081",  // モバイルアプリ（Expo）
         "http://127.0.0.1:8081",  // モバイルアプリ（Expo - 別形式）
-      ];
+    ];
 
 app.use(cors({
     origin: (origin, callback) => {

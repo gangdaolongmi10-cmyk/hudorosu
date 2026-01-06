@@ -3,6 +3,7 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 import { getMasterFoodsController, getMasterFoodsByCategoryController, createUserFoodController } from "../controllers/user/foodsController";
 import { categoriesController } from "../controllers/admin/categoriesController";
 import { getStocksController, getStockByIdController, createStockController, updateStockController, deleteStockController } from "../controllers/user/stocksController";
+import { getUserStocksController } from "../controllers/user/stocksManagementController";
 import { getRecommendedRecipesController, getRecipesController, getRecipeByIdController } from "../controllers/user/recipesController";
 import { getFaqsController } from "../controllers/user/faqsController";
 
@@ -20,6 +21,8 @@ router.get("/stocks/:id", authMiddleware, getStockByIdController);
 router.post("/stocks", authMiddleware, createStockController);
 router.put("/stocks/:id", authMiddleware, updateStockController);
 router.delete("/stocks/:id", authMiddleware, deleteStockController);
+// 在庫管理画面用（一般ユーザー向け）
+router.get("/stocks/management", authMiddleware, getUserStocksController);
 
 // レシピルート
 router.get("/recipes/recommended", authMiddleware, getRecommendedRecipesController);

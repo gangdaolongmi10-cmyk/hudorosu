@@ -18,7 +18,13 @@ export const UserEditPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<{
+        email: string;
+        password: string;
+        confirmPassword: string;
+        name: string;
+        role: string;
+    }>({
         email: '',
         password: '',
         confirmPassword: '',
@@ -54,7 +60,7 @@ export const UserEditPage: React.FC = () => {
                     password: '',
                     confirmPassword: '',
                     name: foundUser.name || '',
-                    role: (foundUser.role as typeof ROLE.USER | typeof ROLE.ADMIN) || ROLE.USER,
+                    role: foundUser.role || ROLE.USER,
                 });
                 setAvatarPreview(foundUser.avatar_url || null);
                 setAvatarFile(null);
@@ -113,19 +119,52 @@ export const UserEditPage: React.FC = () => {
 
             // 新しい画像が選択されている場合
             if (avatarFile) {
-                // ファイルをアップロードしてURLを取得
-                avatarUrl = await uploadAvatar(avatarFile);
+                // ファイルをアップロードしてURLを取得（フルURLが返される）
+                const fullUrl = await uploadAvatar(avatarFile);
+                // バックエンドに送信する際は相対パスに変換
+                // フルURLから相対パスを抽出（例: 'http://localhost:3000/api/uploads/file.jpg' -> '/api/uploads/file.jpg'）
+                if (fullUrl.startsWith('http://') || fullUrl.startsWith('https://')) {
+                    const url = new URL(fullUrl);
+                    avatarUrl = url.pathname;
+                } else {
+                    avatarUrl = fullUrl;
+                }
             } else if (avatarPreview === null && user?.avatar_url) {
                 // 画像が削除された場合（既存の画像があったが、プレビューがnullになった）
                 avatarUrl = null;
             } else if (avatarPreview && !avatarFile) {
                 // 既存の画像をそのまま使用（変更なし）
-                // avatarPreviewがURLの場合はそのまま、base64の場合は既存のURLを使用
-                if (avatarPreview.startsWith('http://') || avatarPreview.startsWith('https://') || avatarPreview.startsWith('/api/')) {
+                // avatarPreviewがフルURLの場合は相対パスに変換、base64の場合は既存のURLを使用
+                if (avatarPreview.startsWith('http://') || avatarPreview.startsWith('https://')) {
+                    const url = new URL(avatarPreview);
+                    avatarUrl = url.pathname;
+                } else if (avatarPreview.startsWith('/api/')) {
+                    // 既に相対パスの場合はそのまま
                     avatarUrl = avatarPreview;
+                } else if (avatarPreview.startsWith('data:')) {
+                    // base64の場合は既存のURLを維持（相対パスに変換）
+                    if (user?.avatar_url) {
+                        if (user.avatar_url.startsWith('http://') || user.avatar_url.startsWith('https://')) {
+                            const url = new URL(user.avatar_url);
+                            avatarUrl = url.pathname;
+                        } else {
+                            avatarUrl = user.avatar_url;
+                        }
+                    } else {
+                        avatarUrl = null;
+                    }
                 } else {
-                    // base64の場合は既存のURLを維持
-                    avatarUrl = user?.avatar_url;
+                    // その他の場合は既存のURLを維持（相対パスに変換）
+                    if (user?.avatar_url) {
+                        if (user.avatar_url.startsWith('http://') || user.avatar_url.startsWith('https://')) {
+                            const url = new URL(user.avatar_url);
+                            avatarUrl = url.pathname;
+                        } else {
+                            avatarUrl = user.avatar_url;
+                        }
+                    } else {
+                        avatarUrl = null;
+                    }
                 }
             }
 
