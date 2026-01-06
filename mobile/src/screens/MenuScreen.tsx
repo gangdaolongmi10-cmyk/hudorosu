@@ -70,7 +70,8 @@ export default function MenuScreen({
                     <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* TODO: 通知設定を追加する */}
+            {/* <TouchableOpacity
                 style={styles.menuItem}
                 activeOpacity={0.7}
             >
@@ -79,7 +80,7 @@ export default function MenuScreen({
                 <View style={styles.menuItemRight}>
                     <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
                 </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
 
         <TouchableOpacity
