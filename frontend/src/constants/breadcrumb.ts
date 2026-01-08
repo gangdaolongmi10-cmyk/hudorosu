@@ -96,6 +96,17 @@ export const BREADCRUMB_ITEMS: Record<string, BreadcrumbItem[]> = {
     '/admin/stock': [
         { label: '在庫管理' }
     ],
+    '/admin/transaction': [
+        { label: '家計簿' }
+    ],
+    '/admin/transaction/create': [
+        { label: '家計簿', path: '/admin/transaction' },
+        { label: '新規記録登録' }
+    ],
+    '/admin/transaction/:id/edit': [
+        { label: '家計簿', path: '/admin/transaction' },
+        { label: '記録編集' }
+    ],
     '/admin/report': [
         { label: '帳票' }
     ],

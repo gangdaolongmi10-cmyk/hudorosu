@@ -62,9 +62,7 @@ export const fetchStockById = async (id: number): Promise<Stock> => {
  */
 export const createStock = async (data: CreateStockData): Promise<Stock> => {
     try {
-        console.log('Sending stock creation request:', data);
         const response = await apiClient.post<Stock>('/stocks', data);
-        console.log('Stock creation response:', response.data);
         return response.data;
     } catch (error: any) {
         console.error('Stock creation API error:', error);

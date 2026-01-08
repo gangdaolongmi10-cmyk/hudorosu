@@ -59,7 +59,23 @@ npm run dev:frontend
 npm run dev:mobile
 ```
 
-### 3. Docker Composeを使用
+### 3. データベースマイグレーション
+
+家計簿機能用のデータベーステーブルを作成するには、以下のコマンドを実行してください：
+
+```bash
+# バックエンドディレクトリに移動
+cd app
+
+# マイグレーションを実行
+npm run migrate
+```
+
+これにより、以下のテーブルが作成されます：
+- `transaction_categories` - 記録カテゴリテーブル
+- `transactions` - 記録テーブル
+
+### 4. Docker Composeを使用
 
 ```bash
 docker-compose up

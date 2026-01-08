@@ -11,6 +11,8 @@ var _recipe_foods = require("./recipe_foods");
 var _recipes = require("./recipes");
 var _settings = require("./settings");
 var _stocks = require("./stocks");
+var _transaction_categories = require("./transaction_categories");
+var _transactions = require("./transactions");
 var _users = require("./users");
 var _faqs = require("./faqs");
 
@@ -27,6 +29,8 @@ function initModels(sequelize) {
   var recipes = _recipes(sequelize, DataTypes);
   var settings = _settings(sequelize, DataTypes);
   var stocks = _stocks(sequelize, DataTypes);
+  var transaction_categories = _transaction_categories(sequelize, DataTypes);
+  var transactions = _transactions(sequelize, DataTypes);
   var users = _users(sequelize, DataTypes);
   var faqs = _faqs(sequelize, DataTypes);
 
@@ -50,6 +54,12 @@ function initModels(sequelize) {
   users.hasMany(stocks, { as: "stocks", foreignKey: "user_id"});
   stocks.belongsTo(foods, { as: "food", foreignKey: "food_id"});
   foods.hasMany(stocks, { as: "stocks", foreignKey: "food_id"});
+  transaction_categories.belongsTo(users, { as: "user", foreignKey: "user_id"});
+  users.hasMany(transaction_categories, { as: "transaction_categories", foreignKey: "user_id"});
+  transactions.belongsTo(users, { as: "user", foreignKey: "user_id"});
+  users.hasMany(transactions, { as: "transactions", foreignKey: "user_id"});
+  transactions.belongsTo(transaction_categories, { as: "category", foreignKey: "category_id"});
+  transaction_categories.hasMany(transactions, { as: "transactions", foreignKey: "category_id"});
   recipe_foods.belongsTo(recipes, { as: "recipe", foreignKey: "recipe_id"});
   recipe_foods.belongsTo(foods, { as: "food", foreignKey: "food_id"});
   recipes.belongsToMany(foods, { as: 'food_id_foods', through: recipe_foods, foreignKey: "recipe_id", otherKey: "food_id" });
@@ -68,6 +78,8 @@ function initModels(sequelize) {
     recipes,
     settings,
     stocks,
+    transaction_categories,
+    transactions,
     users,
     faqs,
   };

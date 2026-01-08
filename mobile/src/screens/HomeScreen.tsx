@@ -11,12 +11,14 @@ import { Ionicons } from '@expo/vector-icons';
 import StockScreen from './StockScreen';
 import RecipeScreen from './RecipeScreen';
 import PlanScreen from './PlanScreen';
+import TransactionScreen from './TransactionScreen';
 import MenuScreen from './MenuScreen';
 import ProfileEditScreen from './ProfileEditScreen';
 import SecurityScreen from './SecurityScreen';
 import HelpCenterScreen from './HelpCenterScreen';
 import TermsOfServiceScreen from './TermsOfServiceScreen';
 import PrivacyPolicyScreen from './PrivacyPolicyScreen';
+import FoodBudgetScreen from './FoodBudgetScreen';
 import ScreenHeader from '../components/ScreenHeader';
 
 export default function HomeScreen() {
@@ -26,6 +28,7 @@ export default function HomeScreen() {
     const [showHelpCenter, setShowHelpCenter] = useState(false);
     const [showTerms, setShowTerms] = useState(false);
     const [showPrivacy, setShowPrivacy] = useState(false);
+    const [showFoodBudget, setShowFoodBudget] = useState(false);
 
     return (
         <View style={styles.container}>
@@ -61,16 +64,21 @@ export default function HomeScreen() {
                         {activeTab === 'stock' && <StockScreen onNavigateToStock={() => setActiveTab('stock')} />}
                         {activeTab === 'recipe' && <RecipeScreen />}
                         {activeTab === 'calendar' && <PlanScreen />}
+                        {activeTab === 'transaction' && <TransactionScreen onNavigateToTransaction={() => setActiveTab('transaction')} />}
                         {activeTab === 'settings' && (
                             <MenuScreen
                                 onNavigateToProfileEdit={() => setShowProfileEdit(true)}
                                 onNavigateToSecurity={() => setShowSecurity(true)}
                                 onNavigateToHelpCenter={() => setShowHelpCenter(true)}
+                                onNavigateToFoodBudget={() => setShowFoodBudget(true)}
                             />
                         )}
                     </>
                 )}
             </View>
+
+            {/* 目標食費設定画面（Modal） */}
+            <FoodBudgetScreen visible={showFoodBudget} onClose={() => setShowFoodBudget(false)} />
 
             {/* タブバー */}
             <View style={styles.tabBar}>
@@ -152,6 +160,33 @@ export default function HomeScreen() {
                         ]}
                     >
                         カレンダー
+                    </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={() => setActiveTab('transaction')}
+                    style={styles.tabButton}
+                    activeOpacity={0.7}
+                >
+                    <View
+                        style={[
+                            styles.tabIconContainer,
+                            activeTab === 'transaction' && styles.tabIconContainerActive,
+                        ]}
+                    >
+                        <Ionicons
+                            name="wallet"
+                            size={22}
+                            color={activeTab === 'transaction' ? '#6B8E6B' : '#d1d5db'}
+                        />
+                    </View>
+                    <Text
+                        style={[
+                            styles.tabLabel,
+                            activeTab === 'transaction' && styles.tabLabelActive,
+                        ]}
+                    >
+                        家計簿
                     </Text>
                 </TouchableOpacity>
 

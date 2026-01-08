@@ -23,6 +23,9 @@ import { FaqIndexPage } from './pages/admin/faq/FaqIndex';
 import { FaqCreatePage } from './pages/admin/faq/FaqCreate';
 import { FaqEditPage } from './pages/admin/faq/FaqEdit';
 import { StockIndexPage } from './pages/admin/stock/StockIndex';
+import { TransactionIndexPage } from './pages/admin/transaction/TransactionIndex';
+import { TransactionCreatePage } from './pages/admin/transaction/TransactionCreate';
+import { TransactionEditPage } from './pages/admin/transaction/TransactionEdit';
 import { ReportPage } from './pages/admin/report/Report';
 import { NotFoundPage } from './pages/admin/error/NotFound';
 import { AuthLoginPage } from './pages/admin/auth/AuthLogin';
@@ -217,6 +220,30 @@ function App() {
                     element={
                         <ProtectedRoute>
                             <StockIndexPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/transaction" 
+                    element={
+                        <ProtectedRoute>
+                            <TransactionIndexPage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/transaction/create" 
+                    element={
+                        <ProtectedRoute>
+                            <TransactionCreatePage />
+                        </ProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/transaction/:id/edit" 
+                    element={
+                        <ProtectedRoute>
+                            <TransactionEditPage />
                         </ProtectedRoute>
                     } 
                 />

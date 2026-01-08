@@ -27,6 +27,35 @@ export const userRepository = {
                 role: ROLE.USER
             }
         });
+    },
+
+    /**
+     * ユーザーIDでユーザーを取得する
+     * 
+     * @param userId ユーザーID
+     * @returns ユーザー情報
+     */
+    async findById(userId: number) {
+        return await db.users.findByPk(userId, {
+            attributes: ['id', 'email', 'name', 'role', 'avatar_url', 'daily_food_budget', 'created_at', 'updated_at']
+        });
+    },
+
+    /**
+     * ユーザーの目標食費を更新する
+     * 
+     * @param userId ユーザーID
+     * @param dailyFoodBudget 1日の目標食費（円）
+     * @returns 更新されたユーザー情報
+     */
+    async updateDailyFoodBudget(userId: number, dailyFoodBudget: number | null) {
+        const user = await db.users.findByPk(userId);
+        if (!user) {
+            throw new Error('ユーザーが見つかりません');
+        }
+
+        await user.update({ daily_food_budget: dailyFoodBudget });
+        return await this.findById(userId);
     }
 };
 

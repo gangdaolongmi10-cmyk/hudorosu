@@ -58,3 +58,10 @@ export const fetchRecipeById = async (id: number): Promise<Recipe> => {
     return response.data;
 };
 
+/**
+ * レシピを削除する
+ */
+export const deleteRecipe = async (id: number): Promise<void> => {
+    await apiClient.delete(`/recipes/${id}`);
+};
+

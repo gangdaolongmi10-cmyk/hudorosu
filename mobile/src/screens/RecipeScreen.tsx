@@ -7,14 +7,17 @@ import {
     Image,
     ActivityIndicator,
     TouchableOpacity,
+    Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { fetchRecommendedRecipes, Recipe } from '../services/recipeService';
+import { fetchRecommendedRecipes, deleteRecipe, Recipe } from '../services/recipeService';
+import FlashMessage from '../components/FlashMessage';
 
 export default function RecipeScreen() {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [flashMessage, setFlashMessage] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
     useEffect(() => {
         loadRecipes();
@@ -44,6 +47,32 @@ export default function RecipeScreen() {
 
     const getDefaultImage = () => {
         return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80';
+    };
+
+    const handleDelete = async (id: number) => {
+        Alert.alert(
+            '削除確認',
+            'このレシピを削除してもよろしいですか？',
+            [
+                { text: 'キャンセル', style: 'cancel' },
+                {
+                    text: '削除',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            await deleteRecipe(id);
+                            loadRecipes();
+                            setFlashMessage({
+                                message: 'レシピを削除しました',
+                                type: 'success',
+                            });
+                        } catch (error: any) {
+                            Alert.alert('エラー', '削除に失敗しました');
+                        }
+                    },
+                },
+            ]
+        );
     };
 
     const featuredRecipe = recipes.length > 0 ? recipes[0] : null;
@@ -122,40 +151,57 @@ export default function RecipeScreen() {
                         ) : (
                             <View style={styles.recipeList}>
                                 {recipes.map((recipe) => (
-                                    <TouchableOpacity key={recipe.id} style={styles.recipeCard}>
-                                        {recipe.image_url ? (
-                                            <Image
-                                                source={{ uri: recipe.image_url }}
-                                                style={styles.recipeCardImage}
-                                            />
-                                        ) : (
-                                            <View style={styles.recipeCardImagePlaceholder}>
-                                                <Ionicons name="restaurant" size={32} color="#9ca3af" />
-                                            </View>
-                                        )}
-                                        <Text style={styles.recipeCardTitle} numberOfLines={2}>
-                                            {recipe.name}
-                                        </Text>
-                                        <View style={styles.recipeCardMeta}>
-                                            {recipe.cooking_time && (
-                                                <Text style={styles.recipeCardTime}>
-                                                    {formatCookingTime(recipe.cooking_time)}
-                                                </Text>
-                                            )}
-                                            {recipe.matchRatio !== undefined && (
-                                                <View style={styles.matchBadge}>
-                                                    <Text style={styles.matchBadgeText}>
-                                                        {Math.round(recipe.matchRatio * 100)}
-                                                    </Text>
+                                    <View key={recipe.id} style={styles.recipeCardContainer}>
+                                        <TouchableOpacity style={styles.recipeCard}>
+                                            {recipe.image_url ? (
+                                                <Image
+                                                    source={{ uri: recipe.image_url }}
+                                                    style={styles.recipeCardImage}
+                                                />
+                                            ) : (
+                                                <View style={styles.recipeCardImagePlaceholder}>
+                                                    <Ionicons name="restaurant" size={32} color="#9ca3af" />
                                                 </View>
                                             )}
-                                        </View>
-                                    </TouchableOpacity>
+                                            <Text style={styles.recipeCardTitle} numberOfLines={2}>
+                                                {recipe.name}
+                                            </Text>
+                                            <View style={styles.recipeCardMeta}>
+                                                {recipe.cooking_time && (
+                                                    <Text style={styles.recipeCardTime}>
+                                                        {formatCookingTime(recipe.cooking_time)}
+                                                    </Text>
+                                                )}
+                                                {recipe.matchRatio !== undefined && (
+                                                    <View style={styles.matchBadge}>
+                                                        <Text style={styles.matchBadgeText}>
+                                                            {Math.round(recipe.matchRatio * 100)}
+                                                        </Text>
+                                                    </View>
+                                                )}
+                                            </View>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={() => handleDelete(recipe.id)}
+                                            style={styles.deleteButton}
+                                        >
+                                            <Ionicons name="trash-outline" size={16} color="#ef4444" />
+                                        </TouchableOpacity>
+                                    </View>
                                 ))}
                             </View>
                         )}
                     </View>
                 </>
+            )}
+            {/* フラッシュメッセージ */}
+            {flashMessage && (
+                <FlashMessage
+                    message={flashMessage.message}
+                    type={flashMessage.type}
+                    visible={true}
+                    onHide={() => setFlashMessage(null)}
+                />
             )}
         </ScrollView>
     );
@@ -311,19 +357,36 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'space-between',
     },
-    recipeCard: {
+    recipeCardContainer: {
         width: '48%',
+        marginBottom: 16,
+        position: 'relative',
+    },
+    recipeCard: {
+        width: '100%',
         backgroundColor: '#ffffff',
         borderRadius: 32,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: '#f9fafb',
-        marginBottom: 16,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
         shadowRadius: 2,
         elevation: 1,
+    },
+    deleteButton: {
+        position: 'absolute',
+        top: 8,
+        right: 8,
+        backgroundColor: '#ffffff',
+        borderRadius: 16,
+        padding: 6,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
     },
     recipeCardImage: {
         width: '100%',

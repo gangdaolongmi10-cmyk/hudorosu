@@ -91,3 +91,50 @@ export const getRecipeByIdController = async (req: AuthRequest, res: Response) =
     }
 };
 
+/**
+ * レシピを削除（ユーザー用）
+ */
+export const deleteRecipeController = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.id;
+        if (!userId) {
+            return res.status(401).json({ 
+                error: '認証が必要です' 
+            });
+        }
+
+        const { id } = req.params;
+        const recipeId = parseInt(id, 10);
+        
+        if (isNaN(recipeId)) {
+            return res.status(400).json({ 
+                error: '無効なレシピIDです' 
+            });
+        }
+
+        // レシピの存在確認
+        const existingRecipe = await recipeRepository.findById(recipeId);
+        if (!existingRecipe) {
+            return res.status(404).json({ 
+                error: 'レシピが見つかりません' 
+            });
+        }
+
+        await recipeRepository.delete(recipeId);
+
+        res.status(200).json({ 
+            message: 'レシピが正常に削除されました' 
+        });
+    } catch (error: any) {
+        console.error('Delete recipe error:', error);
+        if (error.message === '料理が見つかりません') {
+            return res.status(404).json({ 
+                error: error.message 
+            });
+        }
+        res.status(500).json({ 
+            error: 'レシピの削除中にエラーが発生しました' 
+        });
+    }
+};
+

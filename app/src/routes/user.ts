@@ -4,8 +4,28 @@ import { getMasterFoodsController, getMasterFoodsByCategoryController, createUse
 import { categoriesController } from "../controllers/admin/categoriesController";
 import { getStocksController, getStockByIdController, createStockController, updateStockController, deleteStockController } from "../controllers/user/stocksController";
 import { getUserStocksController } from "../controllers/user/stocksManagementController";
-import { getRecommendedRecipesController, getRecipesController, getRecipeByIdController } from "../controllers/user/recipesController";
+import { getRecommendedRecipesController, getRecipesController, getRecipeByIdController, deleteRecipeController } from "../controllers/user/recipesController";
 import { getFaqsController } from "../controllers/user/faqsController";
+import { 
+    getTransactionsController, 
+    getTransactionByIdController, 
+    createTransactionController, 
+    updateTransactionController, 
+    deleteTransactionController,
+    getTransactionStatsController
+} from "../controllers/user/transactionsController";
+import {
+    getTransactionCategoriesController,
+    getTransactionCategoryByIdController,
+    createTransactionCategoryController,
+    updateTransactionCategoryController,
+    deleteTransactionCategoryController
+} from "../controllers/user/transactionCategoriesController";
+import {
+    getDailyFoodBudgetController,
+    setDailyFoodBudgetController,
+    getTodayFoodExpenseController
+} from "../controllers/user/foodBudgetController";
 
 const router = Router();
 
@@ -28,8 +48,29 @@ router.get("/stocks/management", authMiddleware, getUserStocksController);
 router.get("/recipes/recommended", authMiddleware, getRecommendedRecipesController);
 router.get("/recipes", authMiddleware, getRecipesController);
 router.get("/recipes/:id", authMiddleware, getRecipeByIdController);
+router.delete("/recipes/:id", authMiddleware, deleteRecipeController);
 
 // FAQルート
 router.get("/faqs", authMiddleware, getFaqsController);
+
+// 家計簿カテゴリルート
+router.get("/transaction-categories", authMiddleware, getTransactionCategoriesController);
+router.get("/transaction-categories/:id", authMiddleware, getTransactionCategoryByIdController);
+router.post("/transaction-categories", authMiddleware, createTransactionCategoryController);
+router.put("/transaction-categories/:id", authMiddleware, updateTransactionCategoryController);
+router.delete("/transaction-categories/:id", authMiddleware, deleteTransactionCategoryController);
+
+// 家計簿記録ルート
+router.get("/transactions", authMiddleware, getTransactionsController);
+router.get("/transactions/stats", authMiddleware, getTransactionStatsController);
+router.get("/transactions/:id", authMiddleware, getTransactionByIdController);
+router.post("/transactions", authMiddleware, createTransactionController);
+router.put("/transactions/:id", authMiddleware, updateTransactionController);
+router.delete("/transactions/:id", authMiddleware, deleteTransactionController);
+
+// 目標食費ルート
+router.get("/food-budget", authMiddleware, getDailyFoodBudgetController);
+router.put("/food-budget", authMiddleware, setDailyFoodBudgetController);
+router.get("/food-budget/today", authMiddleware, getTodayFoodExpenseController);
 
 export default router;
