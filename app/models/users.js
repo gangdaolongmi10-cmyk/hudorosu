@@ -24,6 +24,11 @@ module.exports = function(sequelize, DataTypes) {
     avatar_url: {
       type: DataTypes.STRING(255),
       allowNull: true
+    },
+    daily_food_budget: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: '1日の目標食費（円）'
     }
   }, {
     sequelize,

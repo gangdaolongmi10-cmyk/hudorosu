@@ -6,6 +6,7 @@ import {
     StyleSheet,
     StatusBar,
     Platform,
+    Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import StockScreen from './StockScreen';
@@ -13,22 +14,49 @@ import RecipeScreen from './RecipeScreen';
 import PlanScreen from './PlanScreen';
 import TransactionScreen from './TransactionScreen';
 import MenuScreen from './MenuScreen';
+import ProfileScreen from './ProfileScreen';
 import ProfileEditScreen from './ProfileEditScreen';
 import SecurityScreen from './SecurityScreen';
 import HelpCenterScreen from './HelpCenterScreen';
 import TermsOfServiceScreen from './TermsOfServiceScreen';
 import PrivacyPolicyScreen from './PrivacyPolicyScreen';
 import FoodBudgetScreen from './FoodBudgetScreen';
+import RecipeDetailScreen from './RecipeDetailScreen';
 import ScreenHeader from '../components/ScreenHeader';
+import { useAuth } from '../contexts/AuthContext';
+import { DEFAULT_USER_AVATAR_URL } from '../constants/user';
 
 export default function HomeScreen() {
+    const { user } = useAuth();
     const [activeTab, setActiveTab] = useState('stock');
+    const [showProfile, setShowProfile] = useState(false);
     const [showProfileEdit, setShowProfileEdit] = useState(false);
     const [showSecurity, setShowSecurity] = useState(false);
     const [showHelpCenter, setShowHelpCenter] = useState(false);
     const [showTerms, setShowTerms] = useState(false);
     const [showPrivacy, setShowPrivacy] = useState(false);
     const [showFoodBudget, setShowFoodBudget] = useState(false);
+    const [showRecipeDetail, setShowRecipeDetail] = useState(false);
+    const [selectedRecipeId, setSelectedRecipeId] = useState<number | null>(null);
+
+    // すべてのモーダル/画面を閉じる関数
+    const closeAllModals = () => {
+        setShowProfile(false);
+        setShowProfileEdit(false);
+        setShowSecurity(false);
+        setShowHelpCenter(false);
+        setShowTerms(false);
+        setShowPrivacy(false);
+        setShowFoodBudget(false);
+        setShowRecipeDetail(false);
+        setSelectedRecipeId(null);
+    };
+
+    // タブを切り替える関数
+    const handleTabChange = (tab: string) => {
+        closeAllModals();
+        setActiveTab(tab);
+    };
 
     return (
         <View style={styles.container}>
@@ -41,11 +69,37 @@ export default function HomeScreen() {
             <ScreenHeader 
                 title="キッチン日和" 
                 titleStyle={styles.homeHeaderTitle}
+                rightComponent={
+                    <TouchableOpacity
+                        onPress={() => setShowProfile(true)}
+                        style={styles.profileButton}
+                        activeOpacity={0.7}
+                    >
+                        <Image
+                            source={{
+                                uri: user?.avatar_url || DEFAULT_USER_AVATAR_URL,
+                            }}
+                            style={styles.profileIcon}
+                        />
+                    </TouchableOpacity>
+                }
             />
 
             {/* メインコンテンツ */}
             <View style={styles.mainContent}>
-                {showProfileEdit ? (
+                {showProfile ? (
+                    <ProfileScreen
+                        onBack={() => setShowProfile(false)}
+                        onNavigateToProfileEdit={() => {
+                            setShowProfile(false);
+                            setShowProfileEdit(true);
+                        }}
+                        onNavigateToFoodBudget={() => {
+                            setShowProfile(false);
+                            setShowFoodBudget(true);
+                        }}
+                    />
+                ) : showProfileEdit ? (
                     <ProfileEditScreen onBack={() => setShowProfileEdit(false)} />
                 ) : showSecurity ? (
                     <SecurityScreen onBack={() => setShowSecurity(false)} />
@@ -59,15 +113,30 @@ export default function HomeScreen() {
                     <TermsOfServiceScreen onBack={() => setShowTerms(false)} />
                 ) : showPrivacy ? (
                     <PrivacyPolicyScreen onBack={() => setShowPrivacy(false)} />
+                ) : showRecipeDetail && selectedRecipeId ? (
+                    <RecipeDetailScreen
+                        recipeId={selectedRecipeId}
+                        onBack={() => {
+                            setShowRecipeDetail(false);
+                            setSelectedRecipeId(null);
+                        }}
+                    />
                 ) : (
                     <>
                         {activeTab === 'stock' && <StockScreen onNavigateToStock={() => setActiveTab('stock')} />}
-                        {activeTab === 'recipe' && <RecipeScreen />}
+                        {activeTab === 'recipe' && (
+                            <RecipeScreen
+                                onNavigateToRecipeDetail={(recipeId) => {
+                                    setSelectedRecipeId(recipeId);
+                                    setShowRecipeDetail(true);
+                                }}
+                            />
+                        )}
                         {activeTab === 'calendar' && <PlanScreen />}
                         {activeTab === 'transaction' && <TransactionScreen onNavigateToTransaction={() => setActiveTab('transaction')} />}
                         {activeTab === 'settings' && (
                             <MenuScreen
-                                onNavigateToProfileEdit={() => setShowProfileEdit(true)}
+                                onNavigateToProfileEdit={() => setShowProfile(true)}
                                 onNavigateToSecurity={() => setShowSecurity(true)}
                                 onNavigateToHelpCenter={() => setShowHelpCenter(true)}
                                 onNavigateToFoodBudget={() => setShowFoodBudget(true)}
@@ -83,7 +152,7 @@ export default function HomeScreen() {
             {/* タブバー */}
             <View style={styles.tabBar}>
                 <TouchableOpacity
-                    onPress={() => setActiveTab('stock')}
+                    onPress={() => handleTabChange('stock')}
                     style={styles.tabButton}
                     activeOpacity={0.7}
                 >
@@ -110,7 +179,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                onPress={() => setActiveTab('recipe')}
+                onPress={() => handleTabChange('recipe')}
                 style={styles.tabButton}
                 activeOpacity={0.7}
                 >
@@ -137,7 +206,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => setActiveTab('calendar')}
+                    onPress={() => handleTabChange('calendar')}
                     style={styles.tabButton}
                     activeOpacity={0.7}
                 >
@@ -164,7 +233,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => setActiveTab('transaction')}
+                    onPress={() => handleTabChange('transaction')}
                     style={styles.tabButton}
                     activeOpacity={0.7}
                 >
@@ -191,7 +260,7 @@ export default function HomeScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => setActiveTab('settings')}
+                    onPress={() => handleTabChange('settings')}
                     style={styles.tabButton}
                     activeOpacity={0.7}
                 >
@@ -327,5 +396,17 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginTop: 16,
+    },
+    profileButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        overflow: 'hidden',
+        borderWidth: 2,
+        borderColor: '#6B8E6B',
+    },
+    profileIcon: {
+        width: '100%',
+        height: '100%',
     },
 });

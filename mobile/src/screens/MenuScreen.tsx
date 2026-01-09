@@ -64,17 +64,6 @@ export default function MenuScreen({
             <TouchableOpacity
                 style={styles.menuItem}
                 activeOpacity={0.7}
-                onPress={onNavigateToFoodBudget}
-            >
-                <Ionicons name="restaurant-outline" size={18} color="#6B8E6B" />
-                <Text style={styles.menuItemText}>目標食費設定</Text>
-                <View style={styles.menuItemRight}>
-                    <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.menuItem}
-                activeOpacity={0.7}
                 onPress={onNavigateToHelpCenter}
             >
                 <Ionicons name="help-circle-outline" size={18} color="#6B8E6B" />

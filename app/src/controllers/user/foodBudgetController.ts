@@ -45,23 +45,36 @@ export const setDailyFoodBudgetController = async (req: AuthRequest, res: Respon
         }
 
         const { daily_food_budget } = req.body;
+        console.log('Received daily_food_budget:', daily_food_budget, 'type:', typeof daily_food_budget);
 
-        // バリデーション
+        // 型を統一して数値に変換
+        let budgetValue: number | null = null;
+        
         if (daily_food_budget !== null && daily_food_budget !== undefined) {
-            const budget = parseInt(daily_food_budget, 10);
-            if (isNaN(budget) || budget < 0) {
+            // 既に数値の場合はそのまま使用、文字列の場合はparseIntで変換
+            if (typeof daily_food_budget === 'number') {
+                budgetValue = daily_food_budget;
+            } else if (typeof daily_food_budget === 'string') {
+                budgetValue = parseInt(daily_food_budget, 10);
+            } else {
+                console.error('Invalid daily_food_budget type:', typeof daily_food_budget);
+                return res.status(400).json({ 
+                    error: '有効な金額を入力してください' 
+                });
+            }
+            
+            // バリデーション
+            if (isNaN(budgetValue) || budgetValue < 0) {
+                console.error('Invalid budget value:', budgetValue);
                 return res.status(400).json({ 
                     error: '有効な金額を入力してください' 
                 });
             }
         }
 
-        const user = await userRepository.updateDailyFoodBudget(
-            userId,
-            daily_food_budget !== null && daily_food_budget !== undefined 
-                ? parseInt(daily_food_budget, 10) 
-                : null
-        );
+        console.log('Updating budget to:', budgetValue);
+        const user = await userRepository.updateDailyFoodBudget(userId, budgetValue);
+        console.log('Updated user:', user);
 
         res.status(200).json({ 
             daily_food_budget: user.daily_food_budget,

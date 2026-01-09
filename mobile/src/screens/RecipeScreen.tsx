@@ -10,10 +10,14 @@ import {
     Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { fetchRecommendedRecipes, deleteRecipe, Recipe } from '../services/recipeService';
+import { fetchRecommendedRecipes, Recipe } from '../services/recipeService';
 import FlashMessage from '../components/FlashMessage';
 
-export default function RecipeScreen() {
+interface RecipeScreenProps {
+    onNavigateToRecipeDetail?: (recipeId: number) => void;
+}
+
+export default function RecipeScreen({ onNavigateToRecipeDetail }: RecipeScreenProps) {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -49,31 +53,6 @@ export default function RecipeScreen() {
         return 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80';
     };
 
-    const handleDelete = async (id: number) => {
-        Alert.alert(
-            '削除確認',
-            'このレシピを削除してもよろしいですか？',
-            [
-                { text: 'キャンセル', style: 'cancel' },
-                {
-                    text: '削除',
-                    style: 'destructive',
-                    onPress: async () => {
-                        try {
-                            await deleteRecipe(id);
-                            loadRecipes();
-                            setFlashMessage({
-                                message: 'レシピを削除しました',
-                                type: 'success',
-                            });
-                        } catch (error: any) {
-                            Alert.alert('エラー', '削除に失敗しました');
-                        }
-                    },
-                },
-            ]
-        );
-    };
 
     const featuredRecipe = recipes.length > 0 ? recipes[0] : null;
 
@@ -91,7 +70,11 @@ export default function RecipeScreen() {
             ) : (
                 <>
                     {featuredRecipe && !loading && (
-                        <View style={styles.featuredRecipeCard}>
+                        <TouchableOpacity
+                            style={styles.featuredRecipeCard}
+                            onPress={() => onNavigateToRecipeDetail?.(featuredRecipe.id)}
+                            activeOpacity={0.9}
+                        >
                             <Image
                                 source={{
                                     uri: featuredRecipe.image_url || getDefaultImage(),
@@ -129,7 +112,7 @@ export default function RecipeScreen() {
                                     )}
                                 </View>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     )}
 
                     <View style={styles.aiRecipeSection}>
@@ -152,7 +135,11 @@ export default function RecipeScreen() {
                             <View style={styles.recipeList}>
                                 {recipes.map((recipe) => (
                                     <View key={recipe.id} style={styles.recipeCardContainer}>
-                                        <TouchableOpacity style={styles.recipeCard}>
+                                        <TouchableOpacity
+                                            style={styles.recipeCard}
+                                            onPress={() => onNavigateToRecipeDetail?.(recipe.id)}
+                                            activeOpacity={0.8}
+                                        >
                                             {recipe.image_url ? (
                                                 <Image
                                                     source={{ uri: recipe.image_url }}
@@ -180,12 +167,6 @@ export default function RecipeScreen() {
                                                     </View>
                                                 )}
                                             </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            onPress={() => handleDelete(recipe.id)}
-                                            style={styles.deleteButton}
-                                        >
-                                            <Ionicons name="trash-outline" size={16} color="#ef4444" />
                                         </TouchableOpacity>
                                     </View>
                                 ))}
@@ -374,19 +355,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.05,
         shadowRadius: 2,
         elevation: 1,
-    },
-    deleteButton: {
-        position: 'absolute',
-        top: 8,
-        right: 8,
-        backgroundColor: '#ffffff',
-        borderRadius: 16,
-        padding: 6,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
     },
     recipeCardImage: {
         width: '100%',

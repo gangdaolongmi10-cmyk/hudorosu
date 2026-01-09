@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
     View,
     Text,
@@ -10,7 +10,6 @@ import {
     Alert,
     Platform,
     ScrollView,
-    KeyboardAvoidingView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getDailyFoodBudget, setDailyFoodBudget } from '../services/transactionService';
@@ -40,25 +39,48 @@ export default function FoodBudgetScreen({
     const [submitting, setSubmitting] = useState(false);
     const [budget, setBudget] = useState<string>('');
     const [flashMessage, setFlashMessage] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+    const budgetRef = useRef<string>('');
 
-    useEffect(() => {
-        if (visible) {
-            loadBudget();
-        }
-    }, [visible]);
-
-    const loadBudget = async () => {
+    const loadBudget = useCallback(async () => {
+        // ロード開始時のbudgetの値を保存
+        const budgetAtStart = budgetRef.current;
         setLoading(true);
         try {
             const data = await getDailyFoodBudget();
-            setBudget(data.daily_food_budget?.toString() || '');
+            const budgetValue = data.daily_food_budget?.toString() || '';
+            // ロード開始時と同じ値の場合のみ設定（ユーザーが入力中でない場合）
+            if (budgetRef.current === budgetAtStart) {
+                setBudget(budgetValue);
+                budgetRef.current = budgetValue;
+            }
         } catch (error: any) {
             console.error('Error loading budget:', error);
             Alert.alert('エラー', '目標食費の読み込みに失敗しました');
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        if (visible) {
+            // モーダルが開かれたとき、budgetをリセットしてからロード
+            setBudget('');
+            budgetRef.current = '';
+            loadBudget();
+        } else {
+            // モーダルが閉じられたら状態をリセット
+            setBudget('');
+            budgetRef.current = '';
+        }
+    }, [visible, loadBudget]);
+
+    // budgetの変更を追跡（ユーザーが入力した場合）
+    const handleBudgetChange = useCallback((text: string) => {
+        // 数字のみを許可（小数点を除外）
+        const numericText = text.replace(/[^0-9]/g, '');
+        setBudget(numericText);
+        budgetRef.current = numericText;
+    }, []);
 
     const handleSubmit = async () => {
         const budgetInt = budget.trim() === '' ? null : parseInt(budget.trim(), 10);
@@ -70,7 +92,13 @@ export default function FoodBudgetScreen({
 
         setSubmitting(true);
         try {
-            await setDailyFoodBudget(budgetInt);
+            console.log('Setting budget:', budgetInt, 'from input:', budget);
+            const result = await setDailyFoodBudget(budgetInt);
+            console.log('Budget set successfully:', result);
+            // 保存成功後、表示を更新
+            const savedValue = budgetInt?.toString() || '';
+            setBudget(savedValue);
+            budgetRef.current = savedValue;
             setFlashMessage({
                 message: '目標食費を設定しました',
                 type: 'success',
@@ -80,7 +108,9 @@ export default function FoodBudgetScreen({
             }, 1500);
         } catch (error: any) {
             console.error('Error setting budget:', error);
-            Alert.alert('エラー', '目標食費の設定に失敗しました');
+            console.error('Error details:', error.response?.data);
+            const errorMessage = error.response?.data?.error || error.message || '目標食費の設定に失敗しました';
+            Alert.alert('エラー', errorMessage);
         } finally {
             setSubmitting(false);
         }
@@ -93,87 +123,72 @@ export default function FoodBudgetScreen({
             transparent={true}
             onRequestClose={onClose}
         >
-            <KeyboardAvoidingView
-                style={styles.modalOverlay}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-            >
-                <TouchableOpacity
-                    style={styles.modalOverlay}
-                    activeOpacity={1}
-                    onPress={onClose}
-                >
-                    <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
-                        {/* ヘッダー */}
-                        <View style={styles.header}>
-                            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                                <Ionicons name="close" size={24} color="#1f2937" />
-                            </TouchableOpacity>
-                            <Text style={styles.headerTitle}>1日の目標食費</Text>
-                            <View style={styles.placeholder} />
-                        </View>
-
-                        <ScrollView 
-                            style={styles.content}
-                            contentContainerStyle={styles.contentContainer}
-                            keyboardShouldPersistTaps="handled"
-                            showsVerticalScrollIndicator={false}
-                        >
-                            {loading ? (
-                                <View style={styles.loadingContainer}>
-                                    <ActivityIndicator size="large" color="#6B8E6B" />
-                                </View>
-                            ) : (
-                                <>
-                                    <View style={styles.section}>
-                                        <Text style={styles.label}>目標金額（円）</Text>
-                                        <TextInput
-                                            style={styles.input}
-                                            value={budget}
-                                            onChangeText={(text) => {
-                                                // 数字のみを許可（小数点を除外）
-                                                const numericText = text.replace(/[^0-9]/g, '');
-                                                setBudget(numericText);
-                                            }}
-                                            placeholder="例: 1000"
-                                            placeholderTextColor="#9ca3af"
-                                            keyboardType="number-pad"
-                                            returnKeyType="done"
-                                            blurOnSubmit={true}
-                                        />
-                                        <Text style={styles.hint}>
-                                            空欄にすると目標を解除できます
-                                        </Text>
-                                    </View>
-
-                                    <View style={styles.infoSection}>
-                                        <Ionicons name="information-circle-outline" size={20} color="#6B8E6B" />
-                                        <Text style={styles.infoText}>
-                                            設定した目標食費に基づいて、家計簿画面で今日の食費の残り金額や超過金額が表示されます。
-                                        </Text>
-                                    </View>
-                                </>
-                            )}
-                        </ScrollView>
-
-                        {/* フッター */}
-                        <View style={styles.footer}>
-                            <TouchableOpacity
-                                style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
-                                onPress={handleSubmit}
-                                disabled={submitting}
-                                activeOpacity={0.7}
-                            >
-                                {submitting ? (
-                                    <ActivityIndicator size="small" color="#ffffff" />
-                                ) : (
-                                    <Text style={styles.submitButtonText}>保存</Text>
-                                )}
-                            </TouchableOpacity>
-                        </View>
+            <View style={styles.modalOverlay}>
+                <View style={styles.modalContent}>
+                    {/* ヘッダー */}
+                    <View style={styles.header}>
+                        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                            <Ionicons name="close" size={24} color="#1f2937" />
+                        </TouchableOpacity>
+                        <Text style={styles.headerTitle}>1日の目標食費</Text>
+                        <View style={styles.placeholder} />
                     </View>
-                </TouchableOpacity>
-            </KeyboardAvoidingView>
+
+                    <ScrollView 
+                        style={styles.content}
+                        contentContainerStyle={styles.contentContainer}
+                        keyboardShouldPersistTaps="handled"
+                        showsVerticalScrollIndicator={false}
+                    >
+                        {loading ? (
+                            <View style={styles.loadingContainer}>
+                                <ActivityIndicator size="large" color="#6B8E6B" />
+                            </View>
+                        ) : (
+                            <>
+                                <View style={styles.section}>
+                                    <Text style={styles.label}>目標金額（円）</Text>
+                                    <TextInput
+                                        style={styles.input}
+                                        value={budget}
+                                        onChangeText={handleBudgetChange}
+                                        placeholder="例: 1000"
+                                        placeholderTextColor="#9ca3af"
+                                        keyboardType="number-pad"
+                                        editable={!loading}
+                                    />
+                                    <Text style={styles.hint}>
+                                        空欄にすると目標を解除できます
+                                    </Text>
+                                </View>
+
+                                <View style={styles.infoSection}>
+                                    <Ionicons name="information-circle-outline" size={20} color="#6B8E6B" />
+                                    <Text style={styles.infoText}>
+                                        設定した目標食費に基づいて、家計簿画面で今日の食費の残り金額や超過金額が表示されます。
+                                    </Text>
+                                </View>
+                            </>
+                        )}
+                    </ScrollView>
+
+                    {/* フッター */}
+                    <View style={styles.footer}>
+                        <TouchableOpacity
+                            style={[styles.submitButton, submitting && styles.submitButtonDisabled]}
+                            onPress={handleSubmit}
+                            disabled={submitting}
+                            activeOpacity={0.7}
+                        >
+                            {submitting ? (
+                                <ActivityIndicator size="small" color="#ffffff" />
+                            ) : (
+                                <Text style={styles.submitButtonText}>保存</Text>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
 
             {/* フラッシュメッセージ */}
             {flashMessage && (
@@ -199,7 +214,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 24,
         borderTopRightRadius: 24,
         maxHeight: '90%',
-        width: '100%',
+        paddingBottom: Platform.OS === 'ios' ? 34 : 16,
     },
     header: {
         flexDirection: 'row',

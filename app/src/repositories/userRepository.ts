@@ -54,8 +54,12 @@ export const userRepository = {
             throw new Error('ユーザーが見つかりません');
         }
 
+        console.log('Updating user daily_food_budget:', userId, 'to:', dailyFoodBudget);
         await user.update({ daily_food_budget: dailyFoodBudget });
-        return await this.findById(userId);
+        console.log('User updated, fetching updated user...');
+        const updatedUser = await this.findById(userId);
+        console.log('Updated user daily_food_budget:', updatedUser.daily_food_budget);
+        return updatedUser;
     }
 };
 

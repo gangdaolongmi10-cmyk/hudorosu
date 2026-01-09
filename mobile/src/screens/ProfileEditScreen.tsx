@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     View,
     Text,
@@ -15,11 +15,12 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
 import { updateUser, changePassword, uploadAvatar } from '../services/userService';
+import { getDailyFoodBudget, setDailyFoodBudget } from '../services/transactionService';
 import * as ImagePicker from 'expo-image-picker';
 import ScreenHeader from '../components/ScreenHeader';
 import { DEFAULT_USER_AVATAR_URL } from '../constants/user';
 
-type ActiveTab = 'profile' | 'password';
+type ActiveTab = 'profile' | 'password' | 'budget';
 
 export default function ProfileEditScreen({ onBack }: { onBack: () => void }) {
     const { user, updateUser: updateAuthUser } = useAuth();
@@ -36,12 +37,18 @@ export default function ProfileEditScreen({ onBack }: { onBack: () => void }) {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    // 目標食費設定用の状態
+    const [budget, setBudget] = useState<string>('');
+    const [budgetLoading, setBudgetLoading] = useState(false);
+    const budgetRef = useRef<string>('');
+
     // エラー状態
     const [errors, setErrors] = useState<{
         name?: string;
         currentPassword?: string;
         newPassword?: string;
         confirmPassword?: string;
+        budget?: string;
     }>({});
 
     useEffect(() => {
@@ -51,6 +58,31 @@ export default function ProfileEditScreen({ onBack }: { onBack: () => void }) {
             setAvatarFile(null);
         }
     }, [user]);
+
+    // 目標食費を読み込む
+    const loadBudget = useCallback(async () => {
+        const budgetAtStart = budgetRef.current;
+        setBudgetLoading(true);
+        try {
+            const data = await getDailyFoodBudget();
+            const budgetValue = data.daily_food_budget?.toString() || '';
+            if (budgetRef.current === budgetAtStart) {
+                setBudget(budgetValue);
+                budgetRef.current = budgetValue;
+            }
+        } catch (error: any) {
+            console.error('Error loading budget:', error);
+        } finally {
+            setBudgetLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (activeTab === 'budget') {
+            budgetRef.current = '';
+            loadBudget();
+        }
+    }, [activeTab, loadBudget]);
 
     // 画像選択の許可をリクエスト
     const requestImagePermission = async () => {
@@ -256,6 +288,19 @@ export default function ProfileEditScreen({ onBack }: { onBack: () => void }) {
                             パスワード
                         </Text>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.tab, activeTab === 'budget' && styles.tabActive]}
+                        onPress={() => setActiveTab('budget')}
+                    >
+                        <Text
+                            style={[
+                                styles.tabText,
+                                activeTab === 'budget' && styles.tabTextActive,
+                            ]}
+                        >
+                            目標食費
+                        </Text>
+                    </TouchableOpacity>
                 </View>
 
                 {/* プロフィール編集タブ */}
@@ -427,6 +472,69 @@ export default function ProfileEditScreen({ onBack }: { onBack: () => void }) {
                         </TouchableOpacity>
                     </View>
                 )}
+
+                {/* 目標食費設定タブ */}
+                {activeTab === 'budget' && (
+                    <View style={styles.content}>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.label}>目標金額（円）</Text>
+                            <TextInput
+                                style={[styles.input, errors.budget && styles.inputError]}
+                                placeholder="例: 1000"
+                                value={budget}
+                                onChangeText={(text) => {
+                                    const numericText = text.replace(/[^0-9]/g, '');
+                                    setBudget(numericText);
+                                    budgetRef.current = numericText;
+                                    if (errors.budget) {
+                                        setErrors({ ...errors, budget: undefined });
+                                    }
+                                }}
+                                keyboardType="number-pad"
+                                editable={!budgetLoading && !isLoading}
+                            />
+                            {errors.budget && (
+                                <Text style={styles.errorText}>{errors.budget}</Text>
+                            )}
+                            <Text style={styles.hint}>
+                                空欄にすると目標を解除できます
+                            </Text>
+                        </View>
+
+                        <TouchableOpacity
+                            style={[styles.button, (isLoading || budgetLoading) && styles.buttonDisabled]}
+                            onPress={async () => {
+                                const budgetInt = budget.trim() === '' ? null : parseInt(budget.trim(), 10);
+                                
+                                if (budgetInt !== null && (isNaN(budgetInt) || budgetInt < 0)) {
+                                    setErrors({ ...errors, budget: '有効な金額を入力してください' });
+                                    return;
+                                }
+
+                                setIsLoading(true);
+                                try {
+                                    await setDailyFoodBudget(budgetInt);
+                                    const savedValue = budgetInt?.toString() || '';
+                                    setBudget(savedValue);
+                                    budgetRef.current = savedValue;
+                                    Alert.alert('成功', '目標食費を設定しました');
+                                } catch (error: any) {
+                                    const errorMessage = error.response?.data?.error || error.message || '目標食費の設定に失敗しました';
+                                    Alert.alert('エラー', errorMessage);
+                                } finally {
+                                    setIsLoading(false);
+                                }
+                            }}
+                            disabled={isLoading || budgetLoading}
+                        >
+                            {(isLoading || budgetLoading) ? (
+                                <ActivityIndicator color="#fff" />
+                            ) : (
+                                <Text style={styles.buttonText}>保存</Text>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                )}
             </ScrollView>
         </KeyboardAvoidingView>
     );
@@ -554,6 +662,11 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: '600',
+    },
+    hint: {
+        fontSize: 12,
+        color: '#9ca3af',
+        marginTop: 8,
     },
 });
 
