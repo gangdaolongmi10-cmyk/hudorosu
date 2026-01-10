@@ -5,6 +5,7 @@
     "strict": false,
     "esModuleInterop": true,
     "outDir": "dist",
+    "rootDir": "src",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
@@ -18,6 +19,7 @@
     "src/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "../shared"
   ]
 }
