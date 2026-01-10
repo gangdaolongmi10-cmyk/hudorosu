@@ -7,7 +7,14 @@ const config = require(__dirname + '/../config/config.json')[env];
 
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  const databaseUrl = process.env[config.use_env_variable];
+  if (!databaseUrl) {
+    throw new Error(`Environment variable ${config.use_env_variable} is not set`);
+  }
+  sequelize = new Sequelize(databaseUrl, {
+    ...config,
+    dialect: config.dialect || 'postgres',
+  });
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
