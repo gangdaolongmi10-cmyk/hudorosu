@@ -4,6 +4,7 @@ import path from "path";
 import healthRoutes from "./routes/health";
 import userRoutes from "./routes/user";
 import adminRoutes from "./routes/admin";
+import { getAllowedOrigins } from "@shared/config";
 
 const app: Application = express();
 const PORT: number = 3000;
@@ -11,14 +12,8 @@ const PORT: number = 3000;
 // Trust proxy（リバースプロキシ経由の場合にIPアドレスを正しく取得するため）
 app.set('trust proxy', true);
 
-// CORS設定
-const allowedOrigins = process.env.FRONTEND_URL 
-    ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-    : [
-        "http://localhost:5173",  // フロントエンド（Vite）
-        "http://localhost:8081",  // モバイルアプリ（Expo）
-        "http://127.0.0.1:8081",  // モバイルアプリ（Expo - 別形式）
-    ];
+// CORS設定（共通設定から取得）
+const allowedOrigins = getAllowedOrigins();
 
 app.use(cors({
     origin: (origin, callback) => {

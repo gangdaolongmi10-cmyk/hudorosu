@@ -1,10 +1,13 @@
 import axios from 'axios';
+import { API_TIMEOUT } from '@shared/config';
+import { getApiUrl } from '../config/env';
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: `${getApiUrl()}/api`, // フロントエンド用の環境変数から取得
     headers: {
         'Content-Type': 'application/json',
     },
+    timeout: API_TIMEOUT, // 共通設定から取得
 });
 
 apiClient.interceptors.request.use(

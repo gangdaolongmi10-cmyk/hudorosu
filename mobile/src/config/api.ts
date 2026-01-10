@@ -1,6 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
+import { getApiBaseUrl as getSharedApiBaseUrl, API_TIMEOUT } from '@shared/config';
 
 // 開発環境では、コンピュータのIPアドレスを使用してください
 // 例: 'http://192.168.1.100:3000/api'
@@ -8,12 +9,12 @@ import Constants from 'expo-constants';
 // 
 // 実機でテストする場合は、以下のIPアドレスをあなたのコンピュータのIPアドレスに変更してください
 // 例: 'http://192.168.1.100:3000/api'
-const DEV_IP_ADDRESS = 'localhost'; // ここを実機のIPアドレスに変更してください（例: '192.168.1.100'）
+const DEV_IP_ADDRESS = process.env.DEV_IP_ADDRESS || 'localhost'; // 環境変数またはデフォルト値
 
 const getApiBaseUrl = () => {
     // 本番環境の場合
     if (Constants.executionEnvironment === 'standalone' || Constants.executionEnvironment === 'storeClient') {
-        return 'https://your-production-api.com/api';
+        return getSharedApiBaseUrl(); // 共通設定から取得
     }
     
     // 開発環境の場合
@@ -33,7 +34,7 @@ const apiClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-    timeout: 10000,
+    timeout: API_TIMEOUT, // 共通設定から取得
 });
 
 apiClient.interceptors.request.use(
