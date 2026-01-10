@@ -29,9 +29,17 @@ module.exports = {
       ssl: {
         require: true,
         rejectUnauthorized: false
+      },
+      // IPv4を強制（IPv6接続の問題を回避）
+      connectTimeout: 10000,
+      // 接続プール設定
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
       }
     },
-    logging: false,
-    url: process.env.DATABASE_URL
+    logging: false
   }
 };
