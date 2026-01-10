@@ -31,6 +31,7 @@ module.exports = {
         rejectUnauthorized: false
       }
     },
-    logging: false
+    logging: false,
+    url: process.env.DATABASE_URL
   }
 };
