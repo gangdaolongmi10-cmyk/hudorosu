@@ -4,8 +4,9 @@ services:
     env: node
     region: singapore
     plan: free
-    buildCommand: cd app && npm install && npm run build
-    startCommand: cd app && npm run migrate && npm start
+    rootDir: app
+    buildCommand: npm install && npm run build
+    startCommand: npm run migrate && npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
@@ -13,17 +14,15 @@ services:
       - key: PORT
         value: 10000
       # 注意: 機密情報（DATABASE_URL、JWT_SECRET）はRenderダッシュボードで設定してください
-      # - key: DATABASE_URL
-      #   sync: false
-      # - key: JWT_SECRET
-      #   sync: false
-      # - key: FRONTEND_URL
-      #   sync: false
-      # - key: PROD_API_URL
-      #   sync: false
+      # 以下の変数はRenderダッシュボードで設定:
+      # - DATABASE_URL (Supabaseの接続文字列)
+      # - JWT_SECRET (ランダムな文字列)
+      # - FRONTEND_URL (VercelのURL)
+      # - PROD_API_URL (RenderのURL、デプロイ後に設定)
 
-databases:
-  - name: hudorosu-db
-    plan: free
-    databaseName: postgres
-    user: postgres
+# データベースはSupabaseを使用するため、Renderのデータベース設定は不要です
+# Supabaseを使用しない場合は、以下のように設定できます:
+# databases:
+#   - name: hudorosu-db
+#     plan: free
+#     # databaseNameとuserは自動生成されるため、指定不要
