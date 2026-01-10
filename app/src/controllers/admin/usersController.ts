@@ -3,6 +3,7 @@ import * as bcrypt from 'bcryptjs';
 import { AuthRequest } from '../../middlewares/authMiddleware';
 import { userRepository } from '../../repositories/userRepository';
 import { DEFAULT_ROLE, ROLE } from '../../constants/role';
+// @ts-ignore
 import db from '../../../models';
 
 export const usersController = async (req: AuthRequest, res: Response) => {

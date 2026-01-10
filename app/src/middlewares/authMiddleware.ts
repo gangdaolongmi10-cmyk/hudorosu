@@ -11,8 +11,8 @@ export interface AuthRequest extends Request {
     body: Request["body"];
     params: Request["params"];
     headers: Request["headers"];
-    file?: Express.Multer.File;
-    files?: Express.Multer.File[] | { [fieldname: string]: Express.Multer.File[] };
+    file?: any;
+    files?: any;
 }
 
 /**

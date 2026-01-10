@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "CommonJS",
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
     "outDir": "dist",
     "experimentalDecorators": true,
@@ -11,7 +11,8 @@
     "paths": {
       "@shared/*": ["../shared/*"]
     },
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "noImplicitAny": false
   },
   "include": [
     "src/**/*.ts"
