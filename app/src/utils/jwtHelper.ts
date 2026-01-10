@@ -17,10 +17,13 @@ export class jwtHelper {
      * @returns JWTトークン
      */
     static createToken(payload: JWTPayload, expiresIn: string = "24h"): string {
-        const token = (jwt.sign as any)(payload, this.jweSecret, {
+        // Renderでのビルド時の型エラーを回避
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const token = jwt.sign(payload, this.jweSecret, {
             expiresIn: expiresIn,
         });
-        return token;
+        return token as string;
     }
     
     /**
