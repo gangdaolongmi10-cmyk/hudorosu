@@ -17,8 +17,8 @@ export class jwtHelper {
      * @returns JWTトークン
      */
     static createToken(payload: JWTPayload, expiresIn: string = "24h"): string {
-        const token = jwt.sign(payload, this.jweSecret, {
-            expiresIn,
+        const token = (jwt.sign as any)(payload, this.jweSecret, {
+            expiresIn: expiresIn,
         });
         return token;
     }
