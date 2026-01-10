@@ -4,7 +4,7 @@ import { getMasterFoodsController, getMasterFoodsByCategoryController, createUse
 import { categoriesController } from "../controllers/admin/categoriesController";
 import { getStocksController, getStockByIdController, createStockController, updateStockController, deleteStockController } from "../controllers/user/stocksController";
 import { getUserStocksController } from "../controllers/user/stocksManagementController";
-import { getRecommendedRecipesController, getRecipesController, getRecipeByIdController, deleteRecipeController } from "../controllers/user/recipesController";
+import { getRecommendedRecipesController, getRecommendedRecipesByBudgetController, getRecipesController, getRecipeByIdController, deleteRecipeController } from "../controllers/user/recipesController";
 import { getFaqsController } from "../controllers/user/faqsController";
 import { 
     getTransactionsController, 
@@ -46,9 +46,42 @@ router.get("/stocks/management", authMiddleware, getUserStocksController);
 
 // レシピルート
 router.get("/recipes/recommended", authMiddleware, getRecommendedRecipesController);
+router.get("/recipes/recommended-by-budget", authMiddleware, getRecommendedRecipesByBudgetController);
 router.get("/recipes", authMiddleware, getRecipesController);
 router.get("/recipes/:id", authMiddleware, getRecipeByIdController);
 router.delete("/recipes/:id", authMiddleware, deleteRecipeController);
+
+// 買い物リスト
+import {
+    getShoppingListController,
+    createShoppingListItemController,
+    updateShoppingListItemController,
+    deleteShoppingListItemController,
+    deletePurchasedItemsController,
+    createShoppingListFromRecipeController
+} from '../controllers/user/shoppingListController';
+
+router.get("/shopping-list", authMiddleware, getShoppingListController);
+router.post("/shopping-list", authMiddleware, createShoppingListItemController);
+router.put("/shopping-list/:id", authMiddleware, updateShoppingListItemController);
+router.delete("/shopping-list/:id", authMiddleware, deleteShoppingListItemController);
+router.delete("/shopping-list/purchased", authMiddleware, deletePurchasedItemsController);
+router.post("/shopping-list/from-recipe", authMiddleware, createShoppingListFromRecipeController);
+
+// お気に入り
+import {
+    getFavoritesController,
+    addFavoriteController,
+    removeFavoriteController,
+    toggleFavoriteController,
+    getFavoriteStatusController
+} from '../controllers/user/favoritesController';
+
+router.get("/favorites", authMiddleware, getFavoritesController);
+router.post("/favorites", authMiddleware, addFavoriteController);
+router.delete("/favorites/:id", authMiddleware, removeFavoriteController);
+router.post("/favorites/toggle", authMiddleware, toggleFavoriteController);
+router.get("/favorites/status", authMiddleware, getFavoriteStatusController);
 
 // FAQルート
 router.get("/faqs", authMiddleware, getFaqsController);

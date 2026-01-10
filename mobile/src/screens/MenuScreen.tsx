@@ -16,11 +16,15 @@ export default function MenuScreen({
     onNavigateToSecurity,
     onNavigateToHelpCenter,
     onNavigateToFoodBudget,
+    onNavigateToShoppingList,
+    onNavigateToFavoriteRecipes,
 }: {
     onNavigateToProfileEdit?: () => void;
     onNavigateToSecurity?: () => void;
     onNavigateToHelpCenter?: () => void;
     onNavigateToFoodBudget?: () => void;
+    onNavigateToShoppingList?: () => void;
+    onNavigateToFavoriteRecipes?: () => void;
 }) {
     const { logout, user } = useAuth();
 
@@ -68,6 +72,28 @@ export default function MenuScreen({
             >
                 <Ionicons name="help-circle-outline" size={18} color="#6B8E6B" />
                 <Text style={styles.menuItemText}>ヘルプセンター</Text>
+                <View style={styles.menuItemRight}>
+                    <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.menuItem}
+                activeOpacity={0.7}
+                onPress={onNavigateToShoppingList}
+            >
+                <Ionicons name="cart-outline" size={18} color="#6B8E6B" />
+                <Text style={styles.menuItemText}>買い物リスト</Text>
+                <View style={styles.menuItemRight}>
+                    <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.menuItem}
+                activeOpacity={0.7}
+                onPress={onNavigateToFavoriteRecipes}
+            >
+                <Ionicons name="heart-outline" size={18} color="#6B8E6B" />
+                <Text style={styles.menuItemText}>お気に入りレシピ</Text>
                 <View style={styles.menuItemRight}>
                     <Ionicons name="chevron-forward" size={18} color="#e5e7eb" />
                 </View>

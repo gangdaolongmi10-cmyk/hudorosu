@@ -32,6 +32,8 @@ export interface Recipe {
     matchRatio?: number;
     availableFoods?: number;
     totalFoods?: number;
+    total_price?: number | null;
+    is_favorite?: boolean;
 }
 
 /**
@@ -39,6 +41,20 @@ export interface Recipe {
  */
 export const fetchRecommendedRecipes = async (): Promise<Recipe[]> => {
     const response = await apiClient.get<Recipe[]>('/recipes/recommended');
+    return response.data;
+};
+
+/**
+ * 1日の食費予算に基づいておすすめレシピを取得する
+ */
+export interface RecommendedRecipesByBudgetResponse {
+    recipes: Recipe[];
+    daily_food_budget: number | null;
+    message: string;
+}
+
+export const fetchRecommendedRecipesByBudget = async (): Promise<RecommendedRecipesByBudgetResponse> => {
+    const response = await apiClient.get<RecommendedRecipesByBudgetResponse>('/recipes/recommended-by-budget');
     return response.data;
 };
 

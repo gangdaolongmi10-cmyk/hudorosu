@@ -15,6 +15,8 @@ var _transaction_categories = require("./transaction_categories");
 var _transactions = require("./transactions");
 var _users = require("./users");
 var _faqs = require("./faqs");
+var _shopping_lists = require("./shopping_lists");
+var _user_recipe_favorites = require("./user_recipe_favorites");
 
 function initModels(sequelize) {
   var SequelizeMeta = _SequelizeMeta(sequelize, DataTypes);
@@ -33,6 +35,8 @@ function initModels(sequelize) {
   var transactions = _transactions(sequelize, DataTypes);
   var users = _users(sequelize, DataTypes);
   var faqs = _faqs(sequelize, DataTypes);
+  var shopping_lists = _shopping_lists(sequelize, DataTypes);
+  var user_recipe_favorites = _user_recipe_favorites(sequelize, DataTypes);
 
   allergens.belongsToMany(foods, { as: 'food_id_foods', through: food_allergens, foreignKey: "allergen_id", otherKey: "food_id" });
   foods.belongsToMany(allergens, { as: 'allergen_id_allergens', through: food_allergens, foreignKey: "food_id", otherKey: "allergen_id" });
@@ -64,6 +68,14 @@ function initModels(sequelize) {
   recipe_foods.belongsTo(foods, { as: "food", foreignKey: "food_id"});
   recipes.belongsToMany(foods, { as: 'food_id_foods', through: recipe_foods, foreignKey: "recipe_id", otherKey: "food_id" });
   foods.belongsToMany(recipes, { as: 'recipe_id_recipes', through: recipe_foods, foreignKey: "food_id", otherKey: "recipe_id" });
+  shopping_lists.belongsTo(users, { as: "user", foreignKey: "user_id"});
+  users.hasMany(shopping_lists, { as: "shopping_lists", foreignKey: "user_id"});
+  shopping_lists.belongsTo(foods, { as: "food", foreignKey: "food_id"});
+  foods.hasMany(shopping_lists, { as: "shopping_lists", foreignKey: "food_id"});
+  user_recipe_favorites.belongsTo(users, { as: "user", foreignKey: "user_id"});
+  users.hasMany(user_recipe_favorites, { as: "user_recipe_favorites", foreignKey: "user_id"});
+  user_recipe_favorites.belongsTo(recipes, { as: "recipe", foreignKey: "recipe_id"});
+  recipes.hasMany(user_recipe_favorites, { as: "user_recipe_favorites", foreignKey: "recipe_id"});
 
   return {
     SequelizeMeta,
@@ -82,6 +94,8 @@ function initModels(sequelize) {
     transactions,
     users,
     faqs,
+    shopping_lists,
+    user_recipe_favorites,
   };
 }
 module.exports = initModels;

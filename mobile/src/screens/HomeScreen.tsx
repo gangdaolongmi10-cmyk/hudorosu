@@ -22,6 +22,8 @@ import TermsOfServiceScreen from './TermsOfServiceScreen';
 import PrivacyPolicyScreen from './PrivacyPolicyScreen';
 import FoodBudgetScreen from './FoodBudgetScreen';
 import RecipeDetailScreen from './RecipeDetailScreen';
+import ShoppingListScreen from './ShoppingListScreen';
+import FavoriteRecipesScreen from './FavoriteRecipesScreen';
 import ScreenHeader from '../components/ScreenHeader';
 import { useAuth } from '../contexts/AuthContext';
 import { DEFAULT_USER_AVATAR_URL } from '../constants/user';
@@ -38,6 +40,8 @@ export default function HomeScreen() {
     const [showFoodBudget, setShowFoodBudget] = useState(false);
     const [showRecipeDetail, setShowRecipeDetail] = useState(false);
     const [selectedRecipeId, setSelectedRecipeId] = useState<number | null>(null);
+    const [showShoppingList, setShowShoppingList] = useState(false);
+    const [showFavoriteRecipes, setShowFavoriteRecipes] = useState(false);
 
     // すべてのモーダル/画面を閉じる関数
     const closeAllModals = () => {
@@ -50,6 +54,8 @@ export default function HomeScreen() {
         setShowFoodBudget(false);
         setShowRecipeDetail(false);
         setSelectedRecipeId(null);
+        setShowShoppingList(false);
+        setShowFavoriteRecipes(false);
     };
 
     // タブを切り替える関数
@@ -121,6 +127,19 @@ export default function HomeScreen() {
                             setSelectedRecipeId(null);
                         }}
                     />
+                ) : showShoppingList ? (
+                    <ShoppingListScreen
+                        onBack={() => setShowShoppingList(false)}
+                    />
+                ) : showFavoriteRecipes ? (
+                    <FavoriteRecipesScreen
+                        onBack={() => setShowFavoriteRecipes(false)}
+                        onNavigateToRecipeDetail={(recipeId) => {
+                            setSelectedRecipeId(recipeId);
+                            setShowFavoriteRecipes(false);
+                            setShowRecipeDetail(true);
+                        }}
+                    />
                 ) : (
                     <>
                         {activeTab === 'stock' && <StockScreen onNavigateToStock={() => setActiveTab('stock')} />}
@@ -140,6 +159,8 @@ export default function HomeScreen() {
                                 onNavigateToSecurity={() => setShowSecurity(true)}
                                 onNavigateToHelpCenter={() => setShowHelpCenter(true)}
                                 onNavigateToFoodBudget={() => setShowFoodBudget(true)}
+                                onNavigateToShoppingList={() => setShowShoppingList(true)}
+                                onNavigateToFavoriteRecipes={() => setShowFavoriteRecipes(true)}
                             />
                         )}
                     </>

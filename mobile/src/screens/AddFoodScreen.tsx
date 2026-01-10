@@ -167,8 +167,8 @@ export default function AddFoodScreen({ visible, onClose, onFoodAdded, onNavigat
     };
 
     const handleSelectFood = (food: MasterFood) => {
+        // 在庫追加フォームに進む
         setSelectedFood(food);
-        // マスタ食材の期限日があれば初期値として設定
         const initialDate = food.expiry_date || food.best_before_date || '';
         setStockFormData({
             date_type: food.expiry_date ? 'expiry' : 'best_before',
@@ -1066,6 +1066,7 @@ export default function AddFoodScreen({ visible, onClose, onFoodAdded, onNavigat
                     </View>
                 </Modal>
             )}
+
         </Modal>
     );
 }

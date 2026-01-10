@@ -40,6 +40,13 @@ export const createFood = async (data: {
     expiry_date?: string | null;
     memo?: string | null;
     allergen_ids?: number[];
+    calories?: number | null;
+    protein?: number | null;
+    fat?: number | null;
+    carbohydrate?: number | null;
+    fiber?: number | null;
+    sodium?: number | null;
+    serving_size?: number | null;
 }): Promise<Food> => {
     const response = await apiClient.post<FoodResponse>('/admin/foods/create', data);
     return {
@@ -61,6 +68,13 @@ export const updateFood = async (id: number, data: {
     expiry_date?: string | null;
     memo?: string | null;
     allergen_ids?: number[];
+    calories?: number | null;
+    protein?: number | null;
+    fat?: number | null;
+    carbohydrate?: number | null;
+    fiber?: number | null;
+    sodium?: number | null;
+    serving_size?: number | null;
 }): Promise<Food> => {
     const response = await apiClient.put<FoodResponse>(`/admin/foods/${id}`, data);
     return {

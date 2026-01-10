@@ -8,6 +8,13 @@ export interface MasterFood {
     best_before_date: string | null;
     expiry_date: string | null;
     memo: string | null;
+    calories: number | null;
+    protein: number | null;
+    fat: number | null;
+    carbohydrate: number | null;
+    fiber: number | null;
+    sodium: number | null;
+    serving_size: number | null;
     created_at: string;
     updated_at: string;
     category?: {

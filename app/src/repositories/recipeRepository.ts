@@ -36,7 +36,7 @@ export const recipeRepository = {
                 {
                     model: db.foods,
                     as: 'food_id_foods',
-                    attributes: ['id', 'name', 'category_id'],
+                    attributes: ['id', 'name', 'category_id', 'price'],
                     through: {
                         attributes: ['quantity']
                     },
@@ -75,7 +75,7 @@ export const recipeRepository = {
                 {
                     model: db.foods,
                     as: 'food_id_foods',
-                    attributes: ['id', 'name', 'category_id'],
+                    attributes: ['id', 'name', 'category_id', 'price'],
                     through: {
                         attributes: ['quantity']
                     },
@@ -282,7 +282,7 @@ export const recipeRepository = {
                 {
                     model: db.foods,
                     as: 'food_id_foods',
-                    attributes: ['id', 'name', 'category_id'],
+                    attributes: ['id', 'name', 'category_id', 'price'],
                     through: {
                         attributes: ['quantity']
                     },
@@ -334,6 +334,35 @@ export const recipeRepository = {
         });
 
         return recipesWithScore;
+    },
+
+    /**
+     * レシピの料金を計算する
+     * 
+     * @param id レシピID
+     * @returns レシピの合計料金（円）
+     */
+    async calculatePrice(id: number): Promise<number | null> {
+        const recipe = await this.findById(id);
+        if (!recipe || !recipe.food_id_foods) {
+            return null;
+        }
+
+        let totalPrice = 0;
+        let hasPrice = false;
+
+        for (const recipeFood of recipe.food_id_foods) {
+            const food = recipeFood.food || recipeFood;
+            if (food && food.price) {
+                const price = parseFloat(food.price.toString());
+                if (!isNaN(price) && price > 0) {
+                    totalPrice += price;
+                    hasPrice = true;
+                }
+            }
+        }
+
+        return hasPrice ? totalPrice : null;
     }
 };
 

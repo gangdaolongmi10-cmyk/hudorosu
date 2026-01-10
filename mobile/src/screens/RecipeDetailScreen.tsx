@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { fetchRecipeById, Recipe } from '../services/recipeService';
+import { createShoppingListFromRecipe } from '../services/shoppingListService';
+import { toggleFavorite } from '../services/favoriteService';
 import ScreenHeader from '../components/ScreenHeader';
 
 interface RecipeDetailScreenProps {
@@ -23,6 +25,7 @@ export default function RecipeDetailScreen({ recipeId, onBack }: RecipeDetailScr
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [addingToShoppingList, setAddingToShoppingList] = useState(false);
 
     useEffect(() => {
         loadRecipe();
@@ -79,10 +82,45 @@ export default function RecipeDetailScreen({ recipeId, onBack }: RecipeDetailScr
         return Array.from(allergenMap.values());
     };
 
-    // レシピ料金を計算（現時点では未実装のため、プレースホルダーを表示）
-    const calculatePrice = (): string => {
-        // TODO: 材料の価格情報が追加されたら、ここで計算する
+    // レシピ料金を表示
+    const formatPrice = (): string => {
+        if (recipe.total_price !== null && recipe.total_price !== undefined) {
+            return `¥${Math.round(recipe.total_price).toLocaleString()}`;
+        }
         return '料金情報は未設定です';
+    };
+
+    // 買い物リストに追加
+    const handleAddToShoppingList = async () => {
+        if (!recipe) return;
+
+        setAddingToShoppingList(true);
+        try {
+            const result = await createShoppingListFromRecipe(recipe.id);
+            Alert.alert('成功', result.message);
+        } catch (error: any) {
+            console.error('Failed to add to shopping list:', error);
+            Alert.alert('エラー', '買い物リストへの追加に失敗しました');
+        } finally {
+            setAddingToShoppingList(false);
+        }
+    };
+
+    // お気に入りのトグル
+    const handleToggleFavorite = async () => {
+        if (!recipe) return;
+
+        setTogglingFavorite(true);
+        try {
+            const result = await toggleFavorite(recipe.id);
+            setRecipe({ ...recipe, is_favorite: result.is_favorite });
+            Alert.alert('成功', result.message);
+        } catch (error: any) {
+            console.error('Failed to toggle favorite:', error);
+            Alert.alert('エラー', 'お気に入りの更新に失敗しました');
+        } finally {
+            setTogglingFavorite(false);
+        }
     };
 
     // Xで共有
@@ -173,13 +211,43 @@ export default function RecipeDetailScreen({ recipeId, onBack }: RecipeDetailScr
                 title="レシピ詳細"
                 onBack={onBack}
                 rightComponent={
-                    <TouchableOpacity
-                        onPress={shareOnX}
-                        style={styles.shareButton}
-                        activeOpacity={0.7}
-                    >
-                        <Text style={styles.xIcon}>X</Text>
-                    </TouchableOpacity>
+                    <View style={styles.headerButtons}>
+                        <TouchableOpacity
+                            onPress={handleToggleFavorite}
+                            style={styles.favoriteButton}
+                            activeOpacity={0.7}
+                            disabled={togglingFavorite}
+                        >
+                            {togglingFavorite ? (
+                                <ActivityIndicator size="small" color="#ef4444" />
+                            ) : (
+                                <Ionicons
+                                    name={recipe.is_favorite ? "heart" : "heart-outline"}
+                                    size={24}
+                                    color={recipe.is_favorite ? "#ef4444" : "#9ca3af"}
+                                />
+                            )}
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleAddToShoppingList}
+                            style={styles.shoppingListButton}
+                            activeOpacity={0.7}
+                            disabled={addingToShoppingList}
+                        >
+                            {addingToShoppingList ? (
+                                <ActivityIndicator size="small" color="#6B8E6B" />
+                            ) : (
+                                <Ionicons name="cart-outline" size={24} color="#6B8E6B" />
+                            )}
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={shareOnX}
+                            style={styles.shareButton}
+                            activeOpacity={0.7}
+                        >
+                            <Text style={styles.xIcon}>X</Text>
+                        </TouchableOpacity>
+                    </View>
                 }
             />
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -211,7 +279,7 @@ export default function RecipeDetailScreen({ recipeId, onBack }: RecipeDetailScr
                     <View style={styles.infoItem}>
                         <Ionicons name="cash-outline" size={20} color="#6B8E6B" />
                         <Text style={styles.infoLabel}>料金:</Text>
-                        <Text style={styles.infoValue}>{calculatePrice()}</Text>
+                        <Text style={styles.infoValue}>{formatPrice()}</Text>
                     </View>
 
                     {/* 時間 */}
@@ -443,6 +511,24 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#374151',
         lineHeight: 24,
+    },
+    headerButtons: {
+        flexDirection: 'row',
+        gap: 8,
+    },
+    favoriteButton: {
+        padding: 8,
+        borderRadius: 20,
+        backgroundColor: '#fef2f2',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    shoppingListButton: {
+        padding: 8,
+        borderRadius: 20,
+        backgroundColor: '#f0fdf4',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     shareButton: {
         padding: 8,

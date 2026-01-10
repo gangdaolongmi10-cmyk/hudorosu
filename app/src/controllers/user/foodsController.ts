@@ -87,7 +87,7 @@ export const createUserFoodController = async (req: AuthRequest, res: Response) 
             });
         }
 
-        const { name, category_id, best_before_date, expiry_date, memo, allergen_ids } = req.body;
+        const { name, category_id, best_before_date, expiry_date, memo, allergen_ids, calories, protein, fat, carbohydrate, fiber, sodium, serving_size } = req.body;
 
         // バリデーション
         if (!name || name.trim() === '') {
@@ -145,6 +145,13 @@ export const createUserFoodController = async (req: AuthRequest, res: Response) 
                 best_before_date: best_before_date && best_before_date.trim() !== '' ? best_before_date : null,
                 expiry_date: expiry_date && expiry_date.trim() !== '' ? expiry_date : null,
                 memo: memo && memo.trim() !== '' ? memo.trim() : null,
+                calories: calories !== undefined && calories !== null && calories !== '' ? parseFloat(calories) : null,
+                protein: protein !== undefined && protein !== null && protein !== '' ? parseFloat(protein) : null,
+                fat: fat !== undefined && fat !== null && fat !== '' ? parseFloat(fat) : null,
+                carbohydrate: carbohydrate !== undefined && carbohydrate !== null && carbohydrate !== '' ? parseFloat(carbohydrate) : null,
+                fiber: fiber !== undefined && fiber !== null && fiber !== '' ? parseFloat(fiber) : null,
+                sodium: sodium !== undefined && sodium !== null && sodium !== '' ? parseFloat(sodium) : null,
+                serving_size: serving_size !== undefined && serving_size !== null && serving_size !== '' ? parseFloat(serving_size) : null,
             }, { transaction });
 
             console.log('Food created with ID:', food.id);
@@ -176,7 +183,7 @@ export const createUserFoodController = async (req: AuthRequest, res: Response) 
                         }
                     }
                 ],
-                attributes: ['id', 'name', 'category_id', 'user_id', 'best_before_date', 'expiry_date', 'memo', 'created_at', 'updated_at']
+                attributes: ['id', 'name', 'category_id', 'user_id', 'best_before_date', 'expiry_date', 'memo', 'calories', 'protein', 'fat', 'carbohydrate', 'fiber', 'sodium', 'serving_size', 'created_at', 'updated_at']
             });
 
             console.log('Food saved to database successfully:', createdFood.id);

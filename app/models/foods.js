@@ -38,6 +38,39 @@ module.exports = function(sequelize, DataTypes) {
     memo: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    calories: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    protein: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    fat: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    carbohydrate: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    fiber: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    sodium: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    serving_size: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true
+    },
+    price: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: true,
+      comment: '食材の価格（円）'
     }
   }, {
     sequelize,

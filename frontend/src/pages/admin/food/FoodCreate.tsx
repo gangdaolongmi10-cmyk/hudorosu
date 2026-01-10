@@ -26,6 +26,13 @@ export const FoodCreatePage: React.FC = () => {
         expiry_date: '',
         memo: '',
         allergen_ids: [] as number[],
+        calories: '',
+        protein: '',
+        fat: '',
+        carbohydrate: '',
+        fiber: '',
+        sodium: '',
+        serving_size: '',
     });
 
     useEffect(() => {
@@ -75,6 +82,13 @@ export const FoodCreatePage: React.FC = () => {
                 expiry_date: formData.expiry_date || null,
                 memo: formData.memo.trim() || null,
                 allergen_ids: formData.allergen_ids.length > 0 ? formData.allergen_ids : undefined,
+                calories: formData.calories ? parseFloat(formData.calories) : null,
+                protein: formData.protein ? parseFloat(formData.protein) : null,
+                fat: formData.fat ? parseFloat(formData.fat) : null,
+                carbohydrate: formData.carbohydrate ? parseFloat(formData.carbohydrate) : null,
+                fiber: formData.fiber ? parseFloat(formData.fiber) : null,
+                sodium: formData.sodium ? parseFloat(formData.sodium) : null,
+                serving_size: formData.serving_size ? parseFloat(formData.serving_size) : null,
             });
             
             // 成功したら食材一覧に戻る
@@ -245,6 +259,104 @@ export const FoodCreatePage: React.FC = () => {
                                         placeholder="メモを入力（任意）"
                                         rows={4}
                                     />
+                                </div>
+
+                                {/* 栄養素セクション */}
+                                <div className="border-t border-slate-200 pt-6">
+                                    <h4 className="text-md font-bold text-slate-900 mb-4">栄養素情報（100gあたり）</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                カロリー (kcal)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.calories}
+                                                onChange={(e) => setFormData({ ...formData, calories: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 100"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                タンパク質 (g)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.protein}
+                                                onChange={(e) => setFormData({ ...formData, protein: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 20"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                脂質 (g)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.fat}
+                                                onChange={(e) => setFormData({ ...formData, fat: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 10"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                炭水化物 (g)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.carbohydrate}
+                                                onChange={(e) => setFormData({ ...formData, carbohydrate: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                食物繊維 (g)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.fiber}
+                                                onChange={(e) => setFormData({ ...formData, fiber: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 5"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                ナトリウム (mg)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.sodium}
+                                                onChange={(e) => setFormData({ ...formData, sodium: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 500"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                1食分の量 (g)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.serving_size}
+                                                onChange={(e) => setFormData({ ...formData, serving_size: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 150"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">

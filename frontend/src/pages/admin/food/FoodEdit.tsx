@@ -29,6 +29,13 @@ export const FoodEditPage: React.FC = () => {
         expiry_date: '',
         memo: '',
         allergen_ids: [] as number[],
+        calories: '',
+        protein: '',
+        fat: '',
+        carbohydrate: '',
+        fiber: '',
+        sodium: '',
+        serving_size: '',
     });
 
     useEffect(() => {
@@ -69,6 +76,13 @@ export const FoodEditPage: React.FC = () => {
                     expiry_date: formatDate(foodData.expiry_date),
                     memo: foodData.memo || '',
                     allergen_ids: foodData.allergens?.map(a => a.id) || [],
+                    calories: foodData.calories ? String(foodData.calories) : '',
+                    protein: foodData.protein ? String(foodData.protein) : '',
+                    fat: foodData.fat ? String(foodData.fat) : '',
+                    carbohydrate: foodData.carbohydrate ? String(foodData.carbohydrate) : '',
+                    fiber: foodData.fiber ? String(foodData.fiber) : '',
+                    sodium: foodData.sodium ? String(foodData.sodium) : '',
+                    serving_size: foodData.serving_size ? String(foodData.serving_size) : '',
                 });
             } catch (err: any) {
                 console.error('データ取得エラー:', err);
@@ -113,6 +127,13 @@ export const FoodEditPage: React.FC = () => {
                 expiry_date: formData.expiry_date || null,
                 memo: formData.memo.trim() || null,
                 allergen_ids: formData.allergen_ids.length > 0 ? formData.allergen_ids : [],
+                calories: formData.calories ? parseFloat(formData.calories) : null,
+                protein: formData.protein ? parseFloat(formData.protein) : null,
+                fat: formData.fat ? parseFloat(formData.fat) : null,
+                carbohydrate: formData.carbohydrate ? parseFloat(formData.carbohydrate) : null,
+                fiber: formData.fiber ? parseFloat(formData.fiber) : null,
+                sodium: formData.sodium ? parseFloat(formData.sodium) : null,
+                serving_size: formData.serving_size ? parseFloat(formData.serving_size) : null,
             });
             
             // 成功したら食材一覧に戻る
@@ -177,6 +198,75 @@ export const FoodEditPage: React.FC = () => {
                         type="error"
                         onClose={() => setError(null)}
                     />
+
+                    {/* 現在の栄養素情報表示セクション */}
+                    {food && (
+                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                            <div className="bg-slate-50 border-b border-slate-200 px-6 py-4">
+                                <h3 className="text-lg font-bold text-slate-900">現在の栄養素情報（100gあたり）</h3>
+                            </div>
+                            <div className="p-6">
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    <div className="bg-slate-50 rounded-lg p-4">
+                                        <div className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">カロリー</div>
+                                        <div className="text-xl font-bold text-slate-900">
+                                            {food.calories !== null && food.calories !== undefined 
+                                                ? `${typeof food.calories === 'string' ? parseFloat(food.calories).toFixed(1) : food.calories.toFixed(1)} kcal`
+                                                : '-'}
+                                        </div>
+                                    </div>
+                                    <div className="bg-blue-50 rounded-lg p-4">
+                                        <div className="text-xs text-blue-600 font-bold uppercase tracking-widest mb-1">タンパク質</div>
+                                        <div className="text-xl font-bold text-blue-900">
+                                            {food.protein !== null && food.protein !== undefined 
+                                                ? `${typeof food.protein === 'string' ? parseFloat(food.protein).toFixed(1) : food.protein.toFixed(1)} g`
+                                                : '-'}
+                                        </div>
+                                    </div>
+                                    <div className="bg-yellow-50 rounded-lg p-4">
+                                        <div className="text-xs text-yellow-600 font-bold uppercase tracking-widest mb-1">脂質</div>
+                                        <div className="text-xl font-bold text-yellow-900">
+                                            {food.fat !== null && food.fat !== undefined 
+                                                ? `${typeof food.fat === 'string' ? parseFloat(food.fat).toFixed(1) : food.fat.toFixed(1)} g`
+                                                : '-'}
+                                        </div>
+                                    </div>
+                                    <div className="bg-green-50 rounded-lg p-4">
+                                        <div className="text-xs text-green-600 font-bold uppercase tracking-widest mb-1">炭水化物</div>
+                                        <div className="text-xl font-bold text-green-900">
+                                            {food.carbohydrate !== null && food.carbohydrate !== undefined 
+                                                ? `${typeof food.carbohydrate === 'string' ? parseFloat(food.carbohydrate).toFixed(1) : food.carbohydrate.toFixed(1)} g`
+                                                : '-'}
+                                        </div>
+                                    </div>
+                                    <div className="bg-purple-50 rounded-lg p-4">
+                                        <div className="text-xs text-purple-600 font-bold uppercase tracking-widest mb-1">食物繊維</div>
+                                        <div className="text-xl font-bold text-purple-900">
+                                            {food.fiber !== null && food.fiber !== undefined 
+                                                ? `${typeof food.fiber === 'string' ? parseFloat(food.fiber).toFixed(1) : food.fiber.toFixed(1)} g`
+                                                : '-'}
+                                        </div>
+                                    </div>
+                                    <div className="bg-orange-50 rounded-lg p-4">
+                                        <div className="text-xs text-orange-600 font-bold uppercase tracking-widest mb-1">ナトリウム</div>
+                                        <div className="text-xl font-bold text-orange-900">
+                                            {food.sodium !== null && food.sodium !== undefined 
+                                                ? `${typeof food.sodium === 'string' ? parseFloat(food.sodium).toFixed(1) : food.sodium.toFixed(1)} mg`
+                                                : '-'}
+                                        </div>
+                                    </div>
+                                    <div className="bg-indigo-50 rounded-lg p-4">
+                                        <div className="text-xs text-indigo-600 font-bold uppercase tracking-widest mb-1">1食分の量</div>
+                                        <div className="text-xl font-bold text-indigo-900">
+                                            {food.serving_size !== null && food.serving_size !== undefined 
+                                                ? `${typeof food.serving_size === 'string' ? parseFloat(food.serving_size).toFixed(1) : food.serving_size.toFixed(1)} g`
+                                                : '-'}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* フォーム */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -283,6 +373,104 @@ export const FoodEditPage: React.FC = () => {
                                         placeholder="メモを入力（任意）"
                                         rows={4}
                                     />
+                                </div>
+
+                                {/* 栄養素セクション */}
+                                <div className="border-t border-slate-200 pt-6">
+                                    <h4 className="text-md font-bold text-slate-900 mb-4">栄養素情報（100gあたり）</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                カロリー (kcal)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.calories}
+                                                onChange={(e) => setFormData({ ...formData, calories: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 100"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                タンパク質 (g)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.protein}
+                                                onChange={(e) => setFormData({ ...formData, protein: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 20"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                脂質 (g)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.fat}
+                                                onChange={(e) => setFormData({ ...formData, fat: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 10"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                炭水化物 (g)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.carbohydrate}
+                                                onChange={(e) => setFormData({ ...formData, carbohydrate: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 50"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                食物繊維 (g)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.fiber}
+                                                onChange={(e) => setFormData({ ...formData, fiber: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 5"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                ナトリウム (mg)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.sodium}
+                                                onChange={(e) => setFormData({ ...formData, sodium: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 500"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-slate-700 mb-2">
+                                                1食分の量 (g)
+                                            </label>
+                                            <input
+                                                type="number"
+                                                step="0.01"
+                                                value={formData.serving_size}
+                                                onChange={(e) => setFormData({ ...formData, serving_size: e.target.value })}
+                                                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
+                                                placeholder="例: 150"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">

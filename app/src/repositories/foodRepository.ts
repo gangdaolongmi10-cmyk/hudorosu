@@ -27,7 +27,7 @@ export const foodRepository = {
                     }
                 }
             ],
-            attributes: ['id', 'name', 'category_id', 'user_id', 'best_before_date', 'expiry_date', 'memo', 'created_at', 'updated_at'],
+            attributes: ['id', 'name', 'category_id', 'user_id', 'best_before_date', 'expiry_date', 'memo', 'calories', 'protein', 'fat', 'carbohydrate', 'fiber', 'sodium', 'serving_size', 'created_at', 'updated_at'],
             order: [['id', 'ASC']]
         });
     },
@@ -90,6 +90,13 @@ export const foodRepository = {
         best_before_date?: string | null;
         expiry_date?: string | null;
         memo?: string | null;
+        calories?: number | null;
+        protein?: number | null;
+        fat?: number | null;
+        carbohydrate?: number | null;
+        fiber?: number | null;
+        sodium?: number | null;
+        serving_size?: number | null;
     }, allergenIds?: number[]) {
         const transaction = await db.sequelize.transaction();
         
@@ -129,6 +136,13 @@ export const foodRepository = {
         best_before_date?: string | null;
         expiry_date?: string | null;
         memo?: string | null;
+        calories?: number | null;
+        protein?: number | null;
+        fat?: number | null;
+        carbohydrate?: number | null;
+        fiber?: number | null;
+        sodium?: number | null;
+        serving_size?: number | null;
     }, allergenIds?: number[]) {
         const transaction = await db.sequelize.transaction();
         
@@ -226,7 +240,7 @@ export const foodRepository = {
                     }
                 }
             ],
-            attributes: ['id', 'name', 'category_id', 'user_id', 'best_before_date', 'expiry_date', 'memo', 'created_at', 'updated_at'],
+            attributes: ['id', 'name', 'category_id', 'user_id', 'best_before_date', 'expiry_date', 'memo', 'calories', 'protein', 'fat', 'carbohydrate', 'fiber', 'sodium', 'serving_size', 'created_at', 'updated_at'],
             order: [['id', 'ASC']],
             limit,
             offset

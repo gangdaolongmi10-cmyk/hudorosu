@@ -25,7 +25,8 @@ export const FoodIndexPage: React.FC = () => {
     const [allergenDropdownOpen, setAllergenDropdownOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [foodToDelete, setFoodToDelete] = useState<Food | null>(null);
-    const [isDeleting, setIsDeleting] = useState(false);
+    const [nutritionModalOpen, setNutritionModalOpen] = useState(false);
+    const [selectedFood, setSelectedFood] = useState<Food | null>(null);
 
     useEffect(() => {
         const loadData = async () => {
@@ -85,10 +86,16 @@ export const FoodIndexPage: React.FC = () => {
         setFilteredFoods(filtered);
     }, [selectedCategory, searchQuery, selectedAllergens, foods]);
 
-    const formatDate = (dateString: string | null) => {
-        if (!dateString) return '-';
-        const date = new Date(dateString);
-        return date.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const formatNutrient = (value: number | null | string) => {
+        if (value === null || value === undefined || value === '') return '-';
+        const numValue = typeof value === 'string' ? parseFloat(value) : value;
+        if (isNaN(numValue)) return '-';
+        return numValue.toFixed(1);
+    };
+
+    const handleShowNutrition = (food: Food) => {
+        setSelectedFood(food);
+        setNutritionModalOpen(true);
     };
 
     const handleEdit = (id: number) => {
@@ -104,7 +111,6 @@ export const FoodIndexPage: React.FC = () => {
         if (!foodToDelete) return;
 
         try {
-            setIsDeleting(true);
             await deleteFood(foodToDelete.id);
             // 一覧を再読み込み
             const [foodsData, categoriesData, allergensData] = await Promise.all([
@@ -122,8 +128,6 @@ export const FoodIndexPage: React.FC = () => {
             console.error('食材削除エラー:', err);
             setError(err.response?.data?.error || '食材の削除に失敗しました');
             setDeleteModalOpen(false);
-        } finally {
-            setIsDeleting(false);
         }
     };
 
@@ -290,16 +294,20 @@ export const FoodIndexPage: React.FC = () => {
                                     </div>
                                 </div>
                             ) : (
-                                <table className="w-full text-left border-collapse text-sm">
-                                    <thead className="bg-slate-50/50 text-slate-500 font-bold uppercase tracking-widest text-[11px]">
-                                        <tr>
-                                            <th className="px-6 py-4 border-b border-slate-100">食材名</th>
-                                            <th className="px-6 py-4 border-b border-slate-100">カテゴリ</th>
-                                            <th className="px-6 py-4 border-b border-slate-100">特定アレルギー</th>
-                                            <th className="px-6 py-4 border-b border-slate-100">最終更新日</th>
-                                            <th className="px-6 py-4 border-b border-slate-100 text-center">操作</th>
-                                        </tr>
-                                    </thead>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left border-collapse text-sm min-w-[1000px]">
+                                        <thead className="bg-slate-50/50 text-slate-500 font-bold uppercase tracking-widest text-[11px]">
+                                            <tr>
+                                                <th className="px-6 py-4 border-b border-slate-100">食材名</th>
+                                                <th className="px-6 py-4 border-b border-slate-100">カテゴリ</th>
+                                                <th className="px-6 py-4 border-b border-slate-100">カロリー</th>
+                                                <th className="px-6 py-4 border-b border-slate-100">タンパク質</th>
+                                                <th className="px-6 py-4 border-b border-slate-100">脂質</th>
+                                                <th className="px-6 py-4 border-b border-slate-100">炭水化物</th>
+                                                <th className="px-6 py-4 border-b border-slate-100">特定アレルギー</th>
+                                                <th className="px-6 py-4 border-b border-slate-100 text-center">操作</th>
+                                            </tr>
+                                        </thead>
                                     <tbody>
                                         {filteredFoods.map((food) => (
                                             <tr key={food.id} className="hover:bg-slate-50 transition-colors">
@@ -308,6 +316,30 @@ export const FoodIndexPage: React.FC = () => {
                                                 </td>
                                                 <td className="px-6 py-4 border-b border-slate-100">
                                                     <span className="text-slate-700">{food.category.name}</span>
+                                                </td>
+                                                <td className="px-6 py-4 border-b border-slate-100">
+                                                    <span className="text-slate-700">
+                                                        {formatNutrient(food.calories)}
+                                                        {food.calories !== null && <span className="text-xs text-slate-400 ml-1">kcal</span>}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 border-b border-slate-100">
+                                                    <span className="text-slate-700">
+                                                        {formatNutrient(food.protein)}
+                                                        {food.protein !== null && <span className="text-xs text-slate-400 ml-1">g</span>}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 border-b border-slate-100">
+                                                    <span className="text-slate-700">
+                                                        {formatNutrient(food.fat)}
+                                                        {food.fat !== null && <span className="text-xs text-slate-400 ml-1">g</span>}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 border-b border-slate-100">
+                                                    <span className="text-slate-700">
+                                                        {formatNutrient(food.carbohydrate)}
+                                                        {food.carbohydrate !== null && <span className="text-xs text-slate-400 ml-1">g</span>}
+                                                    </span>
                                                 </td>
                                                 <td className="px-6 py-4 border-b border-slate-100">
                                                     {food.allergens && food.allergens.length > 0 ? (
@@ -325,11 +357,15 @@ export const FoodIndexPage: React.FC = () => {
                                                         <span className="text-slate-400">-</span>
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 border-b border-slate-100">
-                                                    <span className="text-slate-600">{formatDate(food.updated_at)}</span>
-                                                </td>
                                                 <td className="px-6 py-4 border-b border-slate-100 text-center">
                                                     <div className="flex items-center justify-center gap-3">
+                                                        <button
+                                                            onClick={() => handleShowNutrition(food)}
+                                                            className="text-green-600 hover:text-green-700 transition-colors"
+                                                            title="栄養素詳細"
+                                                        >
+                                                            <i className="fas fa-chart-pie"></i>
+                                                        </button>
                                                         <button
                                                             onClick={() => handleEdit(food.id)}
                                                             className="text-sky-600 hover:text-sky-700 transition-colors"
@@ -350,6 +386,7 @@ export const FoodIndexPage: React.FC = () => {
                                         ))}
                                     </tbody>
                                 </table>
+                                </div>
                             )}
                         </div>
                     )}
@@ -365,6 +402,95 @@ export const FoodIndexPage: React.FC = () => {
                         onCancel={handleDeleteCancel}
                         variant="danger"
                     />
+
+                    {/* 栄養素詳細モーダル */}
+                    {nutritionModalOpen && selectedFood && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                                <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                                    <h3 className="text-xl font-bold text-slate-900">
+                                        {selectedFood.name} - 栄養素情報
+                                    </h3>
+                                    <button
+                                        onClick={() => {
+                                            setNutritionModalOpen(false);
+                                            setSelectedFood(null);
+                                        }}
+                                        className="text-slate-400 hover:text-slate-600 transition-colors"
+                                    >
+                                        <i className="fas fa-times text-xl"></i>
+                                    </button>
+                                </div>
+                                <div className="p-6">
+                                    <div className="mb-4">
+                                        <p className="text-sm text-slate-500 mb-2">※ すべて100gあたりの値です</p>
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                        <div className="bg-slate-50 rounded-lg p-4">
+                                            <div className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">カロリー</div>
+                                            <div className="text-2xl font-bold text-slate-900">
+                                                {formatNutrient(selectedFood.calories)}
+                                                {selectedFood.calories !== null && <span className="text-sm text-slate-500 ml-1">kcal</span>}
+                                            </div>
+                                        </div>
+                                        <div className="bg-blue-50 rounded-lg p-4">
+                                            <div className="text-xs text-blue-600 font-bold uppercase tracking-widest mb-1">タンパク質</div>
+                                            <div className="text-2xl font-bold text-blue-900">
+                                                {formatNutrient(selectedFood.protein)}
+                                                {selectedFood.protein !== null && <span className="text-sm text-blue-500 ml-1">g</span>}
+                                            </div>
+                                        </div>
+                                        <div className="bg-yellow-50 rounded-lg p-4">
+                                            <div className="text-xs text-yellow-600 font-bold uppercase tracking-widest mb-1">脂質</div>
+                                            <div className="text-2xl font-bold text-yellow-900">
+                                                {formatNutrient(selectedFood.fat)}
+                                                {selectedFood.fat !== null && <span className="text-sm text-yellow-500 ml-1">g</span>}
+                                            </div>
+                                        </div>
+                                        <div className="bg-green-50 rounded-lg p-4">
+                                            <div className="text-xs text-green-600 font-bold uppercase tracking-widest mb-1">炭水化物</div>
+                                            <div className="text-2xl font-bold text-green-900">
+                                                {formatNutrient(selectedFood.carbohydrate)}
+                                                {selectedFood.carbohydrate !== null && <span className="text-sm text-green-500 ml-1">g</span>}
+                                            </div>
+                                        </div>
+                                        <div className="bg-purple-50 rounded-lg p-4">
+                                            <div className="text-xs text-purple-600 font-bold uppercase tracking-widest mb-1">食物繊維</div>
+                                            <div className="text-2xl font-bold text-purple-900">
+                                                {formatNutrient(selectedFood.fiber)}
+                                                {selectedFood.fiber !== null && <span className="text-sm text-purple-500 ml-1">g</span>}
+                                            </div>
+                                        </div>
+                                        <div className="bg-orange-50 rounded-lg p-4">
+                                            <div className="text-xs text-orange-600 font-bold uppercase tracking-widest mb-1">ナトリウム</div>
+                                            <div className="text-2xl font-bold text-orange-900">
+                                                {formatNutrient(selectedFood.sodium)}
+                                                {selectedFood.sodium !== null && <span className="text-sm text-orange-500 ml-1">mg</span>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {selectedFood.serving_size && (
+                                        <div className="mt-4 p-4 bg-slate-50 rounded-lg">
+                                            <div className="text-sm text-slate-600">
+                                                <span className="font-bold">1食分の量:</span> {formatNutrient(selectedFood.serving_size)}g
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div className="mt-6 flex justify-end">
+                                        <button
+                                            onClick={() => {
+                                                setNutritionModalOpen(false);
+                                                setSelectedFood(null);
+                                            }}
+                                            className="px-6 py-2.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors font-bold"
+                                        >
+                                            閉じる
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </main>
         </div>

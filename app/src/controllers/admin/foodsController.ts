@@ -53,7 +53,7 @@ export const getFoodController = async (req: AuthRequest, res: Response) => {
  */
 export const createFoodController = async (req: AuthRequest, res: Response) => {
     try {
-        const { name, category_id, best_before_date, expiry_date, memo, allergen_ids } = req.body;
+        const { name, category_id, best_before_date, expiry_date, memo, allergen_ids, calories, protein, fat, carbohydrate, fiber, sodium, serving_size } = req.body;
 
         // バリデーション
         if (!name || name.trim() === '') {
@@ -96,6 +96,13 @@ export const createFoodController = async (req: AuthRequest, res: Response) => {
             best_before_date: best_before_date || null,
             expiry_date: expiry_date || null,
             memo: memo || null,
+            calories: calories !== undefined && calories !== null && calories !== '' ? parseFloat(calories) : null,
+            protein: protein !== undefined && protein !== null && protein !== '' ? parseFloat(protein) : null,
+            fat: fat !== undefined && fat !== null && fat !== '' ? parseFloat(fat) : null,
+            carbohydrate: carbohydrate !== undefined && carbohydrate !== null && carbohydrate !== '' ? parseFloat(carbohydrate) : null,
+            fiber: fiber !== undefined && fiber !== null && fiber !== '' ? parseFloat(fiber) : null,
+            sodium: sodium !== undefined && sodium !== null && sodium !== '' ? parseFloat(sodium) : null,
+            serving_size: serving_size !== undefined && serving_size !== null && serving_size !== '' ? parseFloat(serving_size) : null,
         }, allergenIds);
 
         res.status(201).json(food);
@@ -113,7 +120,7 @@ export const createFoodController = async (req: AuthRequest, res: Response) => {
 export const updateFoodController = async (req: AuthRequest, res: Response) => {
     try {
         const { id } = req.params;
-        const { name, category_id, best_before_date, expiry_date, memo, allergen_ids } = req.body;
+        const { name, category_id, best_before_date, expiry_date, memo, allergen_ids, calories, protein, fat, carbohydrate, fiber, sodium, serving_size } = req.body;
 
         // バリデーション
         if (!id) {
@@ -162,6 +169,13 @@ export const updateFoodController = async (req: AuthRequest, res: Response) => {
         if (best_before_date !== undefined) updateData.best_before_date = best_before_date || null;
         if (expiry_date !== undefined) updateData.expiry_date = expiry_date || null;
         if (memo !== undefined) updateData.memo = memo || null;
+        if (calories !== undefined) updateData.calories = calories !== null && calories !== '' ? parseFloat(calories) : null;
+        if (protein !== undefined) updateData.protein = protein !== null && protein !== '' ? parseFloat(protein) : null;
+        if (fat !== undefined) updateData.fat = fat !== null && fat !== '' ? parseFloat(fat) : null;
+        if (carbohydrate !== undefined) updateData.carbohydrate = carbohydrate !== null && carbohydrate !== '' ? parseFloat(carbohydrate) : null;
+        if (fiber !== undefined) updateData.fiber = fiber !== null && fiber !== '' ? parseFloat(fiber) : null;
+        if (sodium !== undefined) updateData.sodium = sodium !== null && sodium !== '' ? parseFloat(sodium) : null;
+        if (serving_size !== undefined) updateData.serving_size = serving_size !== null && serving_size !== '' ? parseFloat(serving_size) : null;
 
         // アレルゲンIDの配列を処理
         let allergenIds: number[] | undefined;
