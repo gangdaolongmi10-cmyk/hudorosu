@@ -113,7 +113,7 @@ export const getTodayFoodExpenseController = async (req: AuthRequest, res: Respo
 
         // 食費カテゴリを取得
         const categories = await transactionCategoryRepository.findByUserId(userId);
-        const foodCategory = categories.find(cat => cat.name === '食費' && cat.user_id === null);
+        const foodCategory = categories.find((cat: any) => cat.name === '食費' && cat.user_id === null);
         
         if (!foodCategory) {
             return res.status(200).json({

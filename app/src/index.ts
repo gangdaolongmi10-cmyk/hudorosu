@@ -16,7 +16,7 @@ app.set('trust proxy', true);
 const allowedOrigins = getAllowedOrigins();
 
 app.use(cors({
-    origin: (origin, callback) => {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
         // オリジンが未定義の場合（例: モバイルアプリ、Postmanなど）も許可
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);

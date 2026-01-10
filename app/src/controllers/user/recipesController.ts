@@ -21,7 +21,7 @@ export const getRecommendedRecipesController = async (req: AuthRequest, res: Res
         const stocks = await stockRepository.findByUserId(userId);
         
         // 在庫にある食材IDのリストを作成
-        const stockFoodIds = stocks.map(stock => stock.food_id);
+        const stockFoodIds = stocks.map((stock: any) => stock.food_id);
         
         if (stockFoodIds.length === 0) {
             return res.status(200).json([]);
@@ -140,7 +140,7 @@ export const getRecommendedRecipesByBudgetController = async (req: AuthRequest, 
         const stocks = await stockRepository.findByUserId(userId);
         
         // 在庫にある食材IDのリストを作成
-        const stockFoodIds = stocks.map(stock => stock.food_id);
+        const stockFoodIds = stocks.map((stock: any) => stock.food_id);
         
         if (stockFoodIds.length === 0) {
             return res.status(200).json({
