@@ -1,2 +1,208 @@
+# ============================================
+# 環境変数ファイル
+# ============================================
 .env
-public/uploads
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# ============================================
+# 依存関係
+# ============================================
+node_modules/
+.pnp
+.pnp.js
+
+# ============================================
+# ビルド成果物
+# ============================================
+dist/
+build/
+dist-ssr/
+*.tsbuildinfo
+
+# Backend
+packages/backend/dist/
+packages/backend/dist-shared/
+packages/backend/dist/app/
+
+# Frontend
+packages/frontend/dist/
+packages/frontend/dist-ssr/
+
+# Shared
+shared/dist/
+
+# ============================================
+# ログファイル
+# ============================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log.*
+
+# ============================================
+# ランタイムデータ
+# ============================================
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ============================================
+# カバレッジディレクトリ
+# ============================================
+coverage/
+*.lcov
+.nyc_output/
+
+# ============================================
+# 一時ファイル
+# ============================================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ============================================
+# IDE / エディタ
+# ============================================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ============================================
+# OS固有のファイル
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================
+# データベース
+# ============================================
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# ============================================
+# アップロードファイル
+# ============================================
+public/uploads/*
+!public/uploads/.gitkeep
+packages/backend/public/uploads/*
+!packages/backend/public/uploads/.gitkeep
+
+# ============================================
+# Expo / React Native
+# ============================================
+.expo/
+.expo-shared/
+expo-env.d.ts
+web-build/
+.expo/
+.expo-shared/
+
+# Native
+packages/mobile/ios/
+packages/mobile/android/
+packages/mobile/.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+
+# Metro
+.metro-health-check*
+
+# ============================================
+# テスト
+# ============================================
+.jest/
+*.test.js.snap
+
+# ============================================
+# その他
+# ============================================
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.vuepress/dist/
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+*.local
+*.log.*
+
+# ============================================
+# Docker
+# ============================================
+docker-compose.override.yml
+
+# ============================================
+# セキュリティ関連
+# ============================================
+*.pem
+*.key
+*.crt
+*.cert
+secrets/
+.secrets/
+
+# ============================================
+# バックアップファイル
+# ============================================
+*.bak
+*.backup
+*.old
+*.orig
