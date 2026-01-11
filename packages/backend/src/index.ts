@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 静的ファイルの配信（public/uploads配下の画像を配信）
-app.use('/api/uploads', express.static(path.join(__dirname, '../public/uploads')));
+app.use('/api/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // リクエストログミドルウェア（デバッグ用）
 app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {

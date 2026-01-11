@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "dist/index.js",
     "scripts": {
-        "start": "TS_NODE_PROJECT=tsconfig.runtime.json node -r tsconfig-paths/register dist/app/src/index.js",
+        "start": "TS_NODE_PROJECT=tsconfig.runtime.json node -r tsconfig-paths/register dist/app/index.js",
         "build": "tsc && rm -rf dist/shared && mkdir -p dist/app && cp -r models dist/app/models && cp -r config dist/app/config && mkdir -p dist/app/public/uploads",
         "dev": "TS_NODE_PROJECT=tsconfig.dev.json ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
         "migrate": "sequelize-cli db:migrate",
