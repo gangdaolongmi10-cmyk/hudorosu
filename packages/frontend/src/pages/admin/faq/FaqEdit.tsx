@@ -11,7 +11,7 @@ import { Faq } from '@/services/faqService';
 export const FaqEditPage: React.FC = () => {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
-    const [faq, setFaq] = useState<Faq | null>(null);
+    const [, setFaq] = useState<Faq | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);

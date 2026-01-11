@@ -11,7 +11,7 @@ import { Allergen } from '@/services/allergenService';
 export const AllergenEditPage: React.FC = () => {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
-    const [allergen, setAllergen] = useState<Allergen | null>(null);
+    const [, setAllergen] = useState<Allergen | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);

@@ -5,16 +5,13 @@ import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
 import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
 import { fetchLoginLogs, LoginLog, LoginLogsResponse } from '@/services/loginLogService';
-import { useNavigate } from 'react-router-dom';
-
 export const LoginLogIndexPage: React.FC = () => {
-    const navigate = useNavigate();
     const [logs, setLogs] = useState<LoginLog[]>([]);
     const [totalCount, setTotalCount] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [limit] = useState(100);
-    const [offset, setOffset] = useState(0);
+    const [offset] = useState(0);
 
     useEffect(() => {
         const loadLogs = async () => {

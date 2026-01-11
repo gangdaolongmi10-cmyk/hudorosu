@@ -73,11 +73,24 @@ export const RecipeEditPage: React.FC = () => {
 
                 // 既存の食材を設定
                 if (recipeData.food_id_foods) {
-                    setSelectedFoods(recipeData.food_id_foods.map(rf => ({
-                        food_id: rf.food_id,
-                        quantity: rf.quantity || '',
-                        food: rf.food || foodsData.find(f => f.id === rf.food_id) || {} as Food
-                    })));
+                    setSelectedFoods(recipeData.food_id_foods.map(rf => {
+                        const food = rf.food ? {
+                            id: rf.food.id,
+                            name: rf.food.name,
+                            category_id: rf.food.category_id,
+                            allergens: rf.food.allergens || []
+                        } : foodsData.find(f => f.id === rf.food_id);
+                        
+                        if (!food) {
+                            throw new Error(`Food with id ${rf.food_id} not found`);
+                        }
+                        
+                        return {
+                            food_id: rf.food_id,
+                            quantity: rf.quantity || '',
+                            food: food as Food
+                        };
+                    }));
                 }
             } catch (err: any) {
                 console.error('データ取得エラー:', err);
