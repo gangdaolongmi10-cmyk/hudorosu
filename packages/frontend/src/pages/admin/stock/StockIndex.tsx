@@ -5,7 +5,8 @@ import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
 import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
 import { fetchStocks, fetchUserStocks, Stock } from '@/services/stockService';
-import { fetchUsers, User } from '@/services/userService';
+import { fetchUsers } from '@/services/userService';
+import { User } from '@/types/user';
 import { useAuth } from '@/contexts/AuthContext';
 import { ROLE } from '@/constants/role';
 

@@ -16,7 +16,6 @@ export const RecipeIndexPage: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [recipeToDelete, setRecipeToDelete] = useState<Recipe | null>(null);
-    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
@@ -70,7 +69,6 @@ export const RecipeIndexPage: React.FC = () => {
         if (!recipeToDelete) return;
 
         try {
-            setIsDeleting(true);
             await deleteRecipe(recipeToDelete.id);
             // 一覧を再読み込み
             const recipesData = await fetchRecipes();
@@ -82,8 +80,6 @@ export const RecipeIndexPage: React.FC = () => {
             console.error('料理削除エラー:', err);
             setError(err.response?.data?.error || '料理の削除に失敗しました');
             setDeleteModalOpen(false);
-        } finally {
-            setIsDeleting(false);
         }
     };
 

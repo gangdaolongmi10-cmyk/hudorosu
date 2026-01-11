@@ -19,7 +19,6 @@ export const UserIndexPage: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
-    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         const loadUsers = async () => {
@@ -81,7 +80,6 @@ export const UserIndexPage: React.FC = () => {
     const handleDeleteConfirm = async () => {
         if (!deleteTarget) return;
 
-        setIsDeleting(true);
         try {
             await deleteUser(deleteTarget.id);
             // ユーザー一覧を再読み込み
@@ -92,8 +90,6 @@ export const UserIndexPage: React.FC = () => {
             console.error('ユーザー削除エラー:', err);
             setError(err.response?.data?.error || 'ユーザーの削除に失敗しました');
             setDeleteTarget(null);
-        } finally {
-            setIsDeleting(false);
         }
     };
 

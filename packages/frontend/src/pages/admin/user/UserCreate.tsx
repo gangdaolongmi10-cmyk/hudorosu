@@ -165,7 +165,7 @@ export const UserCreatePage: React.FC = () => {
                                     </label>
                                     <select
                                         value={formData.role}
-                                        onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                        onChange={(e) => setFormData({ ...formData, role: e.target.value as typeof ROLE.USER | typeof ROLE.ADMIN })}
                                         className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                                         required
                                     >

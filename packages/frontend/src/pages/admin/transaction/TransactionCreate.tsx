@@ -139,7 +139,7 @@ export const TransactionCreatePage: React.FC = () => {
                                                 type="radio"
                                                 value="income"
                                                 checked={formData.type === 'income'}
-                                                onChange={(e) => setFormData({ ...formData, type: 'income' })}
+                                                onChange={() => setFormData({ ...formData, type: 'income' })}
                                                 className="mr-2"
                                             />
                                             <span className="text-sm font-bold text-green-600">入金</span>
@@ -149,7 +149,7 @@ export const TransactionCreatePage: React.FC = () => {
                                                 type="radio"
                                                 value="expense"
                                                 checked={formData.type === 'expense'}
-                                                onChange={(e) => setFormData({ ...formData, type: 'expense' })}
+                                                onChange={() => setFormData({ ...formData, type: 'expense' })}
                                                 className="mr-2"
                                             />
                                             <span className="text-sm font-bold text-red-600">出金</span>

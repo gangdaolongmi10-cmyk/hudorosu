@@ -5,7 +5,7 @@ import { AdminHeader } from '@/components/admin/layout/AdminHeader';
 import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
 import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
-import { fetchRecipeById, updateRecipe, Recipe } from '@/services/recipeService';
+import { fetchRecipeById, updateRecipe, Recipe, Allergen } from '@/services/recipeService';
 import { fetchMasterFoods, Food } from '@/services/foodService';
 import { fetchCategories, Category } from '@/services/categoryService';
 
@@ -411,7 +411,7 @@ export const RecipeEditPage: React.FC = () => {
                                                             <span className="font-medium text-slate-900">{sf.food.name}</span>
                                                             {sf.food.allergens && sf.food.allergens.length > 0 && (
                                                                 <div className="flex flex-wrap gap-1">
-                                                                    {sf.food.allergens.map((allergen) => (
+                                                                    {sf.food.allergens.map((allergen: Allergen) => (
                                                                         <span
                                                                             key={allergen.id}
                                                                             className="px-1.5 py-0.5 text-xs font-bold bg-red-100 text-red-700 rounded"
