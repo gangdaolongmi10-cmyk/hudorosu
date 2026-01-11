@@ -1,15 +1,22 @@
 import apiClient from '@/utils/axiosConfig';
-import { Food } from '@/types/food';
 
 export interface Allergen {
     id: number;
     name: string;
 }
 
+// レシピに含まれる食材の部分的な情報（APIレスポンス用）
+export interface RecipeFoodItem {
+    id: number;
+    name: string;
+    category_id: number;
+    allergens?: Allergen[];
+}
+
 export interface RecipeFood {
     food_id: number;
     quantity?: string | null;
-    food?: Food;
+    food?: RecipeFoodItem;
 }
 
 export interface Recipe {
@@ -64,7 +71,7 @@ export const fetchRecipes = async (): Promise<Recipe[]> => {
                 name: rf.name,
                 category_id: rf.category_id,
                 allergens: rf.allergen_id_allergens || []
-            }
+            } as RecipeFoodItem
         })) || []
     }));
 };
@@ -86,7 +93,7 @@ export const fetchRecipeById = async (id: number): Promise<Recipe> => {
                 name: rf.name,
                 category_id: rf.category_id,
                 allergens: rf.allergen_id_allergens || []
-            }
+            } as RecipeFoodItem
         })) || []
     };
 };
@@ -116,7 +123,7 @@ export const createRecipe = async (data: {
                 name: rf.name,
                 category_id: rf.category_id,
                 allergens: rf.allergen_id_allergens || []
-            }
+            } as RecipeFoodItem
         })) || []
     };
 };
@@ -147,7 +154,7 @@ export const updateRecipe = async (id: number, data: {
                 name: rf.name,
                 category_id: rf.category_id,
                 allergens: rf.allergen_id_allergens || []
-            }
+            } as RecipeFoodItem
         })) || []
     };
 };

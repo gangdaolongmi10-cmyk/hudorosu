@@ -2,8 +2,6 @@
  * 画像パス構築のユーティリティ（共通）
  */
 
-import { UPLOAD_IMAGE_BASE_PATH } from '../constants/images';
-
 /**
  * アップロードされた画像のフルURLを構築する
  * @param relativePath バックエンドから返される相対パス（例: '/api/uploads/filename.jpg'）
