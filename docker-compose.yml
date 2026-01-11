@@ -1,42 +1,10 @@
 services:
-  app:
-    build:
-      context: ./app
-      dockerfile: ../docker/node/Dockerfile
-    ports:
-      - "${APP_PORT}:${APP_PORT}"
-    volumes:
-      - ./app:/app
-      - ./app/node_modules:/app/node_modules
-      - ./shared:/shared
-    environment:
-      - DATABASE_URL=${DB_URL}
-      - NODE_ENV=${NODE_ENV}
-    command: sh -c "npm install && npm run migrate && npm run dev"
-    depends_on:
-      - db
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: ../docker/node/Dockerfile
-    ports:
-      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
-    volumes:
-      - ./frontend:/app
-      - ./frontend/node_modules:/app/node_modules
-      - ./shared:/shared
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - VITE_API_URL=http://app:${APP_PORT}
-    command: sh -c "npm install && npm run dev -- --host"
-
   db:
     image: postgres:15-alpine
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER:-user}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-password}
+      - POSTGRES_DB=${DB_NAME:-mydb}
     ports:
       - "5432:5432"
     volumes:
@@ -51,7 +19,7 @@ services:
       - ADMINER_DEFAULT_SERVER=db
     entrypoint: [
       "sh", "-c",
-      "echo '<?php return new AdminerLoginPassword(md5(\"${DB_PASSWORD}\")); ?>' > login-password.php && /usr/local/bin/docker-php-entrypoint php -S 0.0.0.0:8080"
+      "echo '<?php return new AdminerLoginPassword(md5(\"${DB_PASSWORD:-password}\")); ?>' > login-password.php && /usr/local/bin/docker-php-entrypoint php -S 0.0.0.0:8080"
     ]
     depends_on:
       - db

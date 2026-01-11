@@ -15,7 +15,7 @@ module.exports = {
     await queryInterface.bulkInsert('settings', [
       {
         key: 'app_name',
-        value: 'FoodDB',
+        value: 'ふどろす',
         description: 'アプリケーション名',
         created_at: new Date(),
         updated_at: new Date()

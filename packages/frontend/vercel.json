@@ -1,8 +1,8 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "cd ../.. && npm install --include=dev && npm run build:shared && cd packages/frontend && npm run build",
   "outputDirectory": "dist",
   "devCommand": "npm run dev",
-  "installCommand": "npm install",
+  "installCommand": "cd ../.. && npm install --include=dev",
   "framework": "vite",
   "rewrites": [
     {

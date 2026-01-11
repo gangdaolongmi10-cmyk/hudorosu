@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
+import apiClient from '@/utils/axiosConfig';
 
 interface User {
     id: number;
@@ -59,9 +59,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // ログイン処理
     const login = async (email: string, password: string) => {
         try {
-            const response = await axios.post('http://localhost:3000/api/admin/login', {
+            // ログイン時はトークンなしでリクエスト
+            const response = await apiClient.post('/admin/login', {
                 email,
                 password,
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
             });
 
             const { token: newToken, user: newUser } = response.data;

@@ -8,12 +8,12 @@ import { settingsRepository } from '../../repositories/settingsRepository';
 export const getAppNameController = async (req: AuthRequest, res: Response) => {
     try {
         const appNameSetting = await settingsRepository.findByKey('app_name');
-        const appName = appNameSetting?.value || 'FoodDB';
+        const appName = appNameSetting?.value || 'ふどろす';
         res.status(200).json({ app_name: appName });
     } catch (error) {
         console.error('Get app name error:', error);
         // エラーが発生してもデフォルト値を返す
-        res.status(200).json({ app_name: 'FoodDB' });
+        res.status(200).json({ app_name: 'ふどろす' });
     }
 };
 

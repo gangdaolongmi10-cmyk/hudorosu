@@ -7,6 +7,7 @@
         "shared"
     ],
     "scripts": {
+        "install:all": "npm install",
         "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
         "dev:backend": "npm run dev --workspace=@hudorosu/backend",
         "dev:frontend": "npm run dev --workspace=@hudorosu/frontend",

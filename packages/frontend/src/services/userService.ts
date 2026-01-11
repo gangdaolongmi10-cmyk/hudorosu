@@ -1,6 +1,6 @@
 import apiClient from '@/utils/axiosConfig';
 import { User, UserResponse } from '@/types/user';
-import { buildImageUrl } from '@shared/utils/imagePath';
+import { buildImageUrl } from '@shared';
 
 /**
  * 画像をアップロードする

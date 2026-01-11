@@ -51,7 +51,7 @@ export const AuthLoginPage: React.FC = () => {
                     <div className="w-20 h-20 bg-sky-500 rounded-3xl flex items-center justify-center text-white text-4xl mx-auto mb-6 shadow-xl shadow-sky-200">
                         <i className="fas fa-box-open"></i>
                     </div>
-                    <h1 className="text-3xl font-black text-slate-800 tracking-tight">FoodDB</h1>
+                    <h1 className="text-3xl font-black text-slate-800 tracking-tight">ふどろす</h1>
                     <p className="text-slate-400 text-sm mt-2 font-medium">食材マスタ管理システムへログイン</p>
                 </div>
                 <div className="px-10 pb-12 space-y-6">

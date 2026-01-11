@@ -6,11 +6,13 @@ Express + TypeScript バックエンド、Vite + React フロントエンド、R
 
 ```
 hudorosu_backend/
-├── app/              # バックエンド (Express + TypeScript)
-├── frontend/         # フロントエンド (Vite + React + TypeScript)
-├── mobile/           # モバイルアプリ (React Native + Expo Go)
-├── docker/           # Docker設定ファイル
-└── docker-compose.yml
+├── packages/
+│   ├── backend/      # バックエンド (Express + TypeScript)
+│   ├── frontend/     # フロントエンド (Vite + React + TypeScript)
+│   └── mobile/       # モバイルアプリ (React Native + Expo Go)
+├── shared/           # 共有モジュール
+├── docker/           # Docker設定ファイル（PostgreSQL用）
+└── docker-compose.yml # データベースのみのDocker Compose設定
 ```
 
 ## セットアップ
@@ -26,13 +28,16 @@ npm run install:all
 
 ```bash
 # バックエンド
-cd app && npm install
+cd packages/backend && npm install
 
 # フロントエンド
-cd frontend && npm install
+cd packages/frontend && npm install
 
 # モバイルアプリ
-cd mobile && npm install
+cd packages/mobile && npm install
+
+# 共有モジュール
+cd shared && npm install
 ```
 
 ### 2. 開発サーバーの起動
@@ -59,27 +64,47 @@ npm run dev:frontend
 npm run dev:mobile
 ```
 
-### 3. データベースマイグレーション
+### 3. データベースのセットアップ
 
-家計簿機能用のデータベーステーブルを作成するには、以下のコマンドを実行してください：
+#### 3-1. データベースの起動
 
 ```bash
-# バックエンドディレクトリに移動
-cd app
+# データベースコンテナを起動
+docker-compose up -d db
 
-# マイグレーションを実行
+# データベースGUI（Adminer）も起動する場合
+docker-compose up -d
+```
+
+#### 3-2. 環境変数の設定（オプション）
+
+デフォルト値で動作しますが、カスタマイズする場合はルートディレクトリに`.env`ファイルを作成：
+
+```bash
+DB_USER=user
+DB_PASSWORD=password
+DB_NAME=mydb
+DB_HOST=localhost
+NODE_ENV=development
+```
+
+#### 3-3. データベースマイグレーション
+
+データベースが起動したら、以下のコマンドでマイグレーションを実行：
+
+```bash
+# バックエンドディレクトリで
+cd packages/backend
 npm run migrate
 ```
 
-これにより、以下のテーブルが作成されます：
-- `transaction_categories` - 記録カテゴリテーブル
-- `transactions` - 記録テーブル
-
-### 4. Docker Composeを使用
-
-```bash
-docker-compose up
-```
+データベース接続情報：
+- **ホスト**: localhost
+- **ポート**: 5432
+- **ユーザー名**: user（デフォルト、.envファイルで変更可能）
+- **パスワード**: password（デフォルト、.envファイルで変更可能）
+- **データベース名**: mydb（デフォルト、.envファイルで変更可能）
+- **データベースGUI（Adminer）**: http://localhost:8080
 
 ## アクセス
 
@@ -124,13 +149,27 @@ npm run build
 
 ### バックエンドの追加ルート
 
-`app/src/routes/` に新しいルートファイルを追加し、`app/src/index.ts` で登録してください。
+`packages/backend/src/routes/` に新しいルートファイルを追加し、`packages/backend/src/index.ts` で登録してください。
 
 ### フロントエンドのコンポーネント
 
-`frontend/src/` にReactコンポーネントを追加してください。
+`packages/frontend/src/` にReactコンポーネントを追加してください。
 
 ### モバイルアプリの開発
 
-`mobile/src/screens/` に新しい画面を追加してください。詳細は `mobile/README.md` を参照してください。
+`packages/mobile/src/screens/` に新しい画面を追加してください。詳細は `packages/mobile/README.md` を参照してください。
+
+## 開発環境の要件
+
+- **Node.js**: 20.0.0以上（グローバルにインストール）
+- **npm**: 9.0.0以上（グローバルにインストール）
+- **Docker**: データベースのみ（PostgreSQL 15）
+- **Docker Compose**: データベースコンテナの管理用
+
+## データベース接続
+
+開発環境では、Docker Composeで起動したPostgreSQLデータベースに接続します：
+
+- **接続文字列**: `postgresql://user:password@localhost:5432/mydb`
+- **設定ファイル**: `packages/backend/config/config.js`
 

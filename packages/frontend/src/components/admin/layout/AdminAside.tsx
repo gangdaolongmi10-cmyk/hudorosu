@@ -8,7 +8,7 @@ import { ROLE } from '@/constants/role';
 export const AdminAside: React.FC = () => {
     const navigate = useNavigate();
     const { logout, user } = useAuth();
-    const [appName, setAppName] = useState<string>('FoodDB');
+    const [appName, setAppName] = useState<string>('ふどろす');
 
     useEffect(() => {
         const loadAppName = async () => {
