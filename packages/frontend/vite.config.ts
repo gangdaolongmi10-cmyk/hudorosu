@@ -16,4 +16,16 @@ export default defineConfig({
             }
         }
     },
+    build: {
+        outDir: 'dist',
+        sourcemap: false, // 本番環境ではソースマップを無効化（セキュリティ向上）
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['react', 'react-dom', 'react-router-dom'],
+                    axios: ['axios']
+                }
+            }
+        }
+    }
 })

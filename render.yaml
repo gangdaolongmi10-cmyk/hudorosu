@@ -13,16 +13,3 @@ services:
         value: production
       - key: PORT
         value: 10000
-      # 注意: 機密情報（DATABASE_URL、JWT_SECRET）はRenderダッシュボードで設定してください
-      # 以下の変数はRenderダッシュボードで設定:
-      # - DATABASE_URL (Supabaseの接続文字列)
-      # - JWT_SECRET (ランダムな文字列)
-      # - FRONTEND_URL (VercelのURL)
-      # - PROD_API_URL (RenderのURL、デプロイ後に設定)
-
-# データベースはSupabaseを使用するため、Renderのデータベース設定は不要です
-# Supabaseを使用しない場合は、以下のように設定できます:
-# databases:
-#   - name: hudorosu-db
-#     plan: free
-#     # databaseNameとuserは自動生成されるため、指定不要
