@@ -6,14 +6,20 @@ import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
 import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
 import { createUser } from '@/services/userService';
-import { ROLE, ROLE_LABELS } from '@/constants/role';
+import { ROLE, ROLE_LABELS, type Role } from '@/constants/role';
 
 export const UserCreatePage: React.FC = () => {
     const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<{
+        email: string;
+        password: string;
+        confirmPassword: string;
+        name: string;
+        role: Role;
+    }>({
         email: '',
         password: '',
         confirmPassword: '',

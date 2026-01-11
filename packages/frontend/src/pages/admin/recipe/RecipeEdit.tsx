@@ -6,8 +6,10 @@ import { AdminBreadcrumb } from '@/components/admin/layout/AdminBreadcrumb';
 import { BREADCRUMB_ITEMS } from '@/constants/breadcrumb';
 import { FlashMessage } from '@/components/common/FlashMessage';
 import { fetchRecipeById, updateRecipe, Recipe, Allergen } from '@/services/recipeService';
-import { fetchMasterFoods, Food } from '@/services/foodService';
-import { fetchCategories, Category } from '@/services/categoryService';
+import { fetchMasterFoods } from '@/services/foodService';
+import { Food } from '@/types/food';
+import { fetchCategories } from '@/services/categoryService';
+import { Category } from '@/types/category';
 
 interface SelectedFood {
     food_id: number;
@@ -168,7 +170,7 @@ export const RecipeEditPage: React.FC = () => {
         const allergenMap = new Map<number, { id: number; name: string }>();
         selectedFoods.forEach(sf => {
             if (sf.food.allergens) {
-                sf.food.allergens.forEach(allergen => {
+                sf.food.allergens.forEach((allergen: Allergen) => {
                     if (!allergenMap.has(allergen.id)) {
                         allergenMap.set(allergen.id, allergen);
                     }
@@ -384,7 +386,7 @@ export const RecipeEditPage: React.FC = () => {
                                                             </div>
                                                             {food.allergens && food.allergens.length > 0 && (
                                                                 <div className="flex flex-wrap gap-1 mt-1">
-                                                                    {food.allergens.map((allergen) => (
+                                                                    {food.allergens.map((allergen: Allergen) => (
                                                                         <span
                                                                             key={allergen.id}
                                                                             className="px-1.5 py-0.5 text-xs font-bold bg-red-100 text-red-700 rounded"
