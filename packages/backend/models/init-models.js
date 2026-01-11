@@ -1,6 +1,7 @@
 var DataTypes = require("sequelize").DataTypes;
 var _SequelizeMeta = require("./SequelizeMeta");
 var _allergens = require("./allergens");
+var _allowed_ips = require("./allowed_ips");
 var _categories = require("./categories");
 var _food_allergens = require("./food_allergens");
 var _foods = require("./foods");
@@ -9,6 +10,7 @@ var _local_auth = require("./local_auth");
 var _login_logs = require("./login_logs");
 var _recipe_foods = require("./recipe_foods");
 var _recipes = require("./recipes");
+var _sessions = require("./sessions");
 var _settings = require("./settings");
 var _stocks = require("./stocks");
 var _transaction_categories = require("./transaction_categories");
@@ -21,6 +23,7 @@ var _user_recipe_favorites = require("./user_recipe_favorites");
 function initModels(sequelize) {
   var SequelizeMeta = _SequelizeMeta(sequelize, DataTypes);
   var allergens = _allergens(sequelize, DataTypes);
+  var allowed_ips = _allowed_ips(sequelize, DataTypes);
   var categories = _categories(sequelize, DataTypes);
   var food_allergens = _food_allergens(sequelize, DataTypes);
   var foods = _foods(sequelize, DataTypes);
@@ -29,6 +32,7 @@ function initModels(sequelize) {
   var login_logs = _login_logs(sequelize, DataTypes);
   var recipe_foods = _recipe_foods(sequelize, DataTypes);
   var recipes = _recipes(sequelize, DataTypes);
+  var sessions = _sessions(sequelize, DataTypes);
   var settings = _settings(sequelize, DataTypes);
   var stocks = _stocks(sequelize, DataTypes);
   var transaction_categories = _transaction_categories(sequelize, DataTypes);
@@ -54,6 +58,8 @@ function initModels(sequelize) {
   users.hasOne(local_auth, { as: "local_auth", foreignKey: "user_id"});
   login_logs.belongsTo(users, { as: "user", foreignKey: "user_id"});
   users.hasMany(login_logs, { as: "login_logs", foreignKey: "user_id"});
+  sessions.belongsTo(users, { as: "user", foreignKey: "user_id"});
+  users.hasMany(sessions, { as: "sessions", foreignKey: "user_id"});
   stocks.belongsTo(users, { as: "user", foreignKey: "user_id"});
   users.hasMany(stocks, { as: "stocks", foreignKey: "user_id"});
   stocks.belongsTo(foods, { as: "food", foreignKey: "food_id"});
@@ -80,6 +86,7 @@ function initModels(sequelize) {
   return {
     SequelizeMeta,
     allergens,
+    allowed_ips,
     categories,
     food_allergens,
     foods,
@@ -88,6 +95,7 @@ function initModels(sequelize) {
     login_logs,
     recipe_foods,
     recipes,
+    sessions,
     settings,
     stocks,
     transaction_categories,

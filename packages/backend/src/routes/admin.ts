@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { loginController } from "../controllers/admin/loginController";
+import { refreshTokenController, logoutController } from "../controllers/admin/refreshTokenController";
 import { categoriesController, createCategoryController, updateCategoryController, deleteCategoryController } from "../controllers/admin/categoriesController";
 import { usersController, createUserController, updateUserController, deleteUserController } from "../controllers/admin/usersController";
 import { foodsController, getFoodController, createFoodController, updateFoodController, deleteFoodController, getFoodsByCategoryController } from "../controllers/admin/foodsController";
@@ -14,12 +15,18 @@ import { getAppNameController, getSystemSettingsController, updateSystemSettings
 import { uploadAvatarController } from "../controllers/admin/uploadController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import { adminMiddleware } from "../middlewares/adminMiddleware";
+import { ipWhitelistMiddleware } from "../middlewares/ipWhitelistMiddleware";
 import { upload } from "../config/multer";
 
 const router = Router();
 
+// IPホワイトリストミドルウェアを全てのルートに適用
+router.use(ipWhitelistMiddleware);
+
 // 認証不要のルート
 router.post("/login", loginController);
+router.post("/refresh", refreshTokenController);
+router.post("/logout", logoutController);
 router.get("/health", (req: Request, res: Response) => {
     res.status(200).json({ status: "admin ok" });
 });

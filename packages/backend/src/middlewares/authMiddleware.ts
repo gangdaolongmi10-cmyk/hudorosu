@@ -44,12 +44,12 @@ export const authMiddleware = (
 
         const token = parts[1];
 
-        // トークンの検証
-        const decoded = jwtHelper.verifyToken(token);
+        // トークンの検証（アクセストークン）
+        const decoded = jwtHelper.verifyAccessToken(token);
         
         if (!decoded || typeof decoded !== "object") {
             return res.status(401).json({ 
-                error: "無効な認証トークンです" 
+                error: "無効な認証トークンです。再ログインしてください。" 
             });
         }
 
