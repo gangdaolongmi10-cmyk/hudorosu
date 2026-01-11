@@ -2,10 +2,9 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist/app",
-    "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["../../shared/src/*"]
+      "@shared/*": ["../../shared/dist/*"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
