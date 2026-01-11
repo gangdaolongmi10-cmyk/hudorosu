@@ -4,8 +4,8 @@ services:
     env: node
     region: singapore
     plan: free
-    rootDir: app
-    buildCommand: npm install --include=dev && npm run build
+    rootDir: packages/backend
+    buildCommand: cd ../../shared && npm install && npm run build && cd ../packages/backend && npm install --include=dev && npm run build
     startCommand: npm run migrate && npm start
     healthCheckPath: /api/health
     envVars:
