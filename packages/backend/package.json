@@ -4,7 +4,7 @@
     "main": "dist/index.js",
     "scripts": {
         "start": "TS_NODE_PROJECT=tsconfig.runtime.json node -r tsconfig-paths/register dist/app/src/index.js",
-        "build": "tsc && rm -rf dist/shared && mkdir -p dist/app && cp -r models dist/app/models && cp -r config dist/app/config",
+        "build": "tsc && rm -rf dist/shared && mkdir -p dist/app && cp -r models dist/app/models && cp -r config dist/app/config && cp -r public dist/app/public",
         "dev": "TS_NODE_PROJECT=tsconfig.dev.json ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
         "migrate": "sequelize-cli db:migrate",
         "seed": "sequelize-cli db:seed:all",

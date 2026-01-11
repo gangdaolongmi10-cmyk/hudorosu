@@ -7,7 +7,7 @@ import adminRoutes from "./routes/admin";
 import { getAllowedOrigins } from "@shared/config";
 
 const app: Application = express();
-const PORT: number = 3000;
+const PORT: number = parseInt(process.env.PORT || '3000', 10);
 
 // Trust proxy（リバースプロキシ経由の場合にIPアドレスを正しく取得するため）
 app.set('trust proxy', true);
