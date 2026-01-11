@@ -16,5 +16,7 @@
     "clean": "rm -rf dist",
     "dev": "tsc --watch"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/node": "^20.7.0"
+  }
 }
