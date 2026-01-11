@@ -1,17 +1,8 @@
 /**
  * フロントエンド用の環境変数設定
  * Vite環境では import.meta.env を使用
+ * 型定義は vite-env.d.ts で定義されています
  */
-
-// Vite環境変数の型定義（Viteが自動的に提供する型を拡張）
-declare global {
-    interface ImportMetaEnv {
-        readonly VITE_API_URL?: string;
-        readonly VITE_DEV_API_URL?: string;
-        readonly VITE_PROD_API_URL?: string;
-        readonly MODE: string;
-    }
-}
 
 /**
  * 開発環境のAPI URL

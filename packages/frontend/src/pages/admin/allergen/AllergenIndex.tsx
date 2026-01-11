@@ -142,6 +142,7 @@ export const AllergenIndexPage: React.FC = () => {
                                                         onClick={() => handleDeleteClick(allergen)}
                                                         className="text-red-600 hover:text-red-700 transition-colors"
                                                         title="削除"
+                                                        disabled={isDeleting}
                                                     >
                                                         <i className="fas fa-trash"></i>
                                                     </button>
