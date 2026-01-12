@@ -10,49 +10,22 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hudorosu.com'
  * このファイルがあると、/sitemap.xmlにアクセスした際に動的にsitemapが生成されます
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date().toISOString()
+    const now = new Date().toISOString()
 
-  // ルートページ
-  const routes: MetadataRoute.Sitemap = [
-    {
-      url: BASE_URL,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 1.0,
-    },
-  ]
+    const routes: MetadataRoute.Sitemap = [
+        {
+            url: BASE_URL,
+            lastModified: now,
+            changeFrequency: 'weekly',
+            priority: 1.0,
+        },
+        {
+            url: `${BASE_URL}/blog/my_fave/puroseka`,
+            lastModified: now,
+            changeFrequency: 'monthly',
+            priority: 0.8,
+        },
+    ]
 
-  // ブログ記事のURLを追加
-  try {
-    await fs.mkdir(BLOG_DIR, { recursive: true })
-    const files = await fs.readdir(BLOG_DIR)
-    const htmlFiles = files.filter(file => file.endsWith('.html') && !file.startsWith('_'))
-
-    for (const file of htmlFiles) {
-      const slug = file.replace('.html', '')
-      const filePath = path.join(BLOG_DIR, file)
-      
-      try {
-        const stats = await fs.stat(filePath)
-        routes.push({
-          url: `${BASE_URL}/blog/${slug}`,
-          lastModified: stats.mtime.toISOString(),
-          changeFrequency: 'weekly',
-          priority: 0.8,
-        })
-      } catch {
-        // ファイル情報が取得できない場合は現在時刻を使用
-        routes.push({
-          url: `${BASE_URL}/blog/${slug}`,
-          lastModified: now,
-          changeFrequency: 'weekly',
-          priority: 0.8,
-        })
-      }
-    }
-  } catch (error) {
-    console.error('Error reading blog directory for sitemap:', error)
-  }
-
-  return routes
+    return routes
 }

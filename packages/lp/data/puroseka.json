@@ -1,0 +1,151 @@
+{
+  "characters": [
+    {
+      "id": "ichika",
+      "name": "星乃一歌",
+      "unit": "Leo/need",
+      "favorite_foods": ["おにぎり", "お茶", "みかん"],
+      "disliked_foods": ["辛いもの", "苦いもの"]
+    },
+    {
+      "id": "saki",
+      "name": "天馬咲希",
+      "unit": "Leo/need",
+      "favorite_foods": ["パンケーキ", "いちご", "ホットケーキ"],
+      "disliked_foods": ["にんじん", "ピーマン"]
+    },
+    {
+      "id": "honami",
+      "name": "望月穂波",
+      "unit": "Leo/need",
+      "favorite_foods": ["お好み焼き", "たこ焼き", "おでん"],
+      "disliked_foods": ["生魚", "貝類"]
+    },
+    {
+      "id": "shiho",
+      "name": "日野森志歩",
+      "unit": "Leo/need",
+      "favorite_foods": ["カレー", "ハンバーグ", "ラーメン"],
+      "disliked_foods": ["甘いもの", "お菓子"]
+    },
+    {
+      "id": "minori",
+      "name": "花里みのり",
+      "unit": "MORE MORE JUMP!",
+      "favorite_foods": ["おにぎり", "お茶", "和菓子"],
+      "disliked_foods": ["辛いもの", "刺激の強いもの"]
+    },
+    {
+      "id": "haruka",
+      "name": "桐谷遥",
+      "unit": "MORE MORE JUMP!",
+      "favorite_foods": ["サラダ", "フルーツ", "ヨーグルト"],
+      "disliked_foods": ["揚げ物", "脂っこいもの"]
+    },
+    {
+      "id": "airi",
+      "name": "桃井愛莉",
+      "unit": "MORE MORE JUMP!",
+      "favorite_foods": ["ケーキ", "チョコレート", "アイスクリーム"],
+      "disliked_foods": ["苦いもの", "酸っぱいもの"]
+    },
+    {
+      "id": "shizuku",
+      "name": "日野森雫",
+      "unit": "MORE MORE JUMP!",
+      "favorite_foods": ["お茶", "和菓子", "お寿司"],
+      "disliked_foods": ["辛いもの", "刺激の強いもの"]
+    },
+    {
+      "id": "kohane",
+      "name": "小豆沢こはね",
+      "unit": "Vivid BAD SQUAD",
+      "favorite_foods": ["ハンバーガー", "フライドポテト", "コーラ"],
+      "disliked_foods": ["野菜", "健康的なもの"]
+    },
+    {
+      "id": "an",
+      "name": "東雲彰人",
+      "unit": "Vivid BAD SQUAD",
+      "favorite_foods": ["ラーメン", "カレー", "焼肉"],
+      "disliked_foods": ["甘いもの", "デザート"]
+    },
+    {
+      "id": "akito",
+      "name": "青柳冬弥",
+      "unit": "Vivid BAD SQUAD",
+      "favorite_foods": ["コーヒー", "パン", "サンドイッチ"],
+      "disliked_foods": ["甘いもの", "お菓子"]
+    },
+    {
+      "id": "toya",
+      "name": "初音ミク",
+      "unit": "Vivid BAD SQUAD",
+      "favorite_foods": ["お茶", "和菓子", "お寿司"],
+      "disliked_foods": ["辛いもの", "刺激の強いもの"]
+    },
+    {
+      "id": "tsukasa",
+      "name": "天馬司",
+      "unit": "Wonderlands×Showtime",
+      "favorite_foods": ["ハンバーグ", "オムライス", "カレー"],
+      "disliked_foods": ["苦いもの", "酸っぱいもの"]
+    },
+    {
+      "id": "emu",
+      "name": "鳳えむ",
+      "unit": "Wonderlands×Showtime",
+      "favorite_foods": ["ポップコーン", "キャンディ", "アイスクリーム"],
+      "disliked_foods": ["苦いもの", "辛いもの"]
+    },
+    {
+      "id": "nene",
+      "name": "草薙寧々",
+      "unit": "Wonderlands×Showtime",
+      "favorite_foods": ["おにぎり", "お茶", "和菓子"],
+      "disliked_foods": ["辛いもの", "刺激の強いもの"]
+    },
+    {
+      "id": "rui",
+      "name": "神代類",
+      "unit": "Wonderlands×Showtime",
+      "favorite_foods": ["ラーメン", "カレー", "焼きそば"],
+      "disliked_foods": ["甘いもの", "デザート"]
+    },
+    {
+      "id": "kanade",
+      "name": "宵崎奏",
+      "unit": "25時、ナイトコードで。",
+      "favorite_foods": ["カップラーメン", "おにぎり", "お茶"],
+      "disliked_foods": ["健康的なもの", "野菜"]
+    },
+    {
+      "id": "mafuyu",
+      "name": "朝比奈まふゆ",
+      "unit": "25時、ナイトコードで。",
+      "favorite_foods": ["おにぎり", "お茶", "和菓子"],
+      "disliked_foods": ["辛いもの", "刺激の強いもの"]
+    },
+    {
+      "id": "ena",
+      "name": "東雲絵名",
+      "unit": "25時、ナイトコードで。",
+      "favorite_foods": ["ケーキ", "チョコレート", "アイスクリーム"],
+      "disliked_foods": ["苦いもの", "酸っぱいもの"]
+    },
+    {
+      "id": "mizuki",
+      "name": "暁山瑞希",
+      "unit": "25時、ナイトコードで。",
+      "favorite_foods": ["パンケーキ", "いちご", "ホットケーキ"],
+      "disliked_foods": ["辛いもの", "刺激の強いもの"]
+    }
+  ],
+  "units": [
+    "Leo/need",
+    "MORE MORE JUMP!",
+    "Vivid BAD SQUAD",
+    "Wonderlands×Showtime",
+    "25時、ナイトコードで。"
+  ]
+}
