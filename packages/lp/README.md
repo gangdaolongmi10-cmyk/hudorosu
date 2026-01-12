@@ -7,6 +7,8 @@
 ```
 packages/lp/
 ├── index.html      # メインHTMLファイル
+├── robots.txt      # 検索エンジン向け設定
+├── sitemap.xml     # サイトマップ
 ├── vercel.json     # Vercel設定（オプション）
 └── README.md       # このファイル
 ```
