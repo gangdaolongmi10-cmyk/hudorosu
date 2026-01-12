@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- SEO対策：キーワードを意識したメタタグ -->
+    <title>ふどろす | 冷蔵庫の在庫管理と予算で決まる無料レシピ提案アプリ</title>
+    <meta name="description" content="食材管理アプリ「ふどろす」は、冷蔵庫の在庫と1日の予算から最適な献立を自動提案。食費の節約やフードロス削減をサポートする、学生・主婦に優しい無料ツールです。">
+    <meta name="keywords" content="食材管理アプリ,冷蔵庫管理,レシピ提案,節約,献立,フードロス,無料アプリ,ふどろす">
+
+    <!-- OGP設定 -->
+    <meta property="og:title" content="ふどろす | 在庫と予算で決まるレシピ提案・食材管理アプリ">
+    <meta property="og:description" content="「今日、何作ろう？」を解決。冷蔵庫の中身を活かして、賢く節約。">
+    <meta property="og:site_name" content="ふどろす">
+    <meta property="og:type" content="website">
+
+    <style>
+        :root {
+            --main-green: #66bb6a;
+            --deep-green: #2e7d32;
+            --soft-green: #e8f5e9;
+            --text-main: #2c3e50;
+            --white: #ffffff;
+        }
+
+        /* 全体レイアウト：横揺れ防止 */
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: inherit;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            color: var(--text-main);
+            background-color: #fcfdfc;
+            line-height: 1.7;
+        }
+
+        /* ヘッダー */
+        header {
+            padding: 15px 5%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--soft-green);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--main-green);
+            text-decoration: none;
+        }
+
+        /* ヒーローセクション：SEOを意識したh1配置 */
+        .hero {
+            position: relative;
+            width: 100%;
+            min-height: 70vh;
+            /* PC版の高さ */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-image: url('https://images.unsplash.com/photo-1556761223-4c4282c73f77?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+            padding: 40px 20px;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(232, 245, 233, 0.75), rgba(255, 255, 255, 0.9));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.6rem, 5vw, 2.8rem);
+            color: var(--deep-green);
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: clamp(0.95rem, 3vw, 1.15rem);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* SP版の画像縦幅調整 */
+        @media (max-width: 768px) {
+            .hero {
+                min-height: 45vh;
+                /* スマホ版では高さを抑える */
+                padding: 30px 15px;
+            }
+
+            .hero h1 {
+                margin-top: 10px;
+            }
+        }
+
+        .btn-main {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--main-green), var(--deep-green));
+            color: white;
+            padding: 16px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+            transition: 0.3s;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-2px);
+        }
+
+        /* コンテンツセクション */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            color: var(--deep-green);
+            margin-bottom: 40px;
+            font-size: 1.8rem;
+        }
+
+        /* SEOキーワードを含めた特徴カード */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border: 1px solid var(--soft-green);
+        }
+
+        .feature-item h2 {
+            font-size: 1.3rem;
+            color: var(--main-green);
+            margin-bottom: 15px;
+        }
+
+        /* 使い方セクション */
+        #how-to {
+            background: var(--soft-green);
+            padding: 60px 5%;
+            border-radius: 30px;
+            margin: 40px 0;
+        }
+
+        .step-list {
+            list-style: none;
+            padding: 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .step-list li {
+            margin-bottom: 25px;
+            padding-left: 55px;
+            position: relative;
+        }
+
+        .step-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--main-green);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        /* フッター */
+        footer {
+            background: var(--deep-green);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="#" class="logo">ふどろす</a>
+    </header>
+
+    <main>
+        <section class="hero" role="img" aria-label="食材管理で節約するイメージ背景">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1>「今日、何作ろう？」の悩み、<br>冷蔵庫の中身が解決します。</h1>
+                <p>冷蔵庫の在庫 × 今日の予算 ＝ 最適な節約レシピ提案<br>お財布と地球に優しい食材管理アプリ「ふどろす」</p>
+                <a href="#how-to" class="btn-main">デモ版をホーム画面に追加</a>
+            </div>
+        </section>
+
+        <div class="container">
+            <section id="features">
+                <h2 class="section-title">ふどろすが選ばれる3つの理由</h2>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h2>🔍 冷蔵庫の在庫を見える化</h2>
+                        <p>スマホでどこでも在庫管理。スーパーでの「二重買い」や「買い忘れ」をゼロにして、賢く節約しましょう。</p>
+                    </div>
+                    <div class="feature-item">
+                        <h2>💰 予算に合わせた献立提案</h2>
+                        <p>「今日は500円以内で！」など、予算に応じたレシピを検索。家計簿いらずで食費がコントロールできます。</p>
+                    </div>
+                    <div class="feature-item">
+                        <h2>🌱 フードロス削減でエコに</h2>
+                        <p>食材を余らせず使い切ることで、ムダを削減。あなたのお財布にも、地球環境にも優しい習慣が身につきます。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="how-to">
+                <ul class="step-list">
+                    <li><strong>ブラウザで「ふどろす」を開く</strong><br>iPhoneはSafari、AndroidはChromeからアクセスしてください。</li>
+                    <li><strong>「ホーム画面に追加」をタップ</strong><br>共有メニュー（四角い矢印アイコン等）から「ホーム画面に追加」を選択します。</li>
+                    <li><strong>アプリのようにすぐ起動</strong><br>ホーム画面に「ふどろす」のアイコンが作成され、いつでも在庫確認・レシピ提案が可能です。</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ふどろす Project<br>食材管理と予算で決まるレシピ提案アプリ</p>
+    </footer>
+
+</body>
+
+</html>

@@ -8,7 +8,8 @@ Express + TypeScript バックエンド、Vite + React フロントエンド、R
 hudorosu_backend/
 ├── packages/
 │   ├── backend/      # バックエンド (Express + TypeScript)
-│   ├── frontend/     # フロントエンド (Vite + React + TypeScript)
+│   ├── frontend/     # 管理画面 (Vite + React + TypeScript)
+│   ├── web/          # 一般ユーザー向けWEBサイト (HTML/CSS/JavaScript)
 │   └── mobile/       # モバイルアプリ (React Native + Expo Go)
 ├── shared/           # 共有モジュール
 ├── docker/           # Docker設定ファイル（PostgreSQL用）
@@ -30,8 +31,11 @@ npm run install:all
 # バックエンド
 cd packages/backend && npm install
 
-# フロントエンド
+# 管理画面（フロントエンド）
 cd packages/frontend && npm install
+
+# 一般ユーザー向けWEBサイト
+cd packages/web && npm install
 
 # モバイルアプリ
 cd packages/mobile && npm install
@@ -49,7 +53,7 @@ cd shared && npm install
 npm run dev
 ```
 
-これにより、バックエンド（ポート3000）とフロントエンド（ポート5173）が同時に起動します。
+これにより、バックエンド（ポート3000）、管理画面（ポート5173）、一般ユーザー向けWEBサイト（ポート5174）が同時に起動します。
 
 #### 方法2: 個別に起動
 
@@ -57,10 +61,13 @@ npm run dev
 # バックエンド（ターミナル1）
 npm run dev:backend
 
-# フロントエンド（ターミナル2）
+# 管理画面（ターミナル2）
 npm run dev:frontend
 
-# モバイルアプリ（ターミナル3）
+# 一般ユーザー向けWEBサイト（ターミナル3）
+npm run dev:web
+
+# モバイルアプリ（ターミナル4）
 npm run dev:mobile
 ```
 
@@ -108,9 +115,12 @@ npm run migrate
 
 ## アクセス
 
-- **フロントエンド**: http://localhost:5173
+- **管理画面**: http://localhost:5173
+- **一般ユーザー向けWEBサイト**: http://localhost:5174
 - **バックエンドAPI**: http://localhost:3000
-- **APIエンドポイント**: http://localhost:5173/api/* (Viteのプロキシ経由)
+- **APIエンドポイント**: 
+  - 管理画面: http://localhost:5173/api/* (Viteのプロキシ経由)
+  - WEBサイト: http://localhost:5174/api/* (Viteのプロキシ経由)
 
 ## APIエンドポイント
 
@@ -132,11 +142,17 @@ npm run build
 - TypeScript
 - Node.js
 
-### フロントエンド
+### 管理画面（フロントエンド）
 - React 18
 - TypeScript
 - Vite 5
-- CSS Modules
+- Tailwind CSS
+
+### 一般ユーザー向けWEBサイト
+- HTML5
+- CSS3
+- JavaScript (Vanilla)
+- レスポンシブデザイン
 
 ### モバイルアプリ
 - React Native
@@ -151,9 +167,13 @@ npm run build
 
 `packages/backend/src/routes/` に新しいルートファイルを追加し、`packages/backend/src/index.ts` で登録してください。
 
-### フロントエンドのコンポーネント
+### 管理画面のコンポーネント
 
 `packages/frontend/src/` にReactコンポーネントを追加してください。
+
+### 一般ユーザー向けWEBサイトの開発
+
+`packages/web/src/` にReactコンポーネントを追加してください。ライティングページは `packages/web/src/pages/WritingPage.tsx` を編集してください。詳細は `packages/web/README.md` を参照してください。
 
 ### モバイルアプリの開発
 
