@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { AuthProvider } from '@/contexts/AuthContext'
+import { Providers } from '@/components/Providers'
 
 export const metadata: Metadata = {
   title: 'ふどろす | 冷蔵庫の在庫管理と予算で決まる無料レシピ提案アプリ（開発中）',
@@ -28,9 +28,9 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <AuthProvider>
+        <Providers>
           {children}
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   )

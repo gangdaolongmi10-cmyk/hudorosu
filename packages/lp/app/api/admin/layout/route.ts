@@ -5,9 +5,6 @@ import { LAYOUT_DIR, getLayoutFilePaths } from '@/config/paths'
 // 共通レイアウトを取得
 export async function GET() {
   try {
-    // ディレクトリが存在しない場合は作成
-    await fs.mkdir(LAYOUT_DIR, { recursive: true })
-
     const { header: HEADER_FILE, footer: FOOTER_FILE, meta: META_FILE } = getLayoutFilePaths()
 
     let header = ''
@@ -54,10 +51,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const { header: HEADER_FILE, footer: FOOTER_FILE, meta: META_FILE } = getLayoutFilePaths()
+
     // ディレクトリが存在しない場合は作成
     await fs.mkdir(LAYOUT_DIR, { recursive: true })
-
-    const { header: HEADER_FILE, footer: FOOTER_FILE, meta: META_FILE } = getLayoutFilePaths()
 
     // ヘッダー、フッター、metaを保存
     await fs.writeFile(HEADER_FILE, header || '', 'utf-8')

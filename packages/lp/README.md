@@ -1,93 +1,91 @@
 # ふどろす LP
 
-Next.jsで構築されたランディングページとブログ管理システム
-
-## 技術スタック
-
-- **フレームワーク**: Next.js 14 (App Router)
-- **言語**: TypeScript
-- **スタイリング**: Tailwind CSS + カスタムCSS (`index.css`)
-- **リンター**: ESLint
-
-## セットアップ
-
-### 依存関係のインストール
-
-```bash
-# ルートディレクトリから
-npm run install:all
-
-# または、このディレクトリで直接
-cd packages/lp
-npm install
-```
-
-## 開発
-
-### 開発サーバーの起動
-
-```bash
-# ルートディレクトリから
-npm run dev:lp
-
-# または、このディレクトリで直接
-cd packages/lp
-npm run dev
-```
-
-開発サーバーは `http://localhost:3000` で起動します。
-
-### ビルド
-
-```bash
-# ルートディレクトリから
-npm run build:lp
-
-# または、このディレクトリで直接
-cd packages/lp
-npm run build
-```
-
-### 本番環境での起動
-
-```bash
-npm run build
-npm start
-```
+ふどろすのランディングページ（Next.js）
 
 ## プロジェクト構造
 
 ```
 packages/lp/
 ├── app/                    # Next.js App Router
-│   ├── admin/              # 管理画面
-│   │   ├── login/          # ログイン画面
-│   │   ├── dashboard/      # ダッシュボード
-│   │   ├── blog/           # ブログ管理
-│   │   └── layout-editor/  # 共通レイアウト編集
+│   ├── admin/              # 管理画面（共通レイアウト編集用）
 │   ├── api/                # API Routes
-│   │   ├── admin/          # 管理用API
-│   │   └── revalidate/     # ISR再検証API
 │   ├── blog/               # ブログ記事表示
 │   ├── layout.tsx          # ルートレイアウト
 │   ├── page.tsx            # トップページ
-│   └── globals.css         # グローバルスタイル
-├── components/             # Reactコンポーネント
-├── contexts/               # React Context
-├── config/                 # 設定ファイル
-├── utils/                  # ユーティリティ関数
-├── public/                 # 静的ファイル
-│   └── index.css           # CSSファイル（静的配信）
-├── blog/                   # ブログ記事保存先
+│   └── sitemap.ts          # 動的サイトマップ生成
+├── blog/                   # ブログ記事保存先（静的ファイル）
 │   ├── *.html              # ブログ記事
 │   ├── _header.html        # 共通ヘッダー
 │   ├── _footer.html        # 共通フッター
 │   └── _meta.html          # 共通Meta
+├── components/              # Reactコンポーネント
+├── config/                 # 設定ファイル
+├── contexts/               # React Context
+├── utils/                  # ユーティリティ関数
+├── public/                 # 静的ファイル
+│   └── index.css           # CSSファイル（静的配信）
 ├── package.json
 ├── tsconfig.json
 ├── next.config.js
 └── vercel.json             # Vercel設定
 ```
+
+## ブログ記事の管理
+
+### 静的ファイル方式
+
+ブログ記事は、**直接`packages/lp/blog/`ディレクトリにHTMLファイルとして配置**してください。
+
+#### ブログ記事の作成
+
+1. `packages/lp/blog/`ディレクトリに新しいHTMLファイルを作成
+   ```bash
+   # 例: packages/lp/blog/my-article.html
+   ```
+
+2. HTMLファイルの内容を記述
+   ```html
+   <h1>記事タイトル</h1>
+   <p>記事の内容...</p>
+   ```
+
+3. Gitでコミット・プッシュ
+   ```bash
+   git add packages/lp/blog/my-article.html
+   git commit -m "Add blog article: my-article"
+   git push
+   ```
+
+4. Vercelのデプロイ時に自動的に反映されます
+
+#### ブログ記事の編集
+
+1. `packages/lp/blog/`ディレクトリのHTMLファイルを直接編集
+2. Gitでコミット・プッシュ
+3. Vercelのデプロイ時に自動的に反映されます
+
+#### ブログ記事の削除
+
+1. `packages/lp/blog/`ディレクトリのHTMLファイルを削除
+2. Gitでコミット・プッシュ
+3. Vercelのデプロイ時に自動的に反映されます
+
+### 共通レイアウト
+
+ブログ記事には、以下の共通レイアウトが自動的に適用されます：
+
+- **ヘッダー**: `packages/lp/blog/_header.html`
+- **フッター**: `packages/lp/blog/_footer.html`
+- **Metaタグ**: `packages/lp/blog/_meta.html`
+
+これらのファイルは、管理画面（`/admin/layout-editor`）から編集できます。
+
+### ブログ記事のURL
+
+ブログ記事のURLは、ファイル名（拡張子を除く）がスラッグとして使用されます。
+
+- ファイル: `packages/lp/blog/my-article.html`
+- URL: `https://www.hudorosu.com/blog/my-article`
 
 ## 環境変数
 
@@ -145,46 +143,36 @@ vercel --prod
 #### 方法3: GitHub連携
 
 1. VercelダッシュボードでGitHubリポジトリを連携
-2. 上記の設定（Root Directory、Environment Variables）を行う
-3. プッシュ時に自動デプロイ
+2. 自動的にデプロイが開始されます
+3. 以降、`main`ブランチにプッシュするたびに自動デプロイされます
 
-### 環境変数の設定
+## 開発
 
-Vercelダッシュボードで以下の環境変数を設定してください：
+### ローカル開発サーバーの起動
 
-- `REVALIDATE_SECRET`: ISR再検証トークン
-  - 生成方法: `openssl rand -base64 32`
-- `NEXT_PUBLIC_BASE_URL`: サイトのベースURL
-  - 例: `https://www.hudorosu.com` または `https://your-project.vercel.app`
+```bash
+# プロジェクトルートから
+cd packages/lp
+npm run dev
+```
 
-## 機能
+開発サーバーは `http://localhost:3000` で起動します。
 
-### ランディングページ
+### ブログ記事のプレビュー
 
-- トップページ（`/`）
-- レスポンシブデザイン
-- SEO最適化（メタタグ、sitemap.xml）
+1. `packages/lp/blog/`ディレクトリにHTMLファイルを配置
+2. 開発サーバーを起動
+3. `http://localhost:3000/blog/[slug]` でアクセス
 
-### ブログ機能
+## 技術スタック
 
-- ブログ記事の表示（`/blog/[slug]`）
-- ISR（Incremental Static Regeneration）対応
-- 自動sitemap.xml更新
-
-### 管理画面（`/admin`）
-
-- ログイン機能（固定認証情報）
-- ブログ記事の作成・編集・削除
-- 共通レイアウト（ヘッダー、フッター、Meta）の編集
-- リアルタイムプレビュー（PC/SP対応）
-
-### ISR（Incremental Static Regeneration）
-
-ブログ記事の作成・更新・削除時に、自動的にVercelの再検証APIを呼び出してISRを実行します。
+- **Next.js**: 14.2.0
+- **React**: 18.2.0
+- **TypeScript**: 5.2.2
+- **Tailwind CSS**: 3.4.0
 
 ## 注意事項
 
-- ブログ記事は`packages/lp/blog`ディレクトリに保存されます
-- 共通レイアウトファイル（`_header.html`, `_footer.html`, `_meta.html`）も同じディレクトリに保存されます
-- `index.css`は`public/index.css`として静的ファイルとして配信されます
-- 管理画面の認証情報は固定（`lpadmin@example.com` / `password0`）
+- ブログ記事のファイル名は、URLのスラッグとして使用されます
+- ファイル名には、英数字、ハイフン、アンダースコアのみを使用してください
+- `_`で始まるファイル名は、共通レイアウトファイルとして扱われます（ブログ記事一覧に表示されません）

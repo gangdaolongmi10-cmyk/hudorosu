@@ -24,32 +24,26 @@ async function getBlogSlugs(): Promise<string[]> {
  */
 export async function generateSitemap(): Promise<string> {
   const blogSlugs = await getBlogSlugs()
-  const now = new Date().toISOString().split('T')[0] // YYYY-MM-DD形式
+  const now = new Date().toISOString().split('T')[0]
 
-  // ルートページ
   const urls = [
     {
-      loc: `${BASE_URL}/`,
+      loc: BASE_URL,
       lastmod: now,
       changefreq: 'weekly',
       priority: '1.0',
     },
-  ]
-
-  // ブログ記事のURLを追加
-  blogSlugs.forEach(slug => {
-    urls.push({
+    ...blogSlugs.map((slug) => ({
       loc: `${BASE_URL}/blog/${slug}`,
       lastmod: now,
       changefreq: 'weekly',
       priority: '0.8',
-    })
-  })
+    })),
+  ]
 
-  // XMLを生成
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(url => `    <url>
+${urls.map((url) => `    <url>
         <loc>${url.loc}</loc>
         <lastmod>${url.lastmod}</lastmod>
         <changefreq>${url.changefreq}</changefreq>
@@ -63,6 +57,7 @@ ${urls.map(url => `    <url>
 
 /**
  * sitemap.xmlファイルを更新
+ * 開発環境ではファイルに書き込む
  */
 export async function updateSitemapFile(): Promise<void> {
   try {

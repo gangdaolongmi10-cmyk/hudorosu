@@ -31,14 +31,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const file of htmlFiles) {
       const slug = file.replace('.html', '')
       const filePath = path.join(BLOG_DIR, file)
-      const stats = await fs.stat(filePath)
-
-      routes.push({
-        url: `${BASE_URL}/blog/${slug}`,
-        lastModified: stats.mtime.toISOString(),
-        changeFrequency: 'weekly',
-        priority: 0.8,
-      })
+      
+      try {
+        const stats = await fs.stat(filePath)
+        routes.push({
+          url: `${BASE_URL}/blog/${slug}`,
+          lastModified: stats.mtime.toISOString(),
+          changeFrequency: 'weekly',
+          priority: 0.8,
+        })
+      } catch {
+        // ファイル情報が取得できない場合は現在時刻を使用
+        routes.push({
+          url: `${BASE_URL}/blog/${slug}`,
+          lastModified: now,
+          changeFrequency: 'weekly',
+          priority: 0.8,
+        })
+      }
     }
   } catch (error) {
     console.error('Error reading blog directory for sitemap:', error)

@@ -13,6 +13,7 @@ export const revalidate = 60 // ISR: 60秒ごとに再検証
 
 export async function generateStaticParams() {
   try {
+    // ビルド時にブログディレクトリからファイル一覧を取得
     await fs.mkdir(BLOG_DIR, { recursive: true })
     const files = await fs.readdir(BLOG_DIR)
     const htmlFiles = files.filter(file => file.endsWith('.html') && !file.startsWith('_'))
@@ -27,9 +28,10 @@ export async function generateStaticParams() {
 
 export default async function BlogPage({ params }: BlogPageProps) {
   const { slug } = params
-  const filePath = path.join(BLOG_DIR, `${slug}.html`)
 
   try {
+    // 静的ファイルから読み込む
+    const filePath = path.join(BLOG_DIR, `${slug}.html`)
     const html = await fs.readFile(filePath, 'utf-8')
     
     // HTMLをそのまま表示（dangerouslySetInnerHTMLを使用）

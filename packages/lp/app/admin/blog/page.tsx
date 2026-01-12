@@ -44,27 +44,6 @@ export default function BlogListPage() {
     }
   }
 
-  const handleDelete = async (slug: string) => {
-    if (!confirm('このブログ記事を削除しますか？')) {
-      return
-    }
-
-    try {
-      const response = await fetch(`/api/admin/blog/${slug}`, {
-        method: 'DELETE',
-      })
-      const data = await response.json()
-      if (data.success) {
-        fetchArticles()
-      } else {
-        alert('削除に失敗しました')
-      }
-    } catch (error) {
-      console.error('Error deleting article:', error)
-      alert('削除に失敗しました')
-    }
-  }
-
   if (isLoading || loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -93,29 +72,30 @@ export default function BlogListPage() {
                 ブログ記事管理
               </h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/admin/blog/new"
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-              >
-                新規作成
-              </Link>
-            </div>
           </div>
         </div>
       </nav>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
+          {/* 静的ファイル方式の説明 */}
+          <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+            <div className="flex">
+              <div className="ml-3">
+                <p className="text-sm text-blue-700">
+                  <strong>静的ファイル方式:</strong> ブログ記事は直接<code className="bg-blue-100 px-1 rounded">packages/lp/blog/</code>ディレクトリにHTMLファイルとして配置してください。
+                  ファイルを追加・編集・削除した後、Gitでコミット・プッシュすると、Vercelのデプロイ時に自動的に反映されます。
+                </p>
+              </div>
+            </div>
+          </div>
+
           {articles.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 mb-4">ブログ記事がありません</p>
-              <Link
-                href="/admin/blog/new"
-                className="inline-block px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
-              >
-                最初の記事を作成
-              </Link>
+              <p className="text-sm text-gray-400 mb-4">
+                <code className="bg-gray-100 px-2 py-1 rounded">packages/lp/blog/</code>ディレクトリにHTMLファイルを配置してください
+              </p>
             </div>
           ) : (
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
@@ -126,7 +106,9 @@ export default function BlogListPage() {
                       <div className="flex items-center">
                         <div>
                           <Link
-                            href={`/admin/blog/edit/${article.slug}`}
+                            href={`/blog/${article.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-lg font-medium text-indigo-600 hover:text-indigo-900"
                           >
                             {article.slug}
@@ -134,21 +116,20 @@ export default function BlogListPage() {
                           <p className="text-sm text-gray-500 mt-1">
                             更新: {new Date(article.updatedAt).toLocaleString('ja-JP')}
                           </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            ファイル: <code className="bg-gray-100 px-1 rounded">{article.filename}</code>
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Link
-                          href={`/admin/blog/edit/${article.slug}`}
+                          href={`/blog/${article.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
                         >
-                          編集
+                          表示
                         </Link>
-                        <button
-                          onClick={() => handleDelete(article.slug)}
-                          className="px-3 py-1 border border-red-300 rounded-md text-sm font-medium text-red-700 bg-white hover:bg-red-50"
-                        >
-                          削除
-                        </button>
                       </div>
                     </div>
                   </li>
