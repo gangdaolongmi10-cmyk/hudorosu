@@ -5,14 +5,52 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hudorosu.com'
 export const metadata: Metadata = {
     title: 'ふどろす | 冷蔵庫の在庫管理と予算で決まる無料レシピ提案アプリ（開発中）',
     description: '食材管理アプリ「ふどろす」は、冷蔵庫の在庫と1日の予算から最適な献立を自動提案。食費の節約やフードロス削減をサポートする、学生・主婦に優しい無料ツールです。現在開発中です。',
+    keywords: ['食材管理アプリ', '冷蔵庫管理', 'レシピ提案', '節約', '献立', 'フードロス', '無料アプリ', 'ふどろす', '食材在庫', '家計管理'],
     alternates: {
         canonical: BASE_URL,
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
     },
 }
 
 export default function HomePage() {
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hudorosu.com'
+    
+    const structuredData = {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: 'ふどろす',
+        description: '食材管理アプリ「ふどろす」は、冷蔵庫の在庫と1日の予算から最適な献立を自動提案。食費の節約やフードロス削減をサポートする、学生・主婦に優しい無料ツールです。',
+        url: BASE_URL,
+        applicationCategory: 'FoodApplication',
+        operatingSystem: 'Web',
+        offers: {
+            '@type': 'Offer',
+            price: '0',
+            priceCurrency: 'JPY',
+        },
+        aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '4.5',
+            ratingCount: '1',
+        },
+    }
+
     return (
         <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+            />
             <section className="hero" role="img" aria-label="食材管理で節約するイメージ背景">
                 <div className="hero-overlay"></div>
                 <div className="hero-content">

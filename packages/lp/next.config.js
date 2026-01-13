@@ -1,6 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'hudorosu-backend.vercel.app',
+          },
+        ],
+        destination: 'https://www.hudorosu.com/:path*',
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       {
