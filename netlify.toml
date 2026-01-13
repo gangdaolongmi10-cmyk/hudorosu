@@ -16,6 +16,27 @@
   [headers.values]
     X-Robots-Tag = "index, follow"
 
+# 正規URLへのリダイレクト設定
+# HTTP → HTTPS
+[[redirects]]
+  from = "http://hudorosu.com/*"
+  to = "https://www.hudorosu.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.hudorosu.com/*"
+  to = "https://www.hudorosu.com/:splat"
+  status = 301
+  force = true
+
+# ルートドメイン → www（正規URLに統一）
+[[redirects]]
+  from = "https://hudorosu.com/*"
+  to = "https://www.hudorosu.com/:splat"
+  status = 301
+  force = true
+
 # 静的アセットのキャッシュ設定
 [[headers]]
   for = "/*.css"
