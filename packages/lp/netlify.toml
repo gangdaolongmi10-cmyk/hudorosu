@@ -1,13 +1,13 @@
 [build]
   command = "npm run build"
-  publish = ".next"
   base = "packages/lp"
 
 [build.environment]
   NODE_VERSION = "20"
 
 # Next.jsのSSR/ISRサポート
-# NetlifyはNext.jsを自動検出しますが、明示的に設定することも可能です
+# NetlifyはNext.jsを自動検出して、適切にビルドとデプロイを行います
+# publishディレクトリは設定不要（Netlifyが自動検出）
 
 # 静的アセットのキャッシュ設定
 [[headers]]

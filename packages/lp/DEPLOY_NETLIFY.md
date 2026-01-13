@@ -18,7 +18,8 @@
 |------|-----|
 | **Base directory** | `packages/lp` |
 | **Build command** | `npm run build` |
-| **Publish directory** | `.next` |
+| **Publish directory** | **空（設定しない）** |
+| **Functions directory** | **空（設定しない）** |
 
 **注意**: NetlifyはNext.jsを自動検出しますが、上記の設定を明示的に行うことを推奨します。
 
