@@ -5,9 +5,10 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Next.jsのSSR/ISRサポート
-# NetlifyはNext.jsを自動検出して、適切にビルドとデプロイを行います
-# publishディレクトリは設定不要（Netlifyが自動検出）
+# Next.js 14のApp Routerサポート
+# @netlify/plugin-nextjsプラグインが必要です
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # 静的アセットのキャッシュ設定
 [[headers]]
