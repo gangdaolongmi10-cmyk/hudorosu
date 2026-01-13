@@ -1,6 +1,6 @@
 [build]
-  command = "npm run build"
-  base = "packages/lp"
+  command = "cd packages/lp && npm run build"
+  publish = "packages/lp/.next"
 
 [build.environment]
   NODE_VERSION = "20"

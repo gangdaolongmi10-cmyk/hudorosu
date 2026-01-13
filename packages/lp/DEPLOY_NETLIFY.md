@@ -16,9 +16,9 @@
 
 | 項目 | 値 |
 |------|-----|
-| **Base directory** | `packages/lp` |
-| **Build command** | `npm run build` |
-| **Publish directory** | **空（設定しない）** |
+| **Base directory** | **空（設定しない）** |
+| **Build command** | `cd packages/lp && npm run build` |
+| **Publish directory** | `packages/lp/.next` |
 | **Functions directory** | **空（設定しない）** |
 
 **注意**: NetlifyはNext.jsを自動検出しますが、上記の設定を明示的に行うことを推奨します。
@@ -34,20 +34,20 @@
 
 **重要**: `NEXT_PUBLIC_BASE_URL`は、デプロイ後に実際のURLに更新してください。
 
-### 2. Netlify Functionsの設定
+### 2. Next.jsプラグインの設定
 
-Next.jsのSSR/ISR機能を使用するため、Netlify Functionsが必要です。
+Next.js 14のApp RouterをNetlifyで使用するため、`@netlify/plugin-nextjs`プラグインが必要です。
 
 `netlify.toml`に以下の設定が含まれています：
 
 ```toml
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/next"
-  status = 200
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 ```
 
-この設定により、すべてのリクエストがNext.jsのサーバーサイドレンダリングにルーティングされます。
+このプラグインにより、Next.jsのSSR/ISR機能が正しく動作します。
+
+**重要**: `package.json`の`devDependencies`に`@netlify/plugin-nextjs`が含まれていることを確認してください。
 
 ### 3. デプロイ後の確認
 
@@ -111,6 +111,19 @@ Netlifyのデフォルトドメイン（`*.netlify.app`）からカスタムド�
   1. `netlify.toml`が正しく設定されているか
   2. デプロイ後に設定が反映されているか
   3. ブラウザのキャッシュをクリア
+
+### Page not foundエラー
+
+- **原因**: Next.js 14のApp RouterをNetlifyで使用する場合、`@netlify/plugin-nextjs`プラグインが必要です
+- **解決策**:
+  1. `package.json`の`devDependencies`に`@netlify/plugin-nextjs`が含まれているか確認
+  2. `netlify.toml`に以下の設定が含まれているか確認：
+     ```toml
+     [[plugins]]
+       package = "@netlify/plugin-nextjs"
+     ```
+  3. 変更をコミット・プッシュして再デプロイ
+  4. Netlifyダッシュボードで「Site configuration」→「Build & deploy」→「Plugins」を確認し、プラグインが有効になっているか確認
 
 ## Vercelからの移行
 
