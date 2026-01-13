@@ -17,25 +17,30 @@
     X-Robots-Tag = "index, follow"
 
 # 正規URLへのリダイレクト設定
-# HTTP → HTTPS
-[[redirects]]
-  from = "http://hudorosu.com/*"
-  to = "https://www.hudorosu.com/:splat"
-  status = 301
-  force = true
+# 注意: Netlifyのドメイン設定で「Primary domain」をwww.hudorosu.comに設定してください
+# リダイレクトループを防ぐため、Netlifyの自動リダイレクト機能を使用します
+# 必要に応じて、以下のリダイレクト設定を有効にしてください
 
-[[redirects]]
-  from = "http://www.hudorosu.com/*"
-  to = "https://www.hudorosu.com/:splat"
-  status = 301
-  force = true
+# HTTP → HTTPS（Netlifyが自動的に処理するため、通常は不要）
+# [[redirects]]
+#   from = "http://hudorosu.com/*"
+#   to = "https://www.hudorosu.com/:splat"
+#   status = 301
+#   force = true
 
-# ルートドメイン → www（正規URLに統一）
-[[redirects]]
-  from = "https://hudorosu.com/*"
-  to = "https://www.hudorosu.com/:splat"
-  status = 301
-  force = true
+# [[redirects]]
+#   from = "http://www.hudorosu.com/*"
+#   to = "https://www.hudorosu.com/:splat"
+#   status = 301
+#   force = true
+
+# ルートドメイン → www（Netlifyのドメイン設定で「Primary domain」を設定すると自動的に処理されます）
+# リダイレクトループが発生する場合は、この設定をコメントアウトしてください
+# [[redirects]]
+#   from = "https://hudorosu.com/*"
+#   to = "https://www.hudorosu.com/:splat"
+#   status = 301
+#   force = true
 
 # 静的アセットのキャッシュ設定
 [[headers]]
