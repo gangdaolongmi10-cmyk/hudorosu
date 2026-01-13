@@ -10,6 +10,12 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+# Netlifyの自動noindexを無効化
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "index, follow"
+
 # 静的アセットのキャッシュ設定
 [[headers]]
   for = "/*.css"
