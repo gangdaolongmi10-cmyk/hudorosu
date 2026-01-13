@@ -1,3 +1,15 @@
+import type { Metadata } from 'next'
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hudorosu.com'
+
+export const metadata: Metadata = {
+    title: 'ふどろす | 冷蔵庫の在庫管理と予算で決まる無料レシピ提案アプリ（開発中）',
+    description: '食材管理アプリ「ふどろす」は、冷蔵庫の在庫と1日の予算から最適な献立を自動提案。食費の節約やフードロス削減をサポートする、学生・主婦に優しい無料ツールです。現在開発中です。',
+    alternates: {
+        canonical: BASE_URL,
+    },
+}
+
 export default function HomePage() {
     return (
         <>
