@@ -388,6 +388,64 @@ export default function TechPage() {
                     </section>
                 </AnimatedSection>
 
+                {/* 技術記事・ブログ */}
+                <AnimatedSection direction="up">
+                    <section className="tech-blog-section">
+                    <h2 className="section-title-tech">技術記事・ブログ</h2>
+                    <p className="section-subtitle-tech">
+                        開発の過程や技術的な知見を共有しています
+                    </p>
+
+                    <div className="tech-blog-links">
+                        <a
+                            href="https://zenn.dev/hudorosu"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="tech-blog-link tech-blog-link-zenn"
+                        >
+                            <div className="tech-blog-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M13.242 0C6.067 0 0 5.067 0 11.242c0 4.756 2.942 8.83 7.13 10.47.52.113.72-.225.72-.506 0-.283-.005-1.017-.015-1.996-2.857.62-3.463-1.35-3.463-1.35-.475-1.18-1.16-1.52-1.16-1.52-.95-.65.072-.637.072-.637 1.052.075 1.606 1.07 1.606 1.07.933 1.575 2.445 1.125 3.043.86.095-.67.365-1.125.665-1.384-2.297-.26-4.71-1.136-4.71-5.062 0-1.125.405-2.035 1.07-2.76-.107-.258-.475-1.305.1-2.73 0 0 .883-.28 2.883 1.07.835-.23 1.73-.338 2.62-.338.89 0 1.785.108 2.62.338 2-1.35 2.883-1.07 2.883-1.07.575 1.425.207 2.472.1 2.73.665.725 1.07 1.635 1.07 2.76 0 3.936-2.418 4.8-4.72 5.062.37.315.7.945.7 1.91 0 1.383-.012 2.5-.012 2.84 0 .28.19.618.71.505C21.06 20.07 24 16 24 11.242 24 5.067 17.933 0 10.758 0h2.484z"/>
+                                </svg>
+                            </div>
+                            <div className="tech-blog-content">
+                                <h3 className="tech-blog-title">Zenn</h3>
+                                <p className="tech-blog-description">技術的な知見や開発の過程を記事として公開</p>
+                                <span className="tech-blog-url">zenn.dev/hudorosu</span>
+                            </div>
+                            <div className="tech-blog-arrow">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </div>
+                        </a>
+
+                        <a
+                            href="https://qiita.com/gangdaolongmi10-cmyk"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="tech-blog-link tech-blog-link-qiita"
+                        >
+                            <div className="tech-blog-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2.4c5.302 0 9.6 4.298 9.6 9.6s-4.298 9.6-9.6 9.6S2.4 17.302 2.4 12 6.698 2.4 12 2.4zm-1.2 4.8v9.6h2.4V7.2h-2.4zm0-2.4h2.4v2.4h-2.4V4.8z"/>
+                                </svg>
+                            </div>
+                            <div className="tech-blog-content">
+                                <h3 className="tech-blog-title">Qiita</h3>
+                                <p className="tech-blog-description">開発ノウハウや技術的な学びを共有</p>
+                                <span className="tech-blog-url">qiita.com/gangdaolongmi10-cmyk</span>
+                            </div>
+                            <div className="tech-blog-arrow">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </div>
+                        </a>
+                    </div>
+                    </section>
+                </AnimatedSection>
+
             </div>
         </>
     )

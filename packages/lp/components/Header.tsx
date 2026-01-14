@@ -47,7 +47,6 @@ export default function Header() {
                         <Link href="/" className="nav-link">ホーム</Link>
                         <Link href="/blog" className="nav-link">ブログ</Link>
                         <Link href="/tech" className="nav-link">技術</Link>
-                        <Link href="/blog/my_fave/puroseka" className="nav-link">プロジェクトセカイ</Link>
                     </nav>
 
                     {/* ハンバーガーボタン */}

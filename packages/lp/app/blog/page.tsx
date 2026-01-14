@@ -1,9 +1,9 @@
-'use client'
-
-import { useState, useMemo } from 'react'
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
+import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import recipesData from '../../data/recipes.json'
+import BlogClient from './BlogClient'
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hudorosu.com'
 
 interface BlogPost {
     slug: string
@@ -22,252 +22,173 @@ interface Category {
     name: string
 }
 
-// カテゴリマップを作成
-const categoriesMap: Record<string, Category> = {}
-recipesData.categories.forEach((cat: Category) => {
-    categoriesMap[cat.id] = cat
-})
-
 // レシピデータをブログ投稿形式に変換
-const blogPosts: BlogPost[] = recipesData.recipes.map((recipe: any) => ({
-    slug: recipe.slug,
-    title: recipe.title,
-    description: recipe.description,
-    categoryId: recipe.categoryId,
-    category: recipe.category,
-    date: new Date().toISOString().split('T')[0], // 現在の日付を使用（実際にはデータから取得）
-    keywords: recipe.keywords || [],
-    cost: recipe.cost,
-    time: recipe.time,
-}))
+function getBlogPosts(): BlogPost[] {
+    return recipesData.recipes.map((recipe: any) => ({
+        slug: recipe.slug,
+        title: recipe.title,
+        description: recipe.description,
+        categoryId: recipe.categoryId,
+        category: recipe.category,
+        date: new Date().toISOString().split('T')[0],
+        keywords: recipe.keywords || [],
+        cost: recipe.cost,
+        time: recipe.time,
+    }))
+}
 
 // 全カテゴリを取得
-const allCategories: Category[] = recipesData.categories || []
+function getCategories(): Category[] {
+    return recipesData.categories || []
+}
 
-export default function BlogPage() {
-    const searchParams = useSearchParams()
-    const categoryIdParam = searchParams.get('category') || ''
-    const keywordParam = searchParams.get('q') || ''
-    
-    const [selectedCategoryId, setSelectedCategoryId] = useState(categoryIdParam)
-    const [searchKeyword, setSearchKeyword] = useState(keywordParam)
+// 動的メタデータ生成
+export async function generateMetadata({
+    searchParams,
+}: {
+    searchParams: { category?: string; q?: string; page?: string }
+}): Promise<Metadata> {
+    const blogPosts = getBlogPosts()
+    const categories = getCategories()
+    const categoryId = searchParams?.category || ''
+    const keyword = searchParams?.q || ''
+    const page = parseInt(searchParams?.page || '1', 10)
 
-    // フィルタリング処理
-    const filteredPosts = useMemo(() => {
-        let filtered = blogPosts
-
-        // カテゴリIDで絞り込み
-        if (selectedCategoryId) {
-            filtered = filtered.filter((post) => post.categoryId === selectedCategoryId)
-        }
-
-        // キーワードで絞り込み
-        if (searchKeyword) {
-            const keyword = searchKeyword.toLowerCase()
-            filtered = filtered.filter((post) => {
-                const matchesTitle = post.title.toLowerCase().includes(keyword)
-                const matchesDescription = post.description.toLowerCase().includes(keyword)
-                const matchesKeywords = post.keywords.some((k) => k.toLowerCase().includes(keyword))
-                return matchesTitle || matchesDescription || matchesKeywords
-            })
-        }
-
-        return filtered
-    }, [selectedCategoryId, searchKeyword])
-
-    // URLを生成する関数
-    const buildUrl = (categoryId?: string, keyword?: string) => {
-        const params = new URLSearchParams()
-        if (categoryId) params.set('category', categoryId)
-        if (keyword) params.set('q', keyword)
-        const queryString = params.toString()
-        return queryString ? `/blog?${queryString}` : '/blog'
+    // フィルタリング
+    let filteredPosts = blogPosts
+    if (categoryId) {
+        filteredPosts = filteredPosts.filter((post) => post.categoryId === categoryId)
+    }
+    if (keyword) {
+        const keywordLower = keyword.toLowerCase()
+        filteredPosts = filteredPosts.filter((post) => {
+            const matchesTitle = post.title.toLowerCase().includes(keywordLower)
+            const matchesDescription = post.description.toLowerCase().includes(keywordLower)
+            const matchesKeywords = post.keywords.some((k) => k.toLowerCase().includes(keywordLower))
+            return matchesTitle || matchesDescription || matchesKeywords
+        })
     }
 
-    const handleCategoryChange = (categoryId: string) => {
-        const newCategoryId = selectedCategoryId === categoryId ? '' : categoryId
-        setSelectedCategoryId(newCategoryId)
-        window.history.pushState(
-            {},
-            '',
-            buildUrl(newCategoryId, searchKeyword)
-        )
+    const category = categories.find((c) => c.id === categoryId)
+    const totalPosts = filteredPosts.length
+    const pageInfo = page > 1 ? ` - ${page}ページ目` : ''
+
+    let title = 'ブログ | ふどろす - 節約レシピ・冷蔵庫管理のコツ'
+    let description = '冷蔵庫の余り物で作る節約レシピ、給料日前のメニュー、食材管理のコツなど、ふどろすがお届けする実用的な記事一覧。'
+
+    if (category) {
+        title = `${category.name} | ブログ | ふどろす${pageInfo}`
+        description = `${category.name}に関する記事一覧。${totalPosts}件の記事を掲載中。`
+    } else if (keyword) {
+        title = `「${keyword}」の検索結果 | ブログ | ふどろす${pageInfo}`
+        description = `「${keyword}」に関する記事を${totalPosts}件見つけました。`
+    } else if (page > 1) {
+        title = `ブログ | ふどろす - ${page}ページ目`
     }
 
-    const handleKeywordSearch = (keyword: string) => {
-        setSearchKeyword(keyword)
-        window.history.pushState(
-            {},
-            '',
-            buildUrl(selectedCategoryId, keyword)
-        )
+    return {
+        title,
+        description,
+        keywords: [
+            '節約レシピ',
+            '冷蔵庫 余り物',
+            '給料日前 メニュー',
+            '食材管理',
+            'ふどろす',
+            'フードロス削減',
+            ...(category ? [category.name] : []),
+        ],
+        alternates: {
+            canonical: categoryId || keyword || page > 1
+                ? `${BASE_URL}/blog?${new URLSearchParams({
+                      ...(categoryId ? { category: categoryId } : {}),
+                      ...(keyword ? { q: keyword } : {}),
+                      ...(page > 1 ? { page: page.toString() } : {}),
+                  }).toString()}`
+                : `${BASE_URL}/blog`,
+        },
+        openGraph: {
+            title,
+            description,
+            url: `${BASE_URL}/blog`,
+            siteName: 'ふどろす',
+            type: 'website',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+        },
     }
+}
 
-    const clearFilters = () => {
-        setSelectedCategoryId('')
-        setSearchKeyword('')
-        window.history.pushState({}, '', '/blog')
+export default function BlogPage({
+    searchParams,
+}: {
+    searchParams: { category?: string; q?: string; page?: string }
+}) {
+    const blogPosts = getBlogPosts()
+    const categories = getCategories()
+    const categoryId = searchParams?.category || ''
+    const keyword = searchParams?.q || ''
+    const page = parseInt(searchParams?.page || '1', 10)
+
+    // 構造化データ（CollectionPage Schema）
+    const structuredData = {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        name: 'ブログ | ふどろす',
+        description: '冷蔵庫の余り物で作る節約レシピ、給料日前のメニュー、食材管理のコツなど、ふどろすがお届けする実用的な記事一覧。',
+        url: `${BASE_URL}/blog`,
+        mainEntity: {
+            '@type': 'ItemList',
+            numberOfItems: blogPosts.length,
+            itemListElement: blogPosts.slice(0, 20).map((post, index) => ({
+                '@type': 'ListItem',
+                position: index + 1,
+                item: {
+                    '@type': 'Article',
+                    '@id': `${BASE_URL}/blog/recipe/${post.slug}`,
+                    name: post.title,
+                    description: post.description,
+                },
+            })),
+        },
     }
 
     return (
-        <div className="blog-page">
-            {/* ヘッダー */}
-            <header className="blog-header">
-                <div className="container-blog">
-                    <h1 className="blog-title">ブログ</h1>
-                    <p className="blog-description">
-                        冷蔵庫の余り物で作る節約レシピ、給料日前のメニュー、<br />
-                        食材管理のコツなど、実用的な記事をお届けします。
-                    </p>
-                </div>
-            </header>
-
-            {/* フィルターセクション */}
-            <div className="blog-filters">
-                <div className="container-blog">
-                    <div className="filters-container">
-                        {/* キーワード検索 */}
-                        <div className="filter-group">
-                            <label htmlFor="keyword-search" className="filter-label">
-                                🔍 キーワード検索
-                            </label>
-                            <div className="search-input-wrapper">
-                                <input
-                                    id="keyword-search"
-                                    type="text"
-                                    value={searchKeyword}
-                                    onChange={(e) => handleKeywordSearch(e.target.value)}
-                                    placeholder="レシピ名やキーワードで検索..."
-                                    className="search-input"
-                                />
-                                {searchKeyword && (
-                                    <button
-                                        type="button"
-                                        onClick={() => handleKeywordSearch('')}
-                                        className="search-clear"
-                                        aria-label="検索をクリア"
-                                    >
-                                        ×
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* カテゴリフィルター */}
-                        <div className="filter-group">
-                            <label className="filter-label">📁 カテゴリ</label>
-                            <div className="category-filters">
-                                <button
-                                    type="button"
-                                    onClick={clearFilters}
-                                    className={`category-filter-btn ${!selectedCategoryId && !searchKeyword ? 'active' : ''}`}
-                                >
-                                    すべて
-                                </button>
-                                {allCategories.map((category) => (
-                                    <button
-                                        key={category.id}
-                                        type="button"
-                                        onClick={() => handleCategoryChange(category.id)}
-                                        className={`category-filter-btn ${selectedCategoryId === category.id ? 'active' : ''}`}
-                                    >
-                                        {category.name}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* フィルター結果表示 */}
-                        {(selectedCategoryId || searchKeyword) && (
-                            <div className="filter-results">
-                                <span className="results-count">
-                                    {filteredPosts.length}件の記事が見つかりました
-                                </span>
-                                <button
-                                    type="button"
-                                    onClick={clearFilters}
-                                    className="clear-filters-btn"
-                                >
-                                    フィルターをクリア
-                                </button>
-                            </div>
-                        )}
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+            />
+            <div className="blog-page">
+                {/* ヘッダー */}
+                <header className="blog-header">
+                    <div className="container-blog">
+                        <h1 className="blog-title">ブログ</h1>
+                        <p className="blog-description">
+                            冷蔵庫の余り物で作る節約レシピ、給料日前のメニュー、<br />
+                            食材管理のコツなど、実用的な記事をお届けします。
+                        </p>
                     </div>
-                </div>
-            </div>
+                </header>
 
-            {/* 記事一覧 */}
-            <div className="blog-content">
-                <div className="container-blog">
-                    {filteredPosts.length === 0 ? (
-                        <div className="no-results">
-                            <div className="no-results-icon">🔍</div>
-                            <h2 className="no-results-title">記事が見つかりませんでした</h2>
-                            <p className="no-results-description">
-                                検索条件を変更して、もう一度お試しください。
-                            </p>
-                            <button
-                                type="button"
-                                onClick={clearFilters}
-                                className="clear-filters-btn-large"
-                            >
-                                すべてのフィルターをクリア
-                            </button>
-                        </div>
-                    ) : (
-                        <>
-                            <div className="blog-grid">
-                                {filteredPosts.map((post) => (
-                                    <article key={post.slug} className="blog-card">
-                                        <Link href={`/blog/recipe/${post.slug}`} className="blog-card-link">
-                                            <div className="blog-card-header">
-                                                <span className="blog-category">{post.category}</span>
-                                                <time className="blog-date" dateTime={post.date}>
-                                                    {new Date(post.date).toLocaleDateString('ja-JP', {
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric',
-                                                    })}
-                                                </time>
-                                            </div>
-                                            <h2 className="blog-card-title">{post.title}</h2>
-                                            <p className="blog-card-description">{post.description}</p>
-                                            {post.cost && post.time && (
-                                                <div className="blog-card-meta">
-                                                    <span className="blog-meta-item">💰 {post.cost}</span>
-                                                    <span className="blog-meta-item">⏱️ {post.time}</span>
-                                                </div>
-                                            )}
-                                            <div className="blog-card-footer">
-                                                <span className="blog-read-more">続きを読む →</span>
-                                            </div>
-                                        </Link>
-                                    </article>
-                                ))}
-                            </div>
-
-                            {/* カテゴリ一覧（サイドバー的な位置） */}
-                            <div className="blog-categories">
-                                <h2 className="categories-title">カテゴリ一覧</h2>
-                                <div className="category-tags">
-                                    {allCategories.map((category) => {
-                                        const count = blogPosts.filter((p) => p.categoryId === category.id).length
-                                        return (
-                                            <Link
-                                                key={category.id}
-                                                href={buildUrl(category.id, searchKeyword)}
-                                                className={`category-tag ${selectedCategoryId === category.id ? 'active' : ''}`}
-                                            >
-                                                {category.name} ({count})
-                                            </Link>
-                                        )
-                                    })}
-                                </div>
-                            </div>
-                        </>
-                    )}
-                </div>
+                <Suspense fallback={
+                    <div className="blog-loading">
+                        <div className="loading-spinner"></div>
+                        <p className="loading-text">読み込み中...</p>
+                    </div>
+                }>
+                    <BlogClient
+                        initialPosts={blogPosts}
+                        categories={categories}
+                        initialCategoryId={categoryId}
+                        initialKeyword={keyword}
+                        initialPage={page}
+                    />
+                </Suspense>
             </div>
-        </div>
+        </>
     )
 }
