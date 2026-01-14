@@ -1,7 +1,5 @@
 import { MetadataRoute } from 'next'
-import { promises as fs } from 'fs'
-import path from 'path'
-import { BLOG_DIR } from '@/config/paths'
+import recipesData from '../data/recipes.json'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hudorosu.com'
 
@@ -20,12 +18,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 1.0,
         },
         {
+            url: `${BASE_URL}/blog`,
+            lastModified: now,
+            changeFrequency: 'daily',
+            priority: 0.9,
+        },
+        {
             url: `${BASE_URL}/blog/my_fave/puroseka`,
             lastModified: now,
             changeFrequency: 'monthly',
             priority: 0.8,
         },
+        {
+            url: `${BASE_URL}/tech`,
+            lastModified: now,
+            changeFrequency: 'monthly',
+            priority: 0.7,
+        },
     ]
+
+    // レシピ記事（/blog/recipe/[slug]）
+    for (const recipe of recipesData.recipes) {
+        routes.push({
+            url: `${BASE_URL}/blog/recipe/${recipe.slug}`,
+            lastModified: now,
+            changeFrequency: 'weekly',
+            priority: 0.6,
+        })
+    }
 
     return routes
 }
