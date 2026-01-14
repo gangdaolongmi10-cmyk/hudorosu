@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
+import { Suspense, type ReactNode } from 'react'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hudorosu.com'
 
@@ -12,11 +12,11 @@ export const metadata: Metadata = {
     },
 }
 
-export default function BlogLayout({
-    children,
-}: {
-    children: React.ReactNode
-}) {
+interface BlogLayoutProps {
+    children: ReactNode
+}
+
+export default function BlogLayout({ children }: BlogLayoutProps) {
     return (
         <Suspense fallback={<div>読み込み中...</div>}>
             {children}
