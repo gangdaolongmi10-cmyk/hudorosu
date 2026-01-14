@@ -848,6 +848,34 @@ body {
     padding: 0 5%;
 }
 
+.container-recipe {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+.container-blog {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+@media (max-width: 768px) {
+    .container-narrow,
+    .container-recipe,
+    .container-blog {
+        padding: 0 4%;
+    }
+}
+
+@media (max-width: 480px) {
+    .container-narrow,
+    .container-recipe,
+    .container-blog {
+        padding: 0 3%;
+    }
+}
+
 /* セクション共通スタイル */
 section {
     padding: 100px 0;
@@ -2535,6 +2563,1241 @@ html {
 
     .mobile-only {
         display: block;
+    }
+}
+
+/* レシピページ */
+.recipe-page {
+    min-height: 100vh;
+    background: #f9fafb;
+    padding-top: calc(var(--header-height) + 20px);
+}
+
+/* パンくずリスト */
+.breadcrumb {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 16px 0;
+}
+
+.breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-list li {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-list li:not(:last-child)::after {
+    content: '›';
+    margin-left: 8px;
+    color: #9ca3af;
+}
+
+.breadcrumb-list a {
+    color: #6b7280;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb-list a:hover {
+    color: var(--main-green);
+}
+
+.breadcrumb-list li[aria-current="page"] {
+    color: var(--deep-green);
+    font-weight: 600;
+}
+
+/* レシピヘッダー */
+.recipe-header {
+    background: linear-gradient(135deg, var(--soft-green) 0%, #ffffff 100%);
+    padding: 60px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.recipe-category-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--main-green);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.recipe-title {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 800;
+    color: var(--deep-green);
+    margin-bottom: 16px;
+    line-height: 1.3;
+}
+
+.recipe-description {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 32px;
+}
+
+.recipe-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.meta-icon {
+    font-size: 1.2rem;
+}
+
+.meta-label {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.meta-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--deep-green);
+}
+
+/* レシピコンテンツ */
+.recipe-content {
+    padding: 60px 0;
+}
+
+.recipe-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 48px;
+    align-items: start;
+}
+
+.recipe-main {
+    background: white;
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.recipe-section {
+    margin-bottom: 48px;
+}
+
+.recipe-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: clamp(1.5rem, 3vw, 1.8rem);
+    font-weight: 700;
+    color: var(--deep-green);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 3px solid var(--soft-green);
+}
+
+.heading-icon {
+    font-size: 1.5em;
+}
+
+/* 材料リスト */
+.ingredient-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 12px;
+}
+
+.ingredient-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: var(--soft-green);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.ingredient-item:hover {
+    background: #e8f5e9;
+    transform: translateX(4px);
+}
+
+.ingredient-checkbox {
+    flex-shrink: 0;
+}
+
+.ingredient-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.ingredient-checkbox label {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--main-green);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.ingredient-checkbox input[type="checkbox"]:checked + label {
+    background: var(--main-green);
+    border-color: var(--main-green);
+}
+
+.ingredient-checkbox input[type="checkbox"]:checked + label::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.ingredient-text {
+    flex: 1;
+    font-size: 1rem;
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+/* 作り方リスト */
+.step-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    counter-reset: step-counter;
+}
+
+.step-item {
+    display: flex;
+    gap: 20px;
+    counter-increment: step-counter;
+    position: relative;
+}
+
+.step-number {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--main-green), var(--deep-green));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+}
+
+.step-content {
+    flex: 1;
+    padding: 16px 20px;
+    background: var(--soft-green);
+    border-radius: 12px;
+    border-left: 4px solid var(--main-green);
+}
+
+.step-content p {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-main);
+    line-height: 1.8;
+}
+
+/* コツ・ポイント */
+.recipe-tips {
+    background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
+    padding: 32px;
+    border-radius: 16px;
+    border: 2px solid #ffc107;
+}
+
+.tips-content {
+    font-size: 1.05rem;
+    color: #666;
+    line-height: 1.8;
+}
+
+.tips-content p {
+    margin: 0;
+}
+
+/* レシピCTA */
+.recipe-cta {
+    margin-top: 48px;
+}
+
+.cta-card {
+    background: linear-gradient(135deg, var(--main-green), var(--deep-green));
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(102, 187, 106, 0.3);
+}
+
+.cta-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+}
+
+.cta-title {
+    font-size: clamp(1.3rem, 2vw, 1.6rem);
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.cta-description {
+    font-size: 1rem;
+    opacity: 0.95;
+    margin-bottom: 24px;
+    line-height: 1.8;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 16px 32px;
+    background: white;
+    color: var(--deep-green);
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* サイドバー */
+.recipe-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.sidebar-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.sidebar-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--deep-green);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--soft-green);
+}
+
+.related-recipes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.related-recipes li {
+    padding: 12px;
+    background: var(--soft-green);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.related-recipes li:hover {
+    background: #e8f5e9;
+    transform: translateX(4px);
+}
+
+.related-recipes a {
+    color: var(--deep-green);
+    text-decoration: none;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    display: block;
+}
+
+.related-recipes a:hover {
+    text-decoration: underline;
+}
+
+.keyword-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.keyword-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--soft-green);
+    color: var(--deep-green);
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.keyword-tag:hover {
+    background: var(--main-green);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* 関連記事セクション */
+.related-articles-section {
+    margin-top: 60px;
+    padding-top: 48px;
+    border-top: 2px solid var(--soft-green);
+}
+
+.related-articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.related-article-card {
+    display: block;
+    background: white;
+    border: 2px solid var(--soft-green);
+    border-radius: 16px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.related-article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: var(--main-green);
+}
+
+.related-article-category {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--main-green);
+    color: white;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.related-article-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--deep-green);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.related-article-description {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.related-article-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.related-article-cost,
+.related-article-time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* レスポンシブ対応 */
+/* タブレット対応（968px以下） */
+@media (max-width: 968px) {
+    .recipe-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .recipe-sidebar {
+        order: -1;
+    }
+
+    .recipe-main {
+        padding: 40px 32px;
+    }
+
+    .recipe-header {
+        padding: 50px 0;
+    }
+
+    .related-articles-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+}
+
+/* モバイル対応（768px以下） */
+@media (max-width: 768px) {
+    .recipe-page {
+        padding-top: calc(var(--header-height-mobile) + 10px);
+    }
+
+    /* パンくずリスト */
+    .breadcrumb {
+        padding: 12px 0;
+    }
+
+    .breadcrumb-list {
+        font-size: 0.8rem;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .breadcrumb-list li:not(:last-child)::after {
+        margin-left: 6px;
+    }
+
+    /* レシピヘッダー */
+    .recipe-header {
+        padding: 32px 0;
+    }
+
+    .recipe-category-badge {
+        font-size: 0.75rem;
+        padding: 6px 12px;
+        margin-bottom: 16px;
+    }
+
+    .recipe-title {
+        font-size: clamp(1.5rem, 6vw, 2rem);
+        margin-bottom: 12px;
+    }
+
+    .recipe-description {
+        font-size: clamp(0.9rem, 2.5vw, 1rem);
+        margin-bottom: 24px;
+    }
+
+    /* レシピメタ情報 */
+    .recipe-meta {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .meta-item {
+        width: 100%;
+        justify-content: flex-start;
+        padding: 10px 16px;
+    }
+
+    .meta-icon {
+        font-size: 1rem;
+    }
+
+    .meta-label {
+        font-size: 0.85rem;
+    }
+
+    .meta-value {
+        font-size: 0.95rem;
+    }
+
+    /* レシピコンテンツ */
+    .recipe-content {
+        padding: 40px 0;
+    }
+
+    .recipe-layout {
+        gap: 24px;
+    }
+
+    .recipe-main {
+        padding: 24px 20px;
+        border-radius: 16px;
+    }
+
+    .recipe-section {
+        margin-bottom: 32px;
+    }
+
+    /* セクション見出し */
+    .section-heading {
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        flex-wrap: wrap;
+    }
+
+    .heading-icon {
+        font-size: 1.3em;
+    }
+
+    /* 材料リスト */
+    .ingredient-list {
+        gap: 10px;
+    }
+
+    .ingredient-item {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .ingredient-checkbox label {
+        width: 20px;
+        height: 20px;
+    }
+
+    .ingredient-text {
+        font-size: 0.9rem;
+    }
+
+    /* 作り方 */
+    .step-list {
+        gap: 20px;
+    }
+
+    .step-item {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .step-number {
+        align-self: flex-start;
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .step-content {
+        padding: 12px 16px;
+        width: 100%;
+    }
+
+    .step-content p {
+        font-size: 0.9rem;
+    }
+
+    /* コツ・ポイント */
+    .recipe-tips {
+        padding: 24px 20px;
+        border-radius: 12px;
+    }
+
+    .tips-content {
+        font-size: 0.95rem;
+    }
+
+    /* CTAカード */
+    .recipe-cta {
+        margin-top: 32px;
+    }
+
+    .cta-card {
+        padding: 28px 20px;
+        border-radius: 16px;
+    }
+
+    .cta-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+
+    .cta-title {
+        font-size: clamp(1.1rem, 3vw, 1.3rem);
+        margin-bottom: 10px;
+    }
+
+    .cta-description {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    .cta-button {
+        padding: 14px 28px;
+        font-size: 0.95rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* サイドバー */
+    .recipe-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .sidebar-card {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .sidebar-title {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+    }
+
+    .related-recipes {
+        gap: 10px;
+    }
+
+    .related-recipes li {
+        padding: 10px;
+    }
+
+    .related-recipes a {
+        font-size: 0.9rem;
+    }
+
+    .keyword-tags {
+        gap: 6px;
+    }
+
+    .keyword-tag {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+
+    .related-articles-section {
+        margin-top: 40px;
+        padding-top: 32px;
+    }
+
+    .related-articles-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .related-article-card {
+        padding: 20px;
+    }
+}
+
+/* 小さなモバイル対応（480px以下） */
+@media (max-width: 480px) {
+    .recipe-page {
+        padding-top: calc(var(--header-height-mobile) + 5px);
+    }
+
+    .breadcrumb-list {
+        font-size: 0.75rem;
+    }
+
+    .recipe-header {
+        padding: 24px 0;
+    }
+
+    .recipe-title {
+        font-size: clamp(1.3rem, 7vw, 1.8rem);
+    }
+
+    .recipe-main {
+        padding: 20px 16px;
+        border-radius: 12px;
+    }
+
+    .recipe-section {
+        margin-bottom: 28px;
+    }
+
+    .section-heading {
+        font-size: clamp(1.1rem, 5vw, 1.3rem);
+        margin-bottom: 16px;
+    }
+
+    .ingredient-item {
+        padding: 10px;
+    }
+
+    .step-number {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+
+    .step-content {
+        padding: 10px 12px;
+    }
+
+    .cta-card {
+        padding: 24px 16px;
+    }
+
+    .sidebar-card {
+        padding: 16px;
+    }
+}
+
+/* ブログ一覧ページ */
+.blog-page {
+    min-height: 100vh;
+    background: #f9fafb;
+    padding-top: calc(var(--header-height) + 20px);
+}
+
+/* フィルターセクション */
+.blog-filters {
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 32px 0;
+}
+
+.filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.filter-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--deep-green);
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--main-green);
+    box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.1);
+}
+
+.search-clear {
+    position: absolute;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: #e5e7eb;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.search-clear:hover {
+    background: #d1d5db;
+    color: #333;
+}
+
+.category-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.category-filter-btn {
+    padding: 10px 20px;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: var(--text-main);
+    border-radius: 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.category-filter-btn:hover {
+    border-color: var(--main-green);
+    color: var(--main-green);
+    transform: translateY(-2px);
+}
+
+.category-filter-btn.active {
+    background: var(--main-green);
+    color: white;
+    border-color: var(--main-green);
+}
+
+.filter-results {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: var(--soft-green);
+    border-radius: 12px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.results-count {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--deep-green);
+}
+
+.clear-filters-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--main-green);
+    background: white;
+    color: var(--main-green);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clear-filters-btn:hover {
+    background: var(--main-green);
+    color: white;
+}
+
+.clear-filters-btn-large {
+    padding: 12px 24px;
+    border: 2px solid var(--main-green);
+    background: var(--main-green);
+    color: white;
+    border-radius: 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 24px;
+}
+
+.clear-filters-btn-large:hover {
+    background: var(--deep-green);
+    border-color: var(--deep-green);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+}
+
+.no-results {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.no-results-icon {
+    font-size: 4rem;
+    margin-bottom: 24px;
+}
+
+.no-results-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--deep-green);
+    margin-bottom: 12px;
+}
+
+.no-results-description {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.8;
+}
+
+.blog-header {
+    background: linear-gradient(135deg, var(--soft-green) 0%, #ffffff 100%);
+    padding: 80px 0 60px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.blog-title {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 800;
+    color: var(--deep-green);
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.blog-description {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: #666;
+    text-align: center;
+    line-height: 1.8;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.blog-content {
+    padding: 60px 0;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 32px;
+    margin-bottom: 60px;
+}
+
+.blog-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.blog-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: var(--main-green);
+}
+
+.blog-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 32px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+}
+
+.blog-category {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--main-green);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.blog-date {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+
+.blog-card-title {
+    font-size: clamp(1.2rem, 2vw, 1.4rem);
+    font-weight: 700;
+    color: var(--deep-green);
+    margin-bottom: 12px;
+    line-height: 1.4;
+    flex: 1;
+}
+
+.blog-card-description {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.7;
+    margin-bottom: 16px;
+    flex: 1;
+}
+
+.blog-card-meta {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.blog-meta-item {
+    font-size: 0.85rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.blog-card-footer {
+    margin-top: auto;
+}
+
+.blog-read-more {
+    font-size: 0.9rem;
+    color: var(--main-green);
+    font-weight: 600;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.blog-card:hover .blog-read-more {
+    transform: translateX(4px);
+}
+
+/* カテゴリセクション */
+.blog-categories {
+    padding: 40px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.categories-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--deep-green);
+    margin-bottom: 20px;
+}
+
+.category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.category-tag {
+    display: inline-block;
+    padding: 10px 20px;
+    background: var(--soft-green);
+    color: var(--deep-green);
+    text-decoration: none;
+    border-radius: 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.category-tag:hover {
+    background: var(--main-green);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.category-tag.active {
+    background: var(--main-green);
+    color: white;
+    border-color: var(--deep-green);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .blog-page {
+        padding-top: calc(var(--header-height-mobile) + 20px);
+    }
+
+    .blog-header {
+        padding: 60px 0 40px;
+    }
+
+    .blog-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .blog-card-link {
+        padding: 24px;
+    }
+
+    .blog-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .blog-categories {
+        padding: 32px 24px;
+    }
+
+    /* フィルターセクションのレスポンシブ */
+    .blog-filters {
+        padding: 24px 0;
+    }
+
+    .filters-container {
+        gap: 20px;
+    }
+
+    .category-filters {
+        gap: 8px;
+    }
+
+    .category-filter-btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+
+    .filter-results {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-input {
+        font-size: 0.95rem;
     }
 }
 

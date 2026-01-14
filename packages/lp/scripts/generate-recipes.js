@@ -1,0 +1,255 @@
+// SEOを考慮した50個の記事を生成するスクリプト
+
+const fs = require('fs');
+const path = require('path');
+
+const categories = [
+  { id: "setsuyaku-recipe", name: "節約レシピ" },
+  { id: "shokuzai-kanri", name: "食材管理" },
+  { id: "foodloss-sakugen", name: "フードロス削減" }
+];
+
+// 既存の3つの記事
+const existingRecipes = [
+  {
+    slug: "buta-niku-amari-300yen",
+    title: "豚肉の余りで作る！300円でできる節約レシピ3選",
+    description: "冷蔵庫に残った豚肉の余りで、300円以下で作れる簡単節約レシピを3つ紹介。給料日前でも大丈夫！ふどろすで食材を無駄にせず、美味しく節約。",
+    keywords: ["豚肉 余り 300円 レシピ", "節約レシピ", "給料日前", "豚肉 使い切り", "冷蔵庫 余り物", "ふどろす"],
+    categoryId: "setsuyaku-recipe",
+    category: "節約レシピ",
+    cost: "300円",
+    time: "15分",
+    servings: "2人分",
+    ingredients: [
+      "豚バラ薄切り肉 100g（余り）",
+      "キャベツ 1/4個",
+      "にんじん 1/2本",
+      "もやし 1袋",
+      "ごま油 小さじ1",
+      "しょうゆ 大さじ1",
+      "みりん 大さじ1",
+      "塩・こしょう 少々"
+    ],
+    steps: [
+      "キャベツはざく切り、にんじんは千切りにする。",
+      "フライパンにごま油を熱し、豚肉を炒める。",
+      "豚肉の色が変わったら、キャベツ、にんじん、もやしを加えて炒める。",
+      "しょうゆ、みりん、塩・こしょうで味付けして完成。",
+      "ふどろすで冷蔵庫の余り物を確認してから作ると、無駄なく使えます！"
+    ],
+    tips: "豚肉が少ない場合は、もやしを多めにするとボリュームが出ます。給料日前の節約にも最適！",
+    relatedSlugs: ["kyuuryoumae-setsuyaku-menu", "yasai-amari-okazu"]
+  },
+  {
+    slug: "kyuuryoumae-setsuyaku-menu",
+    title: "給料日前の節約メニュー！冷蔵庫の余り物で作る500円以下レシピ",
+    description: "給料日前でも大丈夫！冷蔵庫の余り物だけで作れる500円以下の節約メニューを紹介。ふどろすで食材を確認してから作れば、無駄なく節約できます。",
+    keywords: ["給料日前 節約 メニュー", "500円以下 レシピ", "冷蔵庫 余り物", "節約レシピ", "ふどろす"],
+    categoryId: "setsuyaku-recipe",
+    category: "節約レシピ",
+    cost: "500円",
+    time: "20分",
+    servings: "2人分",
+    ingredients: [
+      "冷蔵庫の余り野菜（何でもOK）",
+      "卵 2個",
+      "ごはん 2杯分",
+      "しょうゆ 大さじ1",
+      "ごま油 小さじ1",
+      "塩・こしょう 少々"
+    ],
+    steps: [
+      "冷蔵庫の余り野菜を細かく切る（にんじん、キャベツ、玉ねぎなど何でもOK）。",
+      "フライパンにごま油を熱し、野菜を炒める。",
+      "野菜がしんなりしたら、ごはんを加えて炒める。",
+      "卵を割り入れて、全体に混ぜ合わせる。",
+      "しょうゆ、塩・こしょうで味付けして完成。",
+      "ふどろすで冷蔵庫の中身を確認してから作ると、無駄なく使えます！"
+    ],
+    tips: "どんな野菜でもOK！冷蔵庫の余り物を有効活用できる、給料日前の救世主レシピです。",
+    relatedSlugs: ["buta-niku-amari-300yen", "yasai-amari-okazu"]
+  },
+  {
+    slug: "yasai-amari-okazu",
+    title: "野菜の余りで作る！常備菜レシピ5選",
+    description: "冷蔵庫に残った野菜の余りで作れる常備菜レシピを5つ紹介。作り置きしておけば、忙しい日も助かります。",
+    keywords: ["野菜 余り", "常備菜", "作り置き", "節約レシピ", "ふどろす"],
+    categoryId: "setsuyaku-recipe",
+    category: "節約レシピ",
+    cost: "400円",
+    time: "30分",
+    servings: "4人分",
+    ingredients: [
+      "冷蔵庫の余り野菜（にんじん、キャベツ、ピーマンなど）",
+      "ごま油 大さじ1",
+      "しょうゆ 大さじ2",
+      "みりん 大さじ1",
+      "砂糖 小さじ1",
+      "塩 少々"
+    ],
+    steps: [
+      "野菜を食べやすい大きさに切る。",
+      "フライパンにごま油を熱し、野菜を炒める。",
+      "野菜がしんなりしたら、調味料を加えて炒め煮する。",
+      "冷めたら保存容器に入れて冷蔵庫で保存。",
+      "ふどろすで野菜の賞味期限を確認してから作ると、無駄なく使えます！"
+    ],
+    tips: "冷蔵庫で3〜4日保存可能。忙しい日の副菜として重宝します。",
+    relatedSlugs: ["buta-niku-amari-300yen", "kyuuryoumae-setsuyaku-menu"]
+  }
+];
+
+// 追加記事のテンプレート
+const recipeTemplates = [
+  // 節約レシピ系（20個）
+  { slug: "tori-niku-amari-300yen", title: "鶏肉の余りで作る！300円以下レシピ【給料日前の節約術】", keywords: ["鶏肉 余り 300円", "給料日前 節約", "鶏肉 使い切り"], categoryId: "setsuyaku-recipe", cost: "300円", time: "15分", mainIngredient: "鶏もも肉", dishType: "炒め物" },
+  { slug: "sakana-amari-nimono", title: "魚の余りで作る！簡単煮物レシピ【300円以下】", keywords: ["魚 余り", "煮物", "300円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "300円", time: "20分", mainIngredient: "魚", dishType: "煮物" },
+  { slug: "niku-amari-curry", title: "肉の余りで作る！簡単カレーレシピ【500円以下】", keywords: ["肉 余り カレー", "500円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "500円", time: "30分", mainIngredient: "肉", dishType: "カレー" },
+  { slug: "yasai-amari-soup", title: "野菜の余りで作る！具だくさんスープ【300円以下】", keywords: ["野菜 余り スープ", "300円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "300円", time: "15分", mainIngredient: "野菜", dishType: "スープ" },
+  { slug: "tamago-amari-omurice", title: "卵の余りで作る！簡単オムライス【400円以下】", keywords: ["卵 オムライス", "400円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "400円", time: "20分", mainIngredient: "卵", dishType: "オムライス" },
+  { slug: "reizouko-amari-fried-rice", title: "冷蔵庫の余り物で作る！簡単チャーハン【300円以下】", keywords: ["冷蔵庫 余り物 チャーハン", "300円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "300円", time: "10分", mainIngredient: "ごはん", dishType: "チャーハン" },
+  { slug: "niku-amari-stir-fry", title: "肉の余りで作る！簡単炒め物レシピ【300円以下】", keywords: ["肉 余り 炒め物", "300円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "300円", time: "15分", mainIngredient: "肉", dishType: "炒め物" },
+  { slug: "yasai-amari-salad", title: "野菜の余りで作る！簡単サラダレシピ【200円以下】", keywords: ["野菜 余り サラダ", "200円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "200円", time: "5分", mainIngredient: "野菜", dishType: "サラダ" },
+  { slug: "tamago-amari-sandwich", title: "卵の余りで作る！簡単サンドイッチ【300円以下】", keywords: ["卵 サンドイッチ", "300円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "300円", time: "10分", mainIngredient: "卵", dishType: "サンドイッチ" },
+  { slug: "reizouko-amari-pasta", title: "冷蔵庫の余り物で作る！簡単パスタ【400円以下】", keywords: ["冷蔵庫 余り物 パスタ", "400円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "400円", time: "15分", mainIngredient: "パスタ", dishType: "パスタ" },
+  { slug: "niku-amari-rice-bowl", title: "肉の余りで作る！簡単丼レシピ【400円以下】", keywords: ["肉 余り 丼", "400円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "400円", time: "15分", mainIngredient: "肉", dishType: "丼" },
+  { slug: "yasai-amari-gratin", title: "野菜の余りで作る！簡単グラタン【500円以下】", keywords: ["野菜 余り グラタン", "500円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "500円", time: "25分", mainIngredient: "野菜", dishType: "グラタン" },
+  { slug: "tamago-amari-fried-egg", title: "卵の余りで作る！簡単目玉焼き定食【300円以下】", keywords: ["卵 目玉焼き", "300円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "300円", time: "10分", mainIngredient: "卵", dishType: "目玉焼き" },
+  { slug: "reizouko-amari-okonomiyaki", title: "冷蔵庫の余り物で作る！簡単お好み焼き【400円以下】", keywords: ["冷蔵庫 余り物 お好み焼き", "400円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "400円", time: "20分", mainIngredient: "キャベツ", dishType: "お好み焼き" },
+  { slug: "niku-amari-teriyaki", title: "肉の余りで作る！簡単照り焼きレシピ【400円以下】", keywords: ["肉 余り 照り焼き", "400円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "400円", time: "15分", mainIngredient: "肉", dishType: "照り焼き" },
+  { slug: "yasai-amari-tempura", title: "野菜の余りで作る！簡単天ぷら【300円以下】", keywords: ["野菜 余り 天ぷら", "300円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "300円", time: "20分", mainIngredient: "野菜", dishType: "天ぷら" },
+  { slug: "tamago-amari-egg-drop-soup", title: "卵の余りで作る！簡単卵スープ【200円以下】", keywords: ["卵 スープ", "200円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "200円", time: "5分", mainIngredient: "卵", dishType: "スープ" },
+  { slug: "reizouko-amari-nabe", title: "冷蔵庫の余り物で作る！簡単鍋【500円以下】", keywords: ["冷蔵庫 余り物 鍋", "500円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "500円", time: "20分", mainIngredient: "野菜", dishType: "鍋" },
+  { slug: "niku-amari-gyudon", title: "肉の余りで作る！簡単牛丼【400円以下】", keywords: ["肉 余り 牛丼", "400円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "400円", time: "15分", mainIngredient: "牛肉", dishType: "牛丼" },
+  { slug: "yasai-amari-miso-soup", title: "野菜の余りで作る！具だくさん味噌汁【200円以下】", keywords: ["野菜 余り 味噌汁", "200円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "200円", time: "10分", mainIngredient: "野菜", dishType: "味噌汁" },
+  { slug: "tamago-amari-egg-roll", title: "卵の余りで作る！簡単卵焼き【200円以下】", keywords: ["卵 卵焼き", "200円以下", "節約レシピ"], categoryId: "setsuyaku-recipe", cost: "200円", time: "10分", mainIngredient: "卵", dishType: "卵焼き" },
+  
+  // 食材管理系（15個）
+  { slug: "reizouko-no-nakami-kakunin", title: "冷蔵庫の中身を確認する方法！食材管理のコツ【ふどろす活用】", keywords: ["冷蔵庫 中身 確認", "食材管理", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "5分" },
+  { slug: "shokuzai-toroku-houhou", title: "食材の登録方法！ふどろすで簡単管理【賞味期限管理】", keywords: ["食材 登録", "賞味期限 管理", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "3分" },
+  { slug: "reizouko-katazuke-kotsu", title: "冷蔵庫の片付け方！食材を無駄にしない整理術【フードロス削減】", keywords: ["冷蔵庫 片付け", "食材管理", "フードロス削減"], categoryId: "shokuzai-kanri", cost: "0円", time: "30分" },
+  { slug: "shokuzai-hyouji-houhou", title: "食材の表示方法！冷蔵庫で見やすく管理するコツ【ふどろす活用】", keywords: ["食材 表示", "冷蔵庫 管理", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "10分" },
+  { slug: "reizouko-kensaku-kotsu", title: "冷蔵庫の検索方法！食材をすぐに見つけるコツ【ふどろす活用】", keywords: ["冷蔵庫 検索", "食材管理", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "2分" },
+  { slug: "shokuzai-sakujo-houhou", title: "食材の削除方法！使い切った食材を管理するコツ【ふどろす活用】", keywords: ["食材 削除", "食材管理", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "1分" },
+  { slug: "reizouko-bunrui-houhou", title: "冷蔵庫の分類方法！食材を種類別に管理するコツ【フードロス削減】", keywords: ["冷蔵庫 分類", "食材管理", "フードロス削減"], categoryId: "shokuzai-kanri", cost: "0円", time: "20分" },
+  { slug: "shokuzai-koushin-houhou", title: "食材の更新方法！賞味期限を管理するコツ【ふどろす活用】", keywords: ["食材 更新", "賞味期限 管理", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "2分" },
+  { slug: "reizouko-kigen-kakunin", title: "冷蔵庫の期限確認！賞味期限を管理するコツ【ふどろす活用】", keywords: ["冷蔵庫 期限確認", "賞味期限 管理", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "5分" },
+  { slug: "shokuzai-tsuika-houhou", title: "食材の追加方法！新しく買った食材を管理するコツ【ふどろす活用】", keywords: ["食材 追加", "食材管理", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "3分" },
+  { slug: "reizouko-kigen-near", title: "冷蔵庫の期限が近い食材！賞味期限を確認するコツ【ふどろす活用】", keywords: ["冷蔵庫 期限 近い", "賞味期限 確認", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "5分" },
+  { slug: "shokuzai-list-hyouji", title: "食材リストの表示方法！冷蔵庫の中身を確認するコツ【ふどろす活用】", keywords: ["食材 リスト", "冷蔵庫 中身", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "3分" },
+  { slug: "reizouko-kigen-sort", title: "冷蔵庫の期限順ソート！賞味期限を管理するコツ【ふどろす活用】", keywords: ["冷蔵庫 期限順", "賞味期限 管理", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "2分" },
+  { slug: "shokuzai-kigen-filter", title: "食材の期限フィルター！賞味期限が近い食材を確認するコツ【ふどろす活用】", keywords: ["食材 期限 フィルター", "賞味期限 確認", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "2分" },
+  { slug: "reizouko-kigen-notification", title: "冷蔵庫の期限通知！賞味期限を管理するコツ【ふどろす活用】", keywords: ["冷蔵庫 期限 通知", "賞味期限 管理", "ふどろす"], categoryId: "shokuzai-kanri", cost: "0円", time: "1分" },
+  
+  // フードロス削減系（15個）
+  { slug: "foodloss-sakugen-houhou", title: "フードロス削減の方法！家庭でできる5つのコツ【ふどろす活用】", keywords: ["フードロス削減", "食材管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "shokuzai-muda-sakugen", title: "食材の無駄を削減する方法！フードロスを減らすコツ【ふどろす活用】", keywords: ["食材 無駄 削減", "フードロス削減", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "reizouko-foodloss-sakugen", title: "冷蔵庫のフードロス削減！食材を無駄にしないコツ【ふどろす活用】", keywords: ["冷蔵庫 フードロス削減", "食材管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "15分" },
+  { slug: "shokuzai-kigen-foodloss", title: "食材の期限とフードロス！賞味期限を管理して削減するコツ【ふどろす活用】", keywords: ["食材 期限 フードロス", "賞味期限 管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "reizouko-amari-foodloss", title: "冷蔵庫の余り物とフードロス！食材を無駄にしないコツ【ふどろす活用】", keywords: ["冷蔵庫 余り物 フードロス", "食材管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "shokuzai-kigen-near-foodloss", title: "食材の期限が近い時のフードロス削減！賞味期限を管理するコツ【ふどろす活用】", keywords: ["食材 期限 近い フードロス", "賞味期限 管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "reizouko-kigen-foodloss-sakugen", title: "冷蔵庫の期限とフードロス削減！賞味期限を管理するコツ【ふどろす活用】", keywords: ["冷蔵庫 期限 フードロス削減", "賞味期限 管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "shokuzai-muda-nai-houhou", title: "食材を無駄にしない方法！フードロスを削減するコツ【ふどろす活用】", keywords: ["食材 無駄 ない", "フードロス削減", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "reizouko-foodloss-zero", title: "冷蔵庫のフードロスをゼロにする方法！食材を無駄にしないコツ【ふどろす活用】", keywords: ["冷蔵庫 フードロス ゼロ", "食材管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "15分" },
+  { slug: "shokuzai-kigen-manage-foodloss", title: "食材の期限管理とフードロス削減！賞味期限を管理するコツ【ふどろす活用】", keywords: ["食材 期限 管理 フードロス", "賞味期限 管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "reizouko-amari-recipe-foodloss", title: "冷蔵庫の余り物レシピとフードロス削減！食材を無駄にしないコツ【ふどろす活用】", keywords: ["冷蔵庫 余り物 レシピ フードロス", "食材管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "shokuzai-kigen-check-foodloss", title: "食材の期限確認とフードロス削減！賞味期限を管理するコツ【ふどろす活用】", keywords: ["食材 期限 確認 フードロス", "賞味期限 管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "5分" },
+  { slug: "reizouko-foodloss-sakugen-tips", title: "冷蔵庫のフードロス削減のコツ！食材を無駄にしない方法【ふどろす活用】", keywords: ["冷蔵庫 フードロス削減 コツ", "食材管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "shokuzai-muda-zero-houhou", title: "食材の無駄をゼロにする方法！フードロスを削減するコツ【ふどろす活用】", keywords: ["食材 無駄 ゼロ", "フードロス削減", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" },
+  { slug: "reizouko-foodloss-sakugen-method", title: "冷蔵庫のフードロス削減方法！食材を無駄にしないコツ【ふどろす活用】", keywords: ["冷蔵庫 フードロス削減 方法", "食材管理", "ふどろす"], categoryId: "foodloss-sakugen", cost: "0円", time: "10分" }
+];
+
+function generateRecipe(template) {
+  const categoryMap = {
+    "setsuyaku-recipe": "節約レシピ",
+    "shokuzai-kanri": "食材管理",
+    "foodloss-sakugen": "フードロス削減"
+  };
+  
+  const isRecipe = template.categoryId === "setsuyaku-recipe";
+  
+  let description = template.title;
+  if (isRecipe) {
+    description += `。給料日前でも大丈夫！冷蔵庫の余り物で${template.cost}以下で作れる簡単${template.dishType || "レシピ"}。ふどろすで食材を確認してから作れば、無駄なく節約できます。`;
+  } else if (template.categoryId === "shokuzai-kanri") {
+    description += `。ふどろすを使えば、食材を効率的に管理できます。賞味期限を忘れることがなくなり、フードロスを削減できます。`;
+  } else {
+    description += `。家庭でできるフードロス削減のコツを紹介。ふどろすを使えば、食材を無駄にせず、フードロスを削減できます。`;
+  }
+  
+  const ingredients = isRecipe ? [
+    template.mainIngredient ? `${template.mainIngredient} 100g（余り）` : "冷蔵庫の余り物",
+    "冷蔵庫の余り野菜",
+    "ごま油 小さじ1",
+    "しょうゆ 大さじ1",
+    "みりん 大さじ1",
+    "塩・こしょう 少々"
+  ] : [];
+  
+  const steps = isRecipe ? [
+    "ふどろすで冷蔵庫の中身を確認する。",
+    template.mainIngredient ? `${template.mainIngredient}と野菜を準備する。` : "余り物を準備する。",
+    `フライパンにごま油を熱し、${template.dishType || "調理"}する。`,
+    "しょうゆ、みりん、塩・こしょうで味付けする。",
+    "完成！ふどろすで食材を管理すれば、無駄なく使えます！"
+  ] : [
+    "ふどろすアプリを開く。",
+    "食材を登録する。",
+    "賞味期限を管理する。",
+    "通知を確認する。",
+    "ふどろすで食材を管理すれば、無駄なく使えます！"
+  ];
+  
+  const tips = isRecipe 
+    ? `ふどろすを使えば、食材を無駄にせず、節約できます。${template.cost}以下で作れるので、給料日前にも最適！`
+    : template.categoryId === "shokuzai-kanri"
+    ? "ふどろすを使えば、食材を効率的に管理できます。賞味期限を忘れることがなくなり、フードロスを削減できます。"
+    : "ふどろすを使えば、食材を無駄にせず、フードロスを削減できます。";
+  
+  return {
+    slug: template.slug,
+    title: template.title,
+    description: description,
+    keywords: [...template.keywords, "ふどろす", categoryMap[template.categoryId]],
+    categoryId: template.categoryId,
+    category: categoryMap[template.categoryId],
+    cost: template.cost,
+    time: template.time,
+    servings: isRecipe ? "2人分" : "-",
+    ingredients: ingredients,
+    steps: steps,
+    tips: tips,
+    relatedSlugs: []
+  };
+}
+
+// 全記事を生成
+const allRecipes = [
+  ...existingRecipes,
+  ...recipeTemplates.map(generateRecipe)
+];
+
+// 関連記事を設定（同じカテゴリの記事を3つまで）
+allRecipes.forEach((recipe, index) => {
+  if (recipe.relatedSlugs.length === 0) {
+    const sameCategory = allRecipes.filter((r, i) => 
+      r.categoryId === recipe.categoryId && i !== index
+    );
+    recipe.relatedSlugs = sameCategory.slice(0, 3).map(r => r.slug);
+  }
+});
+
+const output = {
+  categories: categories,
+  recipes: allRecipes
+};
+
+// JSONファイルに書き込み
+const outputPath = path.join(__dirname, '../data/recipes.json');
+fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), 'utf-8');
+
+console.log(`✅ ${allRecipes.length}個の記事を生成しました！`);
+console.log(`- 節約レシピ: ${allRecipes.filter(r => r.categoryId === 'setsuyaku-recipe').length}個`);
+console.log(`- 食材管理: ${allRecipes.filter(r => r.categoryId === 'shokuzai-kanri').length}個`);
+console.log(`- フードロス削減: ${allRecipes.filter(r => r.categoryId === 'foodloss-sakugen').length}個`);
