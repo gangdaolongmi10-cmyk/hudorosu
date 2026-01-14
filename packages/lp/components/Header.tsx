@@ -45,6 +45,7 @@ export default function Header() {
                     {/* デスクトップナビゲーション */}
                     <nav className="desktop-nav" suppressHydrationWarning>
                         <Link href="/" className="nav-link">ホーム</Link>
+                        <Link href="/tech" className="nav-link">技術</Link>
                         <Link href="/blog/my_fave/puroseka" className="nav-link">プロジェクトセカイ</Link>
                     </nav>
 
@@ -85,6 +86,12 @@ export default function Header() {
                     <nav className="mobile-nav" suppressHydrationWarning>
                         <Link href="/" className="mobile-nav-link" onClick={closeMenu}>
                             <span>ホーム</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </Link>
+                        <Link href="/tech" className="mobile-nav-link" onClick={closeMenu}>
+                            <span>技術</span>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <polyline points="9 18 15 12 9 6"></polyline>
                             </svg>

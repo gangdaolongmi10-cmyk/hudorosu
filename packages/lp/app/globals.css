@@ -1745,6 +1745,497 @@ html {
     }
 }
 
+/* 技術ページ */
+.tech-hero {
+    padding: calc(var(--header-height) + 100px) 5% 80px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #ffffff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.tech-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(102, 187, 106, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(102, 187, 106, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.tech-hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.tech-hero-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+}
+
+.tech-hero-subtitle {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-weight: 400;
+    opacity: 0.9;
+    margin-bottom: 48px;
+    line-height: 1.6;
+}
+
+.tech-hero-visual {
+    margin-top: 60px;
+}
+
+.architecture-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.arch-layer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+.arch-item {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 24px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.arch-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px);
+}
+
+.arch-arrow {
+    font-size: 1.5rem;
+    color: var(--main-green);
+    font-weight: 700;
+}
+
+.tech-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 5%;
+}
+
+.section-title-tech {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 800;
+    color: var(--deep-green);
+    text-align: center;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+}
+
+.section-subtitle-tech {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: #666;
+    text-align: center;
+    margin-bottom: 60px;
+    line-height: 1.8;
+}
+
+/* 技術スタックグリッド */
+.tech-stack-section {
+    margin-bottom: 100px;
+}
+
+.tech-stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+    margin-top: 48px;
+}
+
+.tech-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.tech-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--main-green), var(--deep-green));
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+    transform-origin: bottom;
+}
+
+.tech-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.tech-card:hover::before {
+    transform: scaleY(1);
+    transform-origin: top;
+}
+
+.tech-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.tech-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.tech-card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.tech-card-description {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.tech-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tech-feature-tag {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #f0f9f0;
+    color: var(--deep-green);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* 意思決定セクション */
+.tech-decision-section {
+    margin-bottom: 100px;
+}
+
+.decision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+    margin-top: 48px;
+}
+
+.decision-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.decision-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+}
+
+.decision-number {
+    position: absolute;
+    top: -20px;
+    left: 32px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--main-green), var(--deep-green));
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(102, 187, 106, 0.3);
+}
+
+.decision-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 16px;
+    margin-top: 20px;
+}
+
+.decision-description {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 24px;
+}
+
+.decision-description strong {
+    color: var(--deep-green);
+    font-weight: 700;
+}
+
+.decision-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.benefit-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* パフォーマンスセクション */
+.tech-performance-section {
+    margin-bottom: 100px;
+}
+
+.performance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+    margin-top: 48px;
+}
+
+.performance-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.performance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.performance-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.performance-score {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--main-green);
+}
+
+.performance-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.metric-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.metric-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    min-width: 120px;
+}
+
+.metric-bar {
+    flex: 1;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.metric-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--main-green), var(--deep-green));
+    border-radius: 4px;
+    transition: width 1s ease;
+}
+
+.metric-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--deep-green);
+    min-width: 40px;
+    text-align: right;
+}
+
+.performance-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 24px;
+    background: #f9fafb;
+    border-radius: 12px;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--main-green);
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* ワークフローセクション */
+.tech-workflow-section {
+    margin-bottom: 100px;
+}
+
+.workflow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+    margin-top: 48px;
+    margin-bottom: 48px;
+}
+
+.workflow-category {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.workflow-category-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 20px;
+}
+
+.workflow-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.workflow-tag {
+    display: inline-block;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, var(--main-green), var(--deep-green));
+    color: #ffffff;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.workflow-description {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.8;
+}
+
+
+.mobile-only {
+    display: none;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .tech-hero {
+        padding: calc(var(--header-height-mobile) + 60px) 5% 60px;
+    }
+
+    .tech-container {
+        padding: 60px 5%;
+    }
+
+    .tech-stack-grid,
+    .decision-grid,
+    .performance-grid,
+    .workflow-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .arch-layer {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .arch-arrow {
+        transform: rotate(90deg);
+    }
+
+    .tech-card,
+    .decision-card,
+    .performance-card,
+    .workflow-category {
+        padding: 24px;
+    }
+
+    .mobile-only {
+        display: block;
+    }
+}
+
 /* フッター */
 footer {
     background: var(--deep-green);
