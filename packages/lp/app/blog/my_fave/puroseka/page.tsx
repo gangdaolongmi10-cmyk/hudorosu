@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import Link from 'next/link'
 
 interface Character {
   id: string
@@ -210,165 +211,185 @@ export default function PurosekaPage() {
   }, [selectedUnit, characters])
 
   return (
-    <div className="container" style={{ paddingTop: '40px', paddingBottom: '40px' }}>
-        {/* ヘッダー */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
-            プロジェクトセカイ
-          </h1>
-          <p className="text-xl sm:text-2xl text-gray-600 mb-2">
-            キャラクターの好きな食べ物・嫌いな食べ物
+    <div className="puroseka-page">
+      {/* ヒーローセクション */}
+      <section className="puroseka-hero">
+        <div className="puroseka-hero-content">
+          <h1 className="puroseka-title">プロジェクトセカイ</h1>
+          <p className="puroseka-subtitle">キャラクターの好きな食べ物・嫌いな食べ物を検索</p>
+          <p className="puroseka-description">
+            プロジェクトセカイの全キャラクターの好みの食べ物を検索できます。<br />
+            レシピ提案の参考にどうぞ！
           </p>
         </div>
+      </section>
 
-        {/* フィルター */}
-        <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* ユニット選択 */}
-            <div>
-              <label
-                htmlFor="unit-select"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                ユニット
-              </label>
-              <select
-                id="unit-select"
-                value={selectedUnit}
-                onChange={(e) => {
-                  setSelectedUnit(e.target.value)
-                  setSelectedCharacter('all') // ユニット変更時はキャラクター選択をリセット
-                }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base"
-              >
-                <option value="all">すべて</option>
-                {units.map((unit) => (
-                  <option key={unit} value={unit}>
-                    {unit}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <div className="puroseka-container">
+        {/* フィルターセクション */}
+        <section className="puroseka-filters">
+          <div className="filter-card">
+            <h2 className="filter-title">検索・フィルター</h2>
+            <div className="filter-grid">
+              {/* ユニット選択 */}
+              <div className="filter-item">
+                <label htmlFor="unit-select" className="filter-label">
+                  <svg className="filter-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                  </svg>
+                  ユニット
+                </label>
+                <select
+                  id="unit-select"
+                  value={selectedUnit}
+                  onChange={(e) => {
+                    setSelectedUnit(e.target.value)
+                    setSelectedCharacter('all')
+                  }}
+                  className="filter-select"
+                >
+                  <option value="all">すべてのユニット</option>
+                  {units.map((unit) => (
+                    <option key={unit} value={unit}>
+                      {unit}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            {/* キャラクター選択 */}
-            <div>
-              <label
-                htmlFor="character-select"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                キャラクター
-              </label>
-              <select
-                id="character-select"
-                value={selectedCharacter}
-                onChange={(e) => setSelectedCharacter(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base"
-              >
-                <option value="all">すべて</option>
-                {availableCharacters.map((char) => (
-                  <option key={char.id} value={char.id}>
-                    {char.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+              {/* キャラクター選択 */}
+              <div className="filter-item">
+                <label htmlFor="character-select" className="filter-label">
+                  <svg className="filter-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  キャラクター
+                </label>
+                <select
+                  id="character-select"
+                  value={selectedCharacter}
+                  onChange={(e) => setSelectedCharacter(e.target.value)}
+                  className="filter-select"
+                >
+                  <option value="all">すべてのキャラクター</option>
+                  {availableCharacters.map((char) => (
+                    <option key={char.id} value={char.id}>
+                      {char.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            {/* 検索 */}
-            <div>
-              <label
-                htmlFor="search-input"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                検索
-              </label>
-              <input
-                id="search-input"
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="名前や食べ物で検索..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm sm:text-base"
-              />
+              {/* 検索 */}
+              <div className="filter-item filter-item-full">
+                <label htmlFor="search-input" className="filter-label">
+                  <svg className="filter-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                  </svg>
+                  食べ物で検索
+                </label>
+                <input
+                  id="search-input"
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="例: おにぎり、カレー、ケーキ..."
+                  className="filter-input"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* 結果表示 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {filteredCharacters.length === 0 ? (
-            <div className="col-span-full text-center py-12">
-              <p className="text-gray-500 text-lg">該当するキャラクターが見つかりませんでした</p>
-            </div>
-          ) : (
-            filteredCharacters.map((char) => (
-              <div
-                key={char.id}
-                className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden"
-              >
-                {/* キャラクター情報 */}
-                <div className="p-4 sm:p-6">
-                  <div className="mb-4">
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
-                      {char.name}
-                    </h3>
-                    <p className="text-sm sm:text-base text-purple-600 font-medium">
-                      {char.unit}
-                    </p>
-                  </div>
+        <section className="puroseka-results">
+          <div className="results-header">
+            <h2 className="results-title">
+              {filteredCharacters.length > 0 ? (
+                <>
+                  <span className="results-count">{filteredCharacters.length}</span>件のキャラクターが見つかりました
+                </>
+              ) : (
+                '該当するキャラクターが見つかりませんでした'
+              )}
+            </h2>
+          </div>
 
-                  {/* 好きな食べ物 */}
-                  <div className="mb-4">
-                    <h4 className="text-sm sm:text-base font-semibold text-green-700 mb-2 flex items-center">
-                      <span className="mr-2">❤️</span>
-                      好きな食べ物
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {char.favorite_foods.length > 0 ? (
-                        char.favorite_foods.map((food, index) => (
-                          <span
-                            key={index}
-                            className="inline-block px-2 sm:px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium"
-                          >
-                            {food}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-gray-400 text-xs sm:text-sm">なし</span>
-                      )}
+          {filteredCharacters.length > 0 ? (
+            <div className="character-grid">
+              {filteredCharacters.map((char) => (
+                <div key={char.id} className="character-card">
+                  <div className="character-header">
+                    <div className="character-avatar">
+                      <span className="character-initial">{char.name.charAt(0)}</span>
+                    </div>
+                    <div className="character-info">
+                      <h3 className="character-name">{char.name}</h3>
+                      <p className="character-unit">{char.unit}</p>
                     </div>
                   </div>
 
-                  {/* 嫌いな食べ物 */}
-                  <div>
-                    <h4 className="text-sm sm:text-base font-semibold text-red-700 mb-2 flex items-center">
-                      <span className="mr-2">💔</span>
-                      嫌いな食べ物
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {char.disliked_foods.length > 0 ? (
-                        char.disliked_foods.map((food, index) => (
-                          <span
-                            key={index}
-                            className="inline-block px-2 sm:px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs sm:text-sm font-medium"
-                          >
-                            {food}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-gray-400 text-xs sm:text-sm">なし</span>
-                      )}
+                  <div className="character-content">
+                    {/* 好きな食べ物 */}
+                    <div className="food-section">
+                      <div className="food-section-header">
+                        <svg className="food-icon favorite" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span className="food-section-title">好きな食べ物</span>
+                      </div>
+                      <div className="food-tags">
+                        {char.favorite_foods.length > 0 ? (
+                          char.favorite_foods.map((food, index) => (
+                            <span key={index} className="food-tag favorite-tag">
+                              {food}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="food-tag-empty">なし</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* 嫌いな食べ物 */}
+                    <div className="food-section">
+                      <div className="food-section-header">
+                        <svg className="food-icon disliked" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span className="food-section-title">嫌いな食べ物</span>
+                      </div>
+                      <div className="food-tags">
+                        {char.disliked_foods.length > 0 ? (
+                          char.disliked_foods.map((food, index) => (
+                            <span key={index} className="food-tag disliked-tag">
+                              {food}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="food-tag-empty">なし</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))}
+            </div>
+          ) : (
+            <div className="no-results">
+              <svg className="no-results-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+              <p className="no-results-text">該当するキャラクターが見つかりませんでした</p>
+              <p className="no-results-hint">検索条件を変更してお試しください</p>
+            </div>
           )}
-        </div>
-
-        {/* 結果数表示 */}
-        <div className="mt-6 text-center text-sm sm:text-base text-gray-600">
-          {filteredCharacters.length}件のキャラクターが見つかりました
-        </div>
+        </section>
+      </div>
     </div>
   )
 }

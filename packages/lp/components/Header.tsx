@@ -1,45 +1,112 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 export default function Header() {
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [isScrolled, setIsScrolled] = useState(false)
 
-    const toggleMenu = (): void => {
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20)
+        }
+        window.addEventListener('scroll', handleScroll)
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
+
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = ''
+        }
+        return () => {
+            document.body.style.overflow = ''
+        }
+    }, [isMenuOpen])
+
+    const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen)
     }
 
-    const closeMenu = (): void => {
+    const closeMenu = () => {
         setIsMenuOpen(false)
     }
 
     return (
-        <header>
-            <div className="header-container">
-                <Link href="/" className="logo" onClick={closeMenu}>
-                    ふどろす
-                </Link>
-                <button
-                    type="button"
-                    className="hamburger-menu"
-                    onClick={toggleMenu}
-                    aria-label={isMenuOpen ? 'メニューを閉じる' : 'メニューを開く'}
-                    aria-expanded={isMenuOpen}
-                >
-                    <span className={isMenuOpen ? 'active' : ''}></span>
-                    <span className={isMenuOpen ? 'active' : ''}></span>
-                    <span className={isMenuOpen ? 'active' : ''}></span>
-                </button>
+        <>
+            <header className={`modern-header ${isScrolled ? 'scrolled' : ''}`} suppressHydrationWarning>
+                <div className="header-container-modern">
+                    <Link href="/" className="logo-modern" onClick={closeMenu}>
+                        ふどろす
+                    </Link>
+                    
+                    {/* デスクトップナビゲーション */}
+                    <nav className="desktop-nav" suppressHydrationWarning>
+                        <Link href="/" className="nav-link">ホーム</Link>
+                        <Link href="/blog/my_fave/puroseka" className="nav-link">プロジェクトセカイ</Link>
+                    </nav>
+
+                    {/* ハンバーガーボタン */}
+                    <button
+                        type="button"
+                        className={`hamburger-modern ${isMenuOpen ? 'active' : ''}`}
+                        onClick={toggleMenu}
+                        aria-label={isMenuOpen ? 'メニューを閉じる' : 'メニューを開く'}
+                        aria-expanded={isMenuOpen}
+                    >
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </header>
+            
+            {/* モバイルメニュー */}
+            <div className={`mobile-menu ${isMenuOpen ? 'open' : ''}`}>
+                <div className="mobile-menu-content">
+                    <div className="mobile-menu-header">
+                        <Link href="/" className="mobile-logo" onClick={closeMenu}>
+                            ふどろす
+                        </Link>
+                        <button
+                            type="button"
+                            className="mobile-menu-close"
+                            onClick={closeMenu}
+                            aria-label="メニューを閉じる"
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <nav className="mobile-nav" suppressHydrationWarning>
+                        <Link href="/" className="mobile-nav-link" onClick={closeMenu}>
+                            <span>ホーム</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </Link>
+                        <Link href="/blog/my_fave/puroseka" className="mobile-nav-link" onClick={closeMenu}>
+                            <span>プロジェクトセカイ</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </Link>
+                    </nav>
+                </div>
             </div>
-            <nav className={`nav-menu ${isMenuOpen ? 'open' : ''}`}>
-                <Link href="/" onClick={closeMenu}>
-                    ホーム
-                </Link>
-                <Link href="/blog/my_fave/puroseka" onClick={closeMenu}>
-                    プロジェクトセカイ
-                </Link>
-            </nav>
-        </header>
+
+            {/* オーバーレイ */}
+            {isMenuOpen && (
+                <div 
+                    className="menu-overlay-modern"
+                    onClick={closeMenu}
+                    aria-hidden="true"
+                />
+            )}
+        </>
     )
 }
