@@ -42,7 +42,7 @@ export default function BlogClient({
     const categoryIdParam = searchParams.get('category') || initialCategoryId
     const keywordParam = searchParams.get('q') || initialKeyword
     const pageParam = parseInt(searchParams.get('page') || initialPage.toString(), 10)
-    
+
     const [selectedCategoryId, setSelectedCategoryId] = useState(categoryIdParam)
     const [searchKeyword, setSearchKeyword] = useState(keywordParam)
     const [currentPage, setCurrentPage] = useState(pageParam)
@@ -150,7 +150,7 @@ export default function BlogClient({
         <>
             {/* フィルターセクション */}
             <div className="blog-filters">
-                <div className="container-blog">
+                <div className="max-w-[1200px] mx-auto px-5 md:px-8 lg:px-12">
                     <div className="filters-container">
                         {/* キーワード検索 */}
                         <div className="filter-group">
@@ -224,7 +224,7 @@ export default function BlogClient({
 
             {/* 記事一覧 */}
             <div className="blog-content">
-                <div className="container-blog">
+                <div className="max-w-[1200px] mx-auto px-5 md:px-8 lg:px-12">
                     {filteredPosts.length === 0 ? (
                         <div className="no-results">
                             <div className="no-results-icon">🔍</div>
@@ -295,7 +295,7 @@ export default function BlogClient({
                                                 >
                                                     ← 前へ
                                                 </button>
-                                                
+
                                                 <div className="pagination-numbers">
                                                     {Array.from({ length: totalPages }, (_, i) => i + 1)
                                                         .filter((page) => {
@@ -310,7 +310,7 @@ export default function BlogClient({
                                                             // 省略記号を挿入
                                                             const prevPage = array[index - 1]
                                                             const showEllipsis = prevPage && page - prevPage > 1
-                                                            
+
                                                             return (
                                                                 <div key={page} className="pagination-number-group">
                                                                     {showEllipsis && (
@@ -329,7 +329,7 @@ export default function BlogClient({
                                                             )
                                                         })}
                                                 </div>
-                                                
+
                                                 <button
                                                     type="button"
                                                     onClick={() => handlePageChange(currentPage + 1)}
