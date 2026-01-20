@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import recipesData from '../../../../data/recipes.json'
+import Breadcrumb from '../../../../components/Breadcrumb'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hudorosu.com'
 
@@ -36,7 +37,7 @@ interface RecipePageProps {
 
 export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
     const recipe = recipesMap[params.slug]
-    
+
     if (!recipe) {
         return {
             title: 'レシピが見つかりません | ふどろす',
@@ -127,27 +128,25 @@ export default function RecipePage({ params }: RecipePageProps) {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
             />
-            
+
             <article className="recipe-page">
                 {/* パンくずリスト */}
-                <nav className="breadcrumb" aria-label="パンくずリスト">
-                    <div className="container-recipe">
-                        <ol className="breadcrumb-list">
-                            <li><Link href="/">ホーム</Link></li>
-                            <li><Link href="/blog">レシピ一覧</Link></li>
-                            <li><Link href={`/blog?category=${recipe.categoryId}`}>{recipe.category}</Link></li>
-                            <li aria-current="page">{recipe.title}</li>
-                        </ol>
-                    </div>
-                </nav>
+                <Breadcrumb
+                    items={[
+                        { label: 'ホーム', href: '/' },
+                        { label: 'レシピ一覧', href: '/blog' },
+                        { label: recipe.category, href: `/blog?category=${recipe.categoryId}` },
+                        { label: recipe.title }
+                    ]}
+                />
 
                 {/* レシピヘッダー */}
                 <header className="recipe-header">
-                    <div className="container-recipe">
+                    <div className="max-w-[1200px] mx-auto px-5 md:px-8 lg:px-12">
                         <div className="recipe-category-badge">{recipe.category}</div>
                         <h1 className="recipe-title">{recipe.title}</h1>
                         <p className="recipe-description">{recipe.description}</p>
-                        
+
                         {/* レシピメタ情報 */}
                         <div className="recipe-meta">
                             <div className="meta-item">
@@ -171,7 +170,7 @@ export default function RecipePage({ params }: RecipePageProps) {
 
                 {/* レシピコンテンツ */}
                 <div className="recipe-content">
-                    <div className="container-recipe">
+                    <div className="max-w-[1200px] mx-auto px-5 md:px-8 lg:px-12">
                         <div className="recipe-layout">
                             {/* メインコンテンツ */}
                             <main className="recipe-main">
@@ -263,7 +262,7 @@ export default function RecipePage({ params }: RecipePageProps) {
                                             aria-label="Twitterでシェア"
                                         >
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                                             </svg>
                                             <span>Twitterでシェア</span>
                                         </a>
@@ -299,7 +298,7 @@ export default function RecipePage({ params }: RecipePageProps) {
                                             aria-label="Twitterでシェア"
                                         >
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                                             </svg>
                                             <span>Twitterでシェア</span>
                                         </a>
@@ -309,8 +308,8 @@ export default function RecipePage({ params }: RecipePageProps) {
                                     <h3 className="sidebar-title">人気のキーワード</h3>
                                     <div className="keyword-tags">
                                         {recipe.keywords.slice(0, 8).map((keyword, index) => (
-                                            <Link 
-                                                key={index} 
+                                            <Link
+                                                key={index}
                                                 href={`/blog?q=${encodeURIComponent(keyword)}`}
                                                 className="keyword-tag"
                                             >

@@ -2523,7 +2523,14 @@ html {
     line-height: 1.8;
 }
 
+.common-page-header {
+    background: linear-gradient(135deg, var(--soft-green) 0%, #ffffff 100%);
+    padding: 80px 0 60px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
 .blog-header {
+    /* Legacy support or alias */
     background: linear-gradient(135deg, var(--soft-green) 0%, #ffffff 100%);
     padding: 80px 0 60px;
     border-bottom: 1px solid #e5e7eb;

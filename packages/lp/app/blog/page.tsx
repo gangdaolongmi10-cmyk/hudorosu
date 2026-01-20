@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import recipesData from '../../data/recipes.json'
 import BlogClient from './BlogClient'
+import PageHeader from '../../components/PageHeader'
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.hudorosu.com'
 
@@ -164,15 +165,15 @@ export default function BlogPage({
             />
             <div className="blog-page">
                 {/* ヘッダー */}
-                <header className="blog-header">
-                    <div className="max-w-[1200px] mx-auto px-5 md:px-8 lg:px-12">
-                        <h1 className="text-[2rem] md:text-[2.5rem] font-bold text-[#2e7d32] mb-4">ブログ</h1>
-                        <p className="text-[#666] leading-relaxed">
+                <PageHeader
+                    title="ブログ"
+                    description={
+                        <>
                             冷蔵庫の余り物で作る節約レシピ、給料日前のメニュー、<br />
                             食材管理のコツなど、実用的な記事をお届けします。
-                        </p>
-                    </div>
-                </header>
+                        </>
+                    }
+                />
 
                 <Suspense fallback={
                     <div className="blog-loading">
