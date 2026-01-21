@@ -79,7 +79,7 @@ export default function ShoppingListClient() {
             {/* Header */}
             <header className="bg-white sticky top-0 z-10 border-b border-gray-100 shadow-sm">
                 <div className="max-w-3xl mx-auto px-4 h-16 flex items-center justify-between">
-                    <Link href="/" className="flex items-center text-gray-600 hover:text-[#4caf50] transition-colors">
+                    <Link href="/" className="flex items-center text-gray-600 hover:text-[#4caf50] transition-colors" {...({} as any)}>
                         <ArrowLeft className="w-5 h-5 mr-1" />
                         <span className="font-medium text-sm">TOPへ</span>
                     </Link>
@@ -103,8 +103,8 @@ export default function ShoppingListClient() {
                                     type="button"
                                     onClick={() => setSelectedStore(store)}
                                     className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${selectedStore === store
-                                            ? 'bg-[#4caf50] text-white shadow-md transform scale-105'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        ? 'bg-[#4caf50] text-white shadow-md transform scale-105'
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                                         }`}
                                 >
                                     {store}
