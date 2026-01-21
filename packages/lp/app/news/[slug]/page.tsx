@@ -78,16 +78,16 @@ export default function NewsPostPage({ params }: Props) {
                     <div className="markdown-content">
                         <ReactMarkdown
                             components={{
-                                h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mt-8 mb-4 border-l-4 border-[#4caf50] pl-4" {...props} />,
-                                h2: ({ node, ...props }) => <h2 className="text-xl font-bold mt-8 mb-4 border-b border-gray-200 pb-2 flex items-center gap-2" {...props} />,
-                                h3: ({ node, ...props }) => <h3 className="text-lg font-bold mt-6 mb-3" {...props} />,
-                                p: ({ node, ...props }) => <p className="mb-6 leading-relaxed text-gray-700" {...props} />,
-                                ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-6 space-y-2 text-gray-700 bg-gray-50 p-6 rounded-xl" {...props} />,
-                                ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-6 space-y-2 text-gray-700 bg-gray-50 p-6 rounded-xl" {...props} />,
-                                li: ({ node, ...props }) => <li className="pl-2" {...props} />,
-                                a: ({ node, ...props }) => <a className="text-[#4caf50] hover:underline font-medium" {...props} />,
-                                blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-gray-200 pl-4 py-2 italic text-gray-600 mb-6 bg-gray-50 pr-4 rounded-r-lg" {...props} />,
-                                strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...props} />,
+                                h1: ({ node, ...props }) => <h1 className="text-2xl font-bold mt-8 mb-4 border-l-4 border-[#4caf50] pl-4" {...(props as any)} />,
+                                h2: ({ node, ...props }) => <h2 className="text-xl font-bold mt-8 mb-4 border-b border-gray-200 pb-2 flex items-center gap-2" {...(props as any)} />,
+                                h3: ({ node, ...props }) => <h3 className="text-lg font-bold mt-6 mb-3" {...(props as any)} />,
+                                p: ({ node, ...props }) => <p className="mb-6 leading-relaxed text-gray-700" {...(props as any)} />,
+                                ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-6 space-y-2 text-gray-700 bg-gray-50 p-6 rounded-xl" {...(props as any)} />,
+                                ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-6 space-y-2 text-gray-700 bg-gray-50 p-6 rounded-xl" {...(props as any)} />,
+                                li: ({ node, ...props }) => <li className="pl-2" {...(props as any)} />,
+                                a: ({ node, ...props }) => <a className="text-[#4caf50] hover:underline font-medium" {...(props as any)} />,
+                                blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-gray-200 pl-4 py-2 italic text-gray-600 mb-6 bg-gray-50 pr-4 rounded-r-lg" {...(props as any)} />,
+                                strong: ({ node, ...props }) => <strong className="font-bold text-gray-900" {...(props as any)} />,
                             }}
                         >
                             {post.content}
