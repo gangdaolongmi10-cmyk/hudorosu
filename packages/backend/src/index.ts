@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'production') {
         console.error(`❌ エラー: 以下の環境変数が設定されていません: ${missingVars.join(', ')}`);
         process.exit(1);
     }
-    
+
     // JWT_SECRETがデフォルト値のままの場合
     if (process.env.JWT_SECRET === 'your-secret-key-change-in-production') {
         console.error('❌ エラー: JWT_SECRETを本番環境用の強力な値に変更してください');
@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const app: Application = express();
-const PORT: number = parseInt(process.env.PORT || '3000', 10);
+const PORT: number = parseInt(process.env.PORT || '3001', 10);
 
 // Trust proxy（リバースプロキシ経由の場合にIPアドレスを正しく取得するため）
 app.set('trust proxy', true);
@@ -77,10 +77,10 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
     } else {
         console.error('Error:', err);
     }
-    
+
     // レスポンスは本番環境では詳細を非表示
     const isProduction = process.env.NODE_ENV === 'production';
-    res.status(err?.status || 500).json({ 
+    res.status(err?.status || 500).json({
         error: 'Internal Server Error',
         ...(isProduction ? {} : { message: err?.message || 'Unknown error' })
     });
@@ -88,9 +88,9 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 // 404ハンドラー
 app.use((req: express.Request, res: express.Response) => {
-    res.status(404).json({ 
+    res.status(404).json({
         error: 'Not Found',
-        path: req.path 
+        path: req.path
     });
 });
 

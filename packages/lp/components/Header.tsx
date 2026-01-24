@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { signOut, useSession } from 'next-auth/react'
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
     const pathname = usePathname()
+    const { data: session } = useSession()
 
     useEffect(() => {
         const handleScroll = () => {
@@ -92,26 +94,48 @@ export default function Header() {
                         {[
                             { href: '/', label: 'ホーム' },
                             { href: '/shopping-list', label: 'お買い物リスト' },
+                            ...(!session ? [
+                                { href: '/login', label: 'ログイン' },
+                                { href: '/signup', label: '新規登録' }
+                            ] : [
+                                { href: '#', label: `ログアウト (${session.user?.name})`, onClick: () => signOut() }
+                            ]),
                             { href: '/blog', label: 'ブログ' },
                             { href: '/news', label: 'お知らせ' },
                             { href: '/tech', label: '技術' },
                             { href: '/blog/my_fave/puroseka', label: 'プロジェクトセカイ' }
                         ].map((link, idx) => {
                             const active = isActive(link.href)
-                            return (
-                                <Link
+                            const isAction = (link as any).onClick !== undefined
+
+                            const content = (
+                                <div
                                     key={idx}
-                                    href={link.href}
-                                    className={`flex items-center justify-between px-5 py-4 rounded-xl border no-underline font-medium text-[0.95rem] transition-all duration-200 ${active
+                                    className={`flex items-center justify-between px-5 py-4 rounded-xl border no-underline font-medium text-[0.95rem] transition-all duration-200 cursor-pointer ${active
                                         ? 'bg-[#e8f5e9] border-[#66bb6a] text-[#2e7d32]'
                                         : 'bg-white border-transparent text-gray-700 hover:bg-gray-50 hover:border-gray-100 hover:translate-x-1'
                                         }`}
-                                    onClick={closeMenu}
+                                    onClick={() => {
+                                        if (isAction) (link as any).onClick()
+                                        closeMenu()
+                                    }}
                                 >
                                     <span>{link.label}</span>
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`${active ? 'text-[#66bb6a]' : 'text-gray-300'}`}>
                                         <polyline points="9 18 15 12 9 6"></polyline>
                                     </svg>
+                                </div>
+                            )
+
+                            if (isAction) return <div key={idx}>{content}</div>
+
+                            return (
+                                <Link
+                                    key={idx}
+                                    href={link.href}
+                                    className="no-underline"
+                                >
+                                    {content}
                                 </Link>
                             )
                         })}

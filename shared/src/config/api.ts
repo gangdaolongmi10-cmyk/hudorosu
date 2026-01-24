@@ -18,25 +18,18 @@ export type Environment = 'development' | 'production' | 'test';
  * 環境を取得
  */
 export const getEnvironment = (): Environment => {
-    // React Native/Expo環境の場合
-    if (typeof process === 'undefined' || !process.env) {
-        // Expo Constantsを使用（モバイルアプリの場合）
-        try {
-            const Constants = require('expo-constants');
-            if (Constants?.default?.executionEnvironment) {
-                const env = Constants.default.executionEnvironment;
-                if (env === 'standalone' || env === 'storeClient') {
-                    return 'production';
-                }
-            }
-        } catch (e) {
-            // Expo Constantsが利用できない場合は開発環境とみなす
-        }
-        return 'development';
+    // Node.js環境（processが存在する場合）
+    if (typeof process !== 'undefined' && process.env && process.env.NODE_ENV) {
+        return (process.env.NODE_ENV as Environment) || 'development';
     }
-    
-    // Node.js環境の場合
-    return (process.env.NODE_ENV as Environment) || 'development';
+
+    // ブラウザ環境またはその他の環境
+    // Expo環境の検知は動的インポートやグローバル変数を介して行うのが安全
+    if (typeof window !== 'undefined' && (window as any).Expo) {
+        return 'development'; // 仮
+    }
+
+    return 'development';
 };
 
 /**
@@ -50,14 +43,14 @@ const getEnvVar = (key: string, defaultValue: string): string => {
         const value = process.env[key];
         if (value && typeof value === 'string') return value;
     }
-    
+
     return defaultValue;
 };
 
 /**
  * 開発環境のAPI URL
  */
-export const DEV_API_URL = getEnvVar('DEV_API_URL', 'http://localhost:3000');
+export const DEV_API_URL = getEnvVar('DEV_API_URL', 'http://localhost:3001');
 
 /**
  * 本番環境のAPI URL
@@ -80,7 +73,7 @@ export const API_TIMEOUT = 10000;
 export const getApiConfig = (): ApiConfig => {
     const env = getEnvironment();
     const baseUrl = env === 'production' ? PROD_API_URL : DEV_API_URL;
-    
+
     return {
         baseUrl,
         timeout: API_TIMEOUT,

@@ -125,7 +125,7 @@ export default function HomePage() {
                         </div>
                     </AnimatedSection>
 
-                    <AnimatedSection className="relative z-[2] flex justify-center items-center order-1 md:order-2 w-full" direction="left" delay={200}>
+                    <AnimatedSection className="relative z-[2] hidden md:flex justify-center items-center order-1 md:order-2 w-full" direction="left" delay={200}>
                         <div className="w-full max-w-[320px] aspect-[1/2] md:h-[640px] bg-[#1a1a1a] rounded-[40px] p-3 shadow-[0_20px_60px_rgba(0,0,0,0.3)] relative transition-transform duration-300 hover:scale-[1.05] mx-auto">
                             <div className="w-full h-full bg-[#f9fafb] rounded-[32px] overflow-hidden relative">
                                 <div className="p-4 h-full flex flex-col overflow-y-auto bg-[#f9fafb] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
